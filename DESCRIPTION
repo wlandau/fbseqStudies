@@ -1,0 +1,30 @@
+Package: fbseqStudies
+Title: fbseqStudies
+Description: A comparison study for fbseq.
+Version: 0.0
+Author: Will Landau <will.landau@gmail.com>
+Maintainer: Will Landau <will.landau@gmail.com>
+Depends:
+    R (>= 3.0.0),
+    fbseq
+Imports:
+    coda,
+    doMC,
+    doParallel,
+    plyr,
+    dplyr,
+    edgeR,
+    foreach,
+    ggplot2,
+    hexbin,
+    methods,
+    parallel,
+    pracma,
+    reshape2,
+    rstan,
+    snowfall
+Suggests:
+    fbseqCUDA,
+    knitr
+VignetteBuilder: knitr
+License: GPL (>= 3)

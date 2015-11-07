@@ -1,0 +1,174 @@
+---
+title: "`heterosisStudies` package installation and usage guide"
+author: Will Landau, Dr. Jarad Niemi
+date: 2015
+output: 
+  rmarkdown::html_vignette:
+    number_sections: true
+    toc: true
+vignette: >
+  \VignetteEngine{knitr::rmarkdown}
+  \VignetteIndexEntry{`heterosisStudies` package installation and usage guide}
+  \usepackage[utf8]{inputenc}
+---
+
+# Purpose
+
+`heterosisStudies` reproduces the results of a paper. 
+
+# System requirements
+
+- Mac OS X or Linux. 
+- R $\ge$ 3.2.0
+- R packages `methods`, `parallel`, `snowfall`, `VGAM`, `doMC`, `gplot2`, `pracma`, `plyr`, `reshape2`, and `knitr`, available though the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/).
+- R packages `edgeR` and `baySeq`, available through [Bioconductor](http://bioconductor.org/). 
+- R packages `INLA` (version 0.0-1432754561, 27 May 2015) and `ShrinkBayes` (version 2.12), available on the [ShrinkBayes website](http://www.few.vu.nl/~mavdwiel/ShrinkBayes.html).
+- R package `rstan`, the installation of which is explained on a [GitHub wiki](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started).
+- A CUDA-enabled NVIDIA graphics processing unit (GPU) with compute capability 2.0 or greater.
+- CUDA version 6.0 or greater.
+- The `heterosis` and `heterosisCUDA` packages, available on GitHub.
+
+
+More information about CUDA is available through [NVIDIA](http://www.nvidia.com/object/cuda_home_new.html). If your computer does not have these features, you can rent GPU time from [cloud computing enterprises](http://www.nvidia.com/object/gpu-cloud-computing-services.html) such as [Amazon Web Services](http://aws.amazon.com/ec2/instance-types/). See the installation vignettes for the `heterosis` and `heterosisCUDA` packages for installation details about those packages.
+
+# Installation
+
+## Option 1: install directly from GitHub.
+
+For this option, you need the `devtools` packages, available from CRAN. Just open R and run 
+
+```{r, eval=F}
+library(devtools)
+install_github("wlandau/heterosisStudies")
+```
+
+
+## Option 2: install from the source.
+
+Open a command line program such as Terminal in Mac/Linux and enter the following commands.
+
+```
+git clone git@github.com:wlandau/heterosisStudies.git
+R CMD build heterosisStudies
+R CMD INSTALL heterosisStudies_0.0.tar.gz
+```
+
+
+Note: in `R CMD INSTALL heterosisStudies_0.0.tar.gz`, you may have to replace `heterosisStudies_0.0.tar.gz` by the name of whatever tarball comes out of `R CMD build`.
+
+# Run the studies
+
+## The one-liner
+
+Just open an R session and run 
+
+```
+library(heterosisStudies)
+heterosisStudies()
+```
+
+The `heterosisStudies()` function calls `paschold_study()`, which runs the analysis of the Paschold dataset from the paper, and then `comparison_study()`, which runs the simulation study in the paper comparing the `heterosis` package to different methods of analyzing heterosis datasets. The figures from the paper, along with auxiliary `RDS` output files, are saved to external files and folders in the the current working directory.
+
+## Breaking down the comparison study
+
+In `comparison_study()`, you can set the `methods` argument to leave out some methods of analysis. You may want to do this if you don't have CUDA on your machine. For example, 
+
+```
+library(heterosisStudies)
+path = comparison_study(methods = c("edgeR", "baySeq", "ShrinkBayes"))
+```
+
+will run the comparison study on all methods except the fully Bayesian, CUDA-accelerated approach and save the simulation files to the folder whose name is the character string in `path`. Later, on a CUDA-enabled machine, you can run
+
+```
+path = analyze(path, methods = "fullyBayes")
+make_roc_plots(path)
+```
+
+to finish the comparison study.
+
+
+## Changing the number of CPUs
+
+To use more or fewer CPUs, you can overwrite the `ncpus()` function before calling `heterosisStudies()`. 
+
+## Tips for a long job
+
+The workflow takes a long time, so we recommend saving any R code you use to a script (say, `script.R`), opening the terminal/command line, and running
+
+```
+nohup nice -10 R CMD BATCH script.R &
+```
+
+This will run the job in the background, and if you're using a server, continue running the job after you log out. In this example, the "niceness" is 10 (set with the "-10" flag), and it can be anywhere from 0 to 19. Type `man nice` in the command line for details.
+
+
+# Appendix: setting up a CUDA-capable virtual server on Amazon Web Services
+
+You can install this package and all its prerequisites on an Ubuntu 14.04 [g2.2xlarge instance](http://aws.amazon.com/ec2/instance-types/), which has a GPU. The following script configures the instance and installs all the prerequisites except for the `heterosis` and `heterosisCUDA` packages. After running the script, be sure to reboot the instance so that the CUDA drivers are loaded properly. 
+
+```
+echo "export PS1='\`hostname\` \`echo \$PWD\`> '" >> ~/.bashrc
+echo "export PATH=/usr/local/bin:\$PATH" >> ~/.bashrc
+source ~/.bashrc
+sudo apt-get update
+
+# There is a prompt here, and it should be the last interruption.
+sudo apt-get -y install linux-image-generic
+
+sudo apt-get -y install emacs24 git texlive-latex-base texinfo fonts-inconsolata r-base-core libxml2-dev r-cran-rgl linux-headers-3.13.0-57-generic openssl libcurl4-openssl-dev
+sudo apt-get -y build-dep r-cran-rgl
+
+sudo apt-get -y remove r-base-core
+sudo wget http://cran.r-project.org/src/base/R-3/R-3.2.0.tar.gz
+tar -xf R-3.2.0.tar.gz
+cd R-3.2.0
+./configure
+make
+sudo make install
+cd
+sudo rm -rf R-3.2.0*
+
+echo 'library(utils); local({r <- getOption("repos"); r["CRAN"] <- "http://mirror.las.iastate.edu/CRAN/"; options(repos=r)}); assignInNamespace("q", function(save = "no", status = 0, runLast = TRUE){.Internal(quit(save, status, runLast))}, "base")' > .Rprofile
+
+sudo Rscript -e 'install.packages(c("methods", "devtools", "parallel", "plyr", "ggplot2", "reshape2", "knitr", "snow", "snowfall", "VGAM", "sp", "rgl", "XML", "ks", "pracma", "coda", "doMC", "MCMCpack", "mclust", "Iso")); source("http://bioconductor.org/biocLite.R"); biocLite(c("baySeq", "edgeR", "DESeq"), ask=FALSE)'
+
+# You may need a version of INLA compatible with ShrinkBayes 2.12.
+sudo Rscript -e 'source("http://www.math.ntnu.no/inla/givemeINLA.R")'
+
+sudo wget http://cran.r-project.org/src/contrib/logcondens_2.1.4.tar.gz
+sudo wget http://www.few.vu.nl/~mavdwiel/ShrinkBayes/ShrinkBayes_2.12.tar.gz
+
+sudo R CMD INSTALL logcondens_2.1.4.tar.gz
+sudo R CMD INSTALL ShrinkBayes_2.12.tar.gz
+sudo rm *.gz
+
+sudo Rscript -e 'source("http://mc-stan.org/rstan/install.R", echo = TRUE, max.deparse.length = 2000); install_rstan()'
+
+# check https://developer.nvidia.com/cuda-downloads
+# for the correct .deb file.
+sudo apt-add-repository multiverse
+sudo wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1404/x86_64/cuda-repo-ubuntu1404_7.0-28_amd64.deb
+sudo dpkg -i cuda-repo-ubuntu1404_7.0-28_amd64.deb
+sudo apt-get update
+sudo apt-get -y install cuda nvidia-cuda-toolkit nvidia-modprobe
+sudo rm *.deb
+
+echo "export PATH=/usr/local/cuda-7.0/bin:\$PATH" >> ~/.bashrc
+echo "export LD_LIBRARY_PATH=/usr/local/cuda-7.0/lib64:\$LD_LIBRARY_PATH" >> ~/.bashrc
+source .bashrc
+
+cd /usr/local/cuda-7.0/samples/1_Utilities/deviceQuery
+sudo make
+cd
+
+# Reboot and then run /usr/local/cuda-7.0/samples/1_Utilities/deviceQuery/deviceQuery
+# to check GPUs.
+sudo reboot
+
+# check the GPUs
+/usr/local/cuda-7.0/samples/1_Utilities/deviceQuery/deviceQuery
+
+# troubleshoot at http://tleyden.github.io/blog/2014/10/25/cuda-6-dot-5-on-aws-gpu-instance-running-ubuntu-14-dot-04/
+
+```
