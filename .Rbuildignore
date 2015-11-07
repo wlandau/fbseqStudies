@@ -1,0 +1,10 @@
+.DS_Store
+.git
+.gitignore
+.Rapp.history
+.Rbuildignore
+.Rhistory
+Rbuildignore
+README.md
+vignettes/guide.html
+vignettes/guide.log
