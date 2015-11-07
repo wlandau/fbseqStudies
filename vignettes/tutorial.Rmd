@@ -1,0 +1,134 @@
+---
+title: "`fbseqStudies` package installation and usage guide"
+author: Will Landau
+date: 2015
+output: 
+  rmarkdown::html_vignette:
+    number_sections: true
+    toc: true
+vignette: >
+  \VignetteEngine{knitr::rmarkdown}
+  \VignetteIndexEntry{`fbseqStudies` package installation and usage guide}
+  \usepackage[utf8]{inputenc}
+---
+
+# Purpose
+
+`fbseqStudies` runs a comparison study, comparing the `fbseq` package to other packages.
+
+# System requirements
+
+- Mac OS X or Linux. 
+- R $\ge$ 3.2.0
+- R packages `methods`, `parallel`, `snowfall`, `doMC`, `ggplot2`, `pracma`, `plyr`, `reshape2`, and `knitr`, available though the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/).
+- The R package `edgeR`, available through [Bioconductor](http://bioconductor.org/). 
+- R package `rstan`, the installation of which is explained on a [GitHub wiki](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started).
+- A CUDA-enabled NVIDIA graphics processing unit (GPU) with compute capability 2.0 or greater.
+- CUDA version 6.0 or greater.
+- The `fbseq` and `fbseqCUDA` packages, available on GitHub.
+
+More information about CUDA is available through [NVIDIA](http://www.nvidia.com/object/cuda_home_new.html). If your computer does not have these features, you can rent GPU time from [cloud computing enterprises](http://www.nvidia.com/object/gpu-cloud-computing-services.html) such as [Amazon Web Services](http://aws.amazon.com/ec2/instance-types/). See the installation vignettes for the `fbseq` and `fbseqCUDA` packages for installation details about those packages.
+
+# Installation
+
+## Option 1: install directly from GitHub.
+
+For this option, you need the `devtools` packages, available from CRAN. Just open R and run 
+
+```{r, eval=F}
+library(devtools)
+install_github("wlandau/fbseqStudies")
+```
+
+## Option 2: install from the source.
+
+Open a command line program such as Terminal in Mac/Linux and enter the following commands.
+
+```
+git clone git@github.com:wlandau/fbseqStudies.git
+R CMD build fbseqStudies
+R CMD INSTALL fbseqStudies_0.0.tar.gz
+```
+
+
+Note: in `R CMD INSTALL fbseqStudies_0.0.tar.gz`, you may have to replace `fbseqStudies_0.0.tar.gz` by the name of whatever tarball comes out of `R CMD build`.
+
+# Run the studies
+
+## Everything in two lines.
+
+Just open an R session and run 
+
+```{r, eval = F}
+library(fbseqStudies)
+fbseqStudies()
+```
+
+## Breaking down the comparison study
+
+You can run the steps of `fbseqStudies()` separately. First, create the simulation objects with `simulations()`. Output files are saved. These are lists $-$ each with a `fbseq::Scenario` object with the count data, design matrix, etc. $-$ and a list to store analyses of that scenario.
+
+```{r, eval = F}
+simulations()
+```
+
+
+# Appendix: setting up a CUDA-capable virtual server on Amazon Web Services
+
+You can install this package and all its prerequisites on an Ubuntu 14.04 [g2.2xlarge instance](http://aws.amazon.com/ec2/instance-types/), which has a GPU. The following script configures the instance and installs all the prerequisites except for the `fbseq` and `fbseqCUDA` packages. After running the script, be sure to reboot the instance so that the CUDA drivers are loaded properly. 
+
+```
+echo "export PS1='\`hostname\` \`echo \$PWD\`> '" >> ~/.bashrc
+echo "export PATH=/usr/local/bin:\$PATH" >> ~/.bashrc
+source ~/.bashrc
+sudo apt-get update
+
+# There is a prompt here, and it should be the last interruption.
+sudo apt-get -y install linux-image-generic
+
+sudo apt-get -y install emacs24 git texlive-latex-base texinfo fonts-inconsolata r-base-core libxml2-dev r-cran-rgl linux-headers-3.13.0-57-generic openssl libcurl4-openssl-dev
+sudo apt-get -y build-dep r-cran-rgl
+
+sudo apt-get -y remove r-base-core
+sudo wget http://cran.r-project.org/src/base/R-3/R-3.2.0.tar.gz
+tar -xf R-3.2.0.tar.gz
+cd R-3.2.0
+./configure
+make
+sudo make install
+cd
+sudo rm -rf R-3.2.0*
+
+echo 'library(utils); local({r <- getOption("repos"); r["CRAN"] <- "http://mirror.las.iastate.edu/CRAN/"; options(repos=r)}); assignInNamespace("q", function(save = "no", status = 0, runLast = TRUE){.Internal(quit(save, status, runLast))}, "base")' > .Rprofile
+
+sudo Rscript -e 'install.packages(c("methods", "devtools", "parallel", "plyr", "ggplot2", "reshape2", "knitr", "snow", "snowfall",  "pracma", "coda", "doMC", "mclust", "Iso")); source("http://bioconductor.org/biocLite.R"); biocLite("edgeR", ask=FALSE)'
+
+sudo Rscript -e 'source("http://mc-stan.org/rstan/install.R", echo = TRUE, max.deparse.length = 2000); install_rstan()'
+
+# check https://developer.nvidia.com/cuda-downloads
+# for the correct .deb file.
+sudo apt-add-repository multiverse
+sudo wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1404/x86_64/cuda-repo-ubuntu1404_7.0-28_amd64.deb
+sudo dpkg -i cuda-repo-ubuntu1404_7.0-28_amd64.deb
+sudo apt-get update
+sudo apt-get -y install cuda nvidia-cuda-toolkit nvidia-modprobe
+sudo rm *.deb
+
+echo "export PATH=/usr/local/cuda-7.0/bin:\$PATH" >> ~/.bashrc
+echo "export LD_LIBRARY_PATH=/usr/local/cuda-7.0/lib64:\$LD_LIBRARY_PATH" >> ~/.bashrc
+source .bashrc
+
+cd /usr/local/cuda-7.0/samples/1_Utilities/deviceQuery
+sudo make
+cd
+
+# Reboot and then run /usr/local/cuda-7.0/samples/1_Utilities/deviceQuery/deviceQuery
+# to check GPUs.
+sudo reboot
+
+# check the GPUs
+/usr/local/cuda-7.0/samples/1_Utilities/deviceQuery/deviceQuery
+
+# troubleshoot at http://tleyden.github.io/blog/2014/10/25/cuda-6-dot-5-on-aws-gpu-instance-running-ubuntu-14-dot-04/
+
+```
