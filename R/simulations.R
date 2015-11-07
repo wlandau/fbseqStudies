@@ -15,6 +15,6 @@ simulations = function(path = newpath(), genes = 3.5e4, libraries = c(16, 64, 25
     saveRDS(simulation_simple(genes = g, libraries = n), paste0(path, "simple_", g, "_", n, "_", r, ".rds"))
     saveRDS(simulation_edgeR(fit, genes = g, libraries = n), paste0(path, "edgeR_", g, "_", n, "_", r, ".rds"))
     saveRDS(list(scenario = scenario_heterosis_model(genes = g, libraries = n), analyses = list()), 
-      paste0(path, "edgeR_", g, "_", n, "_", r, ".rds"))
+      paste0(path, "model_", g, "_", n, "_", r, ".rds"))
   }
 }
