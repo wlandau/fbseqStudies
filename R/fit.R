@@ -4,7 +4,7 @@
 #' @return path to simulated objects
 #' @param path to directory to save simulations and results
 #' @param benchmarks benchmark methods to run
-#' @param depths either "fullybayes" or "ebayes" or a vector with both.
+#' @param depths "fullybayes", "ebayes", "ebayes_from_truth" or a vector with a combination. "fullybayes" must come before "ebayes".
 #' @param priors priors on the betas
 #' @param ncores number of cores for CPU-parallel methods
 #' @param debug debug mode, TRUE/FALSE

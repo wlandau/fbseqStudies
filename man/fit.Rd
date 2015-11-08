@@ -13,7 +13,7 @@ fit(path, benchmarks = c("edgeR", "Niemi"), depths = c("fullybayes",
 
 \item{benchmarks}{benchmark methods to run}
 
-\item{depths}{either "fullybayes" or "ebayes" or a vector with both.}
+\item{depths}{"fullybayes", "ebayes", "ebayes_from_truth" or a vector with a combination. "fullybayes" must come before "ebayes".}
 
 \item{priors}{priors on the betas}
 
