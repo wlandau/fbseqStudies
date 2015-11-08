@@ -5,7 +5,8 @@
 \title{Function \code{fit}}
 \usage{
 fit(path, benchmarks = c("edgeR", "Niemi"), depths = c("fullybayes",
-  "ebayes", "ebayes_from_truth"), priors = c("normal", alternate_priors()))
+  "ebayes", "ebayes_from_truth"), priors = c("normal", alternate_priors()),
+  ncores = 1)
 }
 \arguments{
 \item{path}{to directory to save simulations and results}
@@ -14,7 +15,9 @@ fit(path, benchmarks = c("edgeR", "Niemi"), depths = c("fullybayes",
 
 \item{depths}{either "fullybayes" or "ebayes" or a vector with both.}
 
-\item{"priors"}{priors on the betas}
+\item{priors}{priors on the betas}
+
+\item{ncores}{number of cores for CPU-parallel methods}
 }
 \value{
 a list if pertinent scenario information

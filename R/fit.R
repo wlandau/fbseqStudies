@@ -5,9 +5,10 @@
 #' @param path to directory to save simulations and results
 #' @param benchmarks benchmark methods to run
 #' @param depths either "fullybayes" or "ebayes" or a vector with both.
-#' @param "priors" priors on the betas
+#' @param priors priors on the betas
+#' @param ncores number of cores for CPU-parallel methods
 fit = function(path, benchmarks = c("edgeR", "Niemi"), depths = c("fullybayes", "ebayes", "ebayes_from_truth"), 
-  priors = c("normal", alternate_priors())){
+  priors = c("normal", alternate_priors()), ncores = 1){
 
   path = newdir(path)
   files = list.files(path)
