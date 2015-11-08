@@ -87,10 +87,10 @@ single_gene_analysis = function(x, group, hyperparameters, model) {
 #' @export
 #' @return \code{rstan} output list
 #' @param counts RNA-seq count datset
-#' @param group group vector
 #' @param design design matrix
+#' @param group group vector
 #' @param ncores number of cores for parallel execution
-fit_Niemi = function(counts, group, design, ncores = 1){
+fit_Niemi = function(counts, design, group, ncores = 1){
   logs = mysink()
   t = my.proc.time()
   hyperparameters = get_hyperparameters(counts, design)
@@ -177,8 +177,5 @@ fit_Niemi = function(counts, group, design, ncores = 1){
                      .packages='rstan'))
   registerDoSEQ()
   unsink(logs)
-  list(estimates = out, runtime = my.proc.time() - t)
+  list(analysis = "Niemi", estimates = out, runtime = my.proc.time() - t)
 }
-
-
-

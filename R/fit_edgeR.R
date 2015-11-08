@@ -2,9 +2,11 @@
 #' @description fits edgeR
 #' @export
 #' @return a list of components of a fit object from \code{edgeR}
-#' @param counts A data frame or matrix of RNA-seq read counts.
+#' @param counts RNA-seq count datset
 #' @param design design matrix
-fit_edgeR = function(counts, design){
+#' @param group group vector
+#' @param ncores number of cores for parallel execution
+fit_edgeR = function(counts, design, group = NULL, ncores = 1){
   data(paschold)
   paschold = get("paschold")
   logs = mysink()
@@ -34,5 +36,5 @@ fit_edgeR = function(counts, design){
   colnames(effectSizes) = paste0("effect_", ns)
 
   unsink(logs)
-  list(estimates = cbind(beta, prob, effectSizes), dge = dge, fit = fit, runtime = my.proc.time() - t)
+  list(analysis = "edgeR", estimates = cbind(beta, prob, effectSizes), dge = dge, fit = fit, runtime = my.proc.time() - t)
 }

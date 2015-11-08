@@ -4,14 +4,14 @@
 \alias{fit_Niemi}
 \title{Function \code{fit_Niemi}}
 \usage{
-fit_Niemi(counts, group, design, ncores = 1)
+fit_Niemi(counts, design, group, ncores = 1)
 }
 \arguments{
 \item{counts}{RNA-seq count datset}
 
-\item{group}{group vector}
-
 \item{design}{design matrix}
+
+\item{group}{group vector}
 
 \item{ncores}{number of cores for parallel execution}
 }

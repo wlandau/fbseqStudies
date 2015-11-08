@@ -4,12 +4,16 @@
 \alias{fit_edgeR}
 \title{Function \code{fit_edgeR}}
 \usage{
-fit_edgeR(counts, design)
+fit_edgeR(counts, design, group = NULL, ncores = 1)
 }
 \arguments{
-\item{counts}{A data frame or matrix of RNA-seq read counts.}
+\item{counts}{RNA-seq count datset}
 
 \item{design}{design matrix}
+
+\item{group}{group vector}
+
+\item{ncores}{number of cores for parallel execution}
 }
 \value{
 a list of components of a fit object from \code{edgeR}
