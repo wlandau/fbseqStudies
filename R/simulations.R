@@ -1,7 +1,7 @@
 #' @title Function \code{simulations}
 #' @description create simulation scenarios
 #' @export
-#' @return a list if pertinent scenario information
+#' @return path to simulated objects
 #' @param path to directory to save simulations and results
 #' @param genes number of genes. Can be a vector.
 #' @param libraries number of libraries. Can be a vector.
@@ -18,4 +18,5 @@ simulations = function(path = newdir(), genes = 3.5e4, libraries = c(16, 64, 256
     saveRDS(simulation_model(genes = g, libraries = n), paste0(path, "model_", g, "_", n, "_", r, ".rds"))
     saveRDS(simulation_simple(genes = g, libraries = n), paste0(path, "simple_", g, "_", n, "_", r, ".rds"))
   }
+  path
 }

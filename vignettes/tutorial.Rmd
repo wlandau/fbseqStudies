@@ -66,11 +66,14 @@ fbseqStudies()
 
 ## Breaking down the comparison study
 
-You can run the steps of `fbseqStudies()` separately. First, create the simulation objects with `simulations()`. Output files are saved. These are lists $-$ each with a `fbseq::Scenario` object with the count data, design matrix, etc. $-$ and a list to store analyses of that scenario.
+You can run the steps of `fbseqStudies()` separately. First, create the simulation objects with `simulations()`. Output files are saved. These are lists $-$ each with a `fbseq::Scenario` object with the count data, design matrix, etc. $-$ and a list to store analyses of that scenario. Next, run `fit` to fit the benchmark methods along with the method described in the `fbseq` package. In summary,
 
 ```{r, eval = F}
-simulations()
+path = simulations()
+fit(path)
 ```
+
+
 
 
 # Appendix: setting up a CUDA-capable virtual server on Amazon Web Services

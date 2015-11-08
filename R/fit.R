@@ -1,7 +1,7 @@
 #' @title Function \code{fit}
 #' @description run benchmark methods on simulation objects
 #' @export
-#' @return a list if pertinent scenario information
+#' @return path to simulated objects
 #' @param path to directory to save simulations and results
 #' @param benchmarks benchmark methods to run
 #' @param depths either "fullybayes" or "ebayes" or a vector with both.
@@ -40,4 +40,6 @@ fit = function(path, benchmarks = c("edgeR", "Niemi"), depths = c("fullybayes", 
       saveRDS(o, p)
     }
   }
+
+  path
 }
