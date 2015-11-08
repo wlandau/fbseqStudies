@@ -6,18 +6,19 @@
 #' @param methods methods to run
 #' @param ncores number of cores to use
 benchmarks = function(path, methods = c("edgeR", "Niemi"), ncores = 1){
+  path = newdir(path)
   files = list.files(path)
   files = files[grep(".rds", files)]
   for(method in methods)
     for(f in files){
       p = paste0(path, f)
-      f = readRDS(paste0(path, f))
-      s = f$scenario
-      f$analyses[[method]] = get(paste0("fit_", method))(
+      o = readRDS(paste0(path, f))
+      s = o$scenario
+      o$analyses[[method]] = get(paste0("fit_", method))(
         counts = s@counts,
         design = s@design,
         group = s@supplement$group,
         ncores = ncores)
-      saveRDS(f, p)
+      saveRDS(o, p)
     }
 }

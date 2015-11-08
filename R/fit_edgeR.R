@@ -28,6 +28,7 @@ fit_edgeR = function(counts, design, group = NULL, ncores = 1){
 
   chain = Chain(paschold)
   chain@betaPostMean = as.numeric(beta)
+  chain@G = nrow(beta)
   chain@gene_names = character(0)
   effectSizes = effect_sizes(chain)
 
