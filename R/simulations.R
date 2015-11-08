@@ -6,7 +6,8 @@
 #' @param genes number of genes. Can be a vector.
 #' @param libraries number of libraries. Can be a vector.
 #' @param reps number of reps for each #genes/#libraries combination. Should be a scalar.
-simulations = function(path = newpath(), genes = 3.5e4, libraries = c(16, 64, 256), reps = 10){
+simulations = function(path = newdir(), genes = 3.5e4, libraries = c(16, 64, 256), reps = 10){
+  path = newdir(path)
   data(paschold)
   paschold = get("paschold")
   paschold@supplement$simulation = "paschold"

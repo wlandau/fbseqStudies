@@ -4,7 +4,7 @@
 \alias{simulations}
 \title{Function \code{simulations}}
 \usage{
-simulations(path = newpath(), genes = 35000, libraries = c(16, 64, 256),
+simulations(path = newdir(), genes = 35000, libraries = c(16, 64, 256),
   reps = 10)
 }
 \arguments{
