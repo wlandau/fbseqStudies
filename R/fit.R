@@ -7,8 +7,9 @@
 #' @param depths either "fullybayes" or "ebayes" or a vector with both.
 #' @param priors priors on the betas
 #' @param ncores number of cores for CPU-parallel methods
+#' @param debug debug mode, TRUE/FALSE
 fit = function(path, benchmarks = c("edgeR", "Niemi"), depths = c("fullybayes", "ebayes", "ebayes_from_truth"), 
-  priors = c("normal", alternate_priors()), ncores = 1){
+  priors = c("normal", alternate_priors()), ncores = 1, debug = F){
 
   path = newdir(path)
   files = list.files(path)
@@ -36,7 +37,7 @@ fit = function(path, benchmarks = c("edgeR", "Niemi"), depths = c("fullybayes", 
     method = paste0(depth, "_", prior)
 
     if(is.null(o$analyses[[method]])){
-      o$analyses[[method]] = fit_fbseq(o, depth, prior)
+      o$analyses[[method]] = fit_fbseq(o, depth, prior, debug)
       saveRDS(o, p)
     }
   }

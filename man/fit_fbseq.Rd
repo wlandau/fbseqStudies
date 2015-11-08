@@ -4,7 +4,7 @@
 \alias{fit_fbseq}
 \title{Function \code{fit_fbseq}}
 \usage{
-fit_fbseq(sim, depth = "fullybayes", prior = "normal")
+fit_fbseq(sim, depth = "fullybayes", prior = "normal", debug = F)
 }
 \arguments{
 \item{sim}{a list, the current simulation object}
@@ -12,6 +12,8 @@ fit_fbseq(sim, depth = "fullybayes", prior = "normal")
 \item{depth}{one of "ebayes", "ebayes_from_truth", or "fullybayes"}
 
 \item{prior}{prior distribution on betas}
+
+\item{debug}{debug mode, TRUE/FALSE}
 }
 \value{
 information for a fitted model

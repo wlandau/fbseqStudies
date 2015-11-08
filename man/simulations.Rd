@@ -17,7 +17,7 @@ simulations(path = newdir(), genes = 35000, libraries = c(16, 64, 256),
 \item{reps}{number of reps for each #genes/#libraries combination. Should be a scalar.}
 }
 \value{
-a list if pertinent scenario information
+path to simulated objects
 }
 \description{
 create simulation scenarios

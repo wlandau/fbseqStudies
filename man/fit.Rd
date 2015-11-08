@@ -6,7 +6,7 @@
 \usage{
 fit(path, benchmarks = c("edgeR", "Niemi"), depths = c("fullybayes",
   "ebayes", "ebayes_from_truth"), priors = c("normal", alternate_priors()),
-  ncores = 1)
+  ncores = 1, debug = F)
 }
 \arguments{
 \item{path}{to directory to save simulations and results}
@@ -18,9 +18,11 @@ fit(path, benchmarks = c("edgeR", "Niemi"), depths = c("fullybayes",
 \item{priors}{priors on the betas}
 
 \item{ncores}{number of cores for CPU-parallel methods}
+
+\item{debug}{debug mode, TRUE/FALSE}
 }
 \value{
-a list if pertinent scenario information
+path to simulated objects
 }
 \description{
 run benchmark methods on simulation objects

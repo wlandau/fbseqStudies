@@ -5,15 +5,23 @@
 #' @param sim a list, the current simulation object
 #' @param depth one of "ebayes", "ebayes_from_truth", or "fullybayes"
 #' @param prior prior distribution on betas
-fit_fbseq = function(sim, depth = "fullybayes", prior = "normal"){
+#' @param debug debug mode, TRUE/FALSE
+fit_fbseq = function(sim, depth = "fullybayes", prior = "normal", debug = F){
   logs = mysink()
   t = my.proc.time()
 
   s = sim$scenario
-  configs = Configs(priors = prior, burnin = 1e5, thin = 1e1)
-  starts = Starts()
+  configs = Configs(priors = prior, iterations = 1e3, burnin = 1e5, thin = 1e2)
+  if(debug){
+    configs@iterations = 10
+    configs@burnin = 0
+    configs@thin = 0
+    configs@ess = 2
+    configs@max_attempts = 2
+  }
 
   hyper = c("nu", "omegaSquared", "sigmaSquared", "tau", "theta")
+  starts = Starts()
 
   if(depth == "ebayes"){
     ch = sim$analyses[[paste0("fullybayes_", prior)]]$chain
