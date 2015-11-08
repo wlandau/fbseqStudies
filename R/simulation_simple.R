@@ -9,6 +9,7 @@ simulation_simple = function(genes = 3.5e4, libraries = 16){
   paschold = get("paschold")
 
   ns = 0:(libraries -1) %% ncol(paschold@counts) + 1
+  group = (ns + (ns %% 2)) / 2
   design = paschold@design[ns,]
 
   beta = matrix(0, nrow = genes, ncol = ncol(design))
@@ -41,6 +42,7 @@ simulation_simple = function(genes = 3.5e4, libraries = 16){
 
   supplement = list(
     simulation = "simple",
+    group = group,
     truth = truth
   )
 

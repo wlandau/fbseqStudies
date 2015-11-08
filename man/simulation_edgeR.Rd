@@ -4,14 +4,14 @@
 \alias{simulation_edgeR}
 \title{Function \code{simulation_edgeR}}
 \usage{
-simulation_edgeR(fit, genes = 35000, libraries = 16)
+simulation_edgeR(genes = 35000, libraries = 16, fit = NULL)
 }
 \arguments{
-\item{fit}{output object from fit_edgeR}
-
 \item{genes}{number of genes}
 
 \item{libraries}{number of libraries}
+
+\item{fit}{output object from fit_edgeR}
 }
 \value{
 a list if pertinent scenario information

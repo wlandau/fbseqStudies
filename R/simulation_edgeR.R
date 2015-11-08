@@ -2,18 +2,20 @@
 #' @description simulates a scenario using edgeR
 #' @export
 #' @return a list if pertinent scenario information
-#' @param fit output object from fit_edgeR
 #' @param genes number of genes
 #' @param libraries number of libraries
-simulation_edgeR = function(fit, genes = 3.5e4, libraries = 16){
+#' @param fit output object from fit_edgeR
+simulation_edgeR = function(genes = 3.5e4, libraries = 16, fit = NULL){
   data(paschold)
   paschold = get("paschold")
+  if(is.null(fit)) fit = fit_edgeR(paschold@counts, paschold@design)
 
   beta = fit$fit$coef
   beta[,1] = beta[,1] + rowMeans(fit$fit$offset)
 
   gs = sample.int(nrow(paschold@counts), genes, replace = T)
   ns = 0:(libraries -1) %% ncol(paschold@counts) + 1
+  group = (ns + (ns %% 2)) / 2
 
   beta = beta[gs,]
   disp = fit$fit$dispersion[gs]
@@ -41,6 +43,7 @@ simulation_edgeR = function(fit, genes = 3.5e4, libraries = 16){
 
   supplement = list(
     simulation = "edgeR",
+    group = group,
     truth = truth
   )
 
