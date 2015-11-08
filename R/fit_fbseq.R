@@ -16,8 +16,8 @@ fit_fbseq = function(sim, depth = "fullybayes", prior = "normal", debug = F){
     configs@iterations = 10
     configs@burnin = 0
     configs@thin = 0
-    configs@ess = 2
-    configs@max_attempts = 2
+    configs@ess = 0
+    configs@max_attempts = 1
   }
 
   hyper = c("nu", "omegaSquared", "sigmaSquared", "tau", "theta")
@@ -43,6 +43,7 @@ fit_fbseq = function(sim, depth = "fullybayes", prior = "normal", debug = F){
   }
  
   chain = Chain(s, configs, starts)
+  starts = Starts(chain)
   chain = fbseq(chain)
 
   beta = matrix(chain@betaPostMean, nrow = chain@G)
@@ -53,5 +54,5 @@ fit_fbseq = function(sim, depth = "fullybayes", prior = "normal", debug = F){
   rownames(est) = rownames(s@counts)
 
   unsink(logs)
-  list(analysis = paste0(depth, "_", prior), estimates = est, chain = chain, runtime = my.proc.time() - t)
+  list(analysis = paste0(depth, "_", prior), estimates = est, chain = chain, runtime = my.proc.time() - t, starts = starts)
 }
