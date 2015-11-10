@@ -28,3 +28,15 @@ Suggests:
     knitr
 VignetteBuilder: knitr
 License: GPL (>= 3)
+Collate:
+    'fit.R'
+    'fit_Niemi.R'
+    'fit_edgeR.R'
+    'fit_fbseq.R'
+    'namespace.R'
+    'simulation_edgeR.R'
+    'simulation_model.R'
+    'simulation_paschold.R'
+    'simulation_simple.R'
+    'simulations.R'
+    'utils.R'

@@ -1,3 +1,6 @@
+#' @include simulation_edgeR.R simulation_model.R simulation_paschold.R simulation_simple.R
+NULL
+
 #' @title Function \code{simulations}
 #' @description create simulation scenarios
 #' @export
@@ -10,9 +13,8 @@ simulations = function(path = newdir(), genes = 3.5e4, libraries = c(16, 64, 256
   path = newdir(path)
   data(paschold)
   paschold = get("paschold")
-  paschold@supplement$simulation = "paschold"
-  saveRDS(list(scenario = paschold, analyses = list()), paste0(path, "paschold.rds"))
   fit = fit_edgeR(paschold@counts, paschold@design)
+  saveRDS(simulation_paschold(), paste0(path, "paschold.rds"))
   for(g in genes) for(n in libraries) for(r in 1:reps){
     saveRDS(simulation_edgeR(genes = g, libraries = n, fit = fit), paste0(path, "edgeR_", g, "_", n, "_", r, ".rds"))
     saveRDS(simulation_model(genes = g, libraries = n), paste0(path, "model_", g, "_", n, "_", r, ".rds"))
