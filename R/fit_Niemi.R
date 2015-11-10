@@ -61,6 +61,7 @@ single_gene_analysis = function(x, group, hyperparameters, model) {
   effectSizes = effect_sizes(chain)
 
   out = data.frame(
+    attempt = attempt,
     beta_1 = s["beta_1", "mean"],
     beta_2 = s["beta_2", "mean"],
     beta_3 = s["beta_3", "mean"],
