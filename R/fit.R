@@ -4,11 +4,11 @@
 #' @return path to simulated objects
 #' @param path to directory to save simulations and results
 #' @param benchmarks benchmark methods to run
-#' @param depths "fullybayes", "ebayes", "ebayes_from_truth" or a vector with a combination. "fullybayes" must come before "ebayes".
+#' @param fbseq_methods "fullybayes", "ebayes", "ebayes_from_truth" or a vector with a combination. "fullybayes" must come before "ebayes".
 #' @param priors priors on the betas
 #' @param ncores number of cores for CPU-parallel methods
 #' @param debug debug mode, TRUE/FALSE
-fit = function(path, benchmarks = c("edgeR", "Niemi"), depths = c("fullybayes", "ebayes", "ebayes_from_truth"), 
+fit = function(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes", "ebayes", "ebayes_from_truth"), 
   priors = c("normal", alternate_priors()), ncores = 1, debug = F){
 
   path = newdir(path)
@@ -30,14 +30,14 @@ fit = function(path, benchmarks = c("edgeR", "Niemi"), depths = c("fullybayes", 
     }
   }
 
-  for(prior in priors) for(depth in depths) for(f in files){
+  for(prior in priors) for(fbseq_method in fbseq_methods) for(f in files){
     p = paste0(path, f)
     o = readRDS(paste0(path, f))
     s = o$scenario
-    method = paste0(depth, "_", prior)
+    method = paste0(fbseq_method, "_", prior)
 
     if(is.null(o$analyses[[method]])){
-      o$analyses[[method]] = fit_fbseq(o, depth, prior, debug)
+      o$analyses[[method]] = fit_fbseq(o, fbseq_method, prior, debug)
       saveRDS(o, p)
     }
   }

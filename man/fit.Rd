@@ -4,7 +4,7 @@
 \alias{fit}
 \title{Function \code{fit}}
 \usage{
-fit(path, benchmarks = c("edgeR", "Niemi"), depths = c("fullybayes",
+fit(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes",
   "ebayes", "ebayes_from_truth"), priors = c("normal", alternate_priors()),
   ncores = 1, debug = F)
 }
@@ -13,7 +13,7 @@ fit(path, benchmarks = c("edgeR", "Niemi"), depths = c("fullybayes",
 
 \item{benchmarks}{benchmark methods to run}
 
-\item{depths}{"fullybayes", "ebayes", "ebayes_from_truth" or a vector with a combination. "fullybayes" must come before "ebayes".}
+\item{fbseq_methods}{"fullybayes", "ebayes", "ebayes_from_truth" or a vector with a combination. "fullybayes" must come before "ebayes".}
 
 \item{priors}{priors on the betas}
 
