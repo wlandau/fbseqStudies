@@ -31,8 +31,18 @@ simulation_simple = function(genes = 3.5e4, libraries = 16){
   disp = 0.01
 
   counts = matrix(rnbinom(n = prod(dim(lambda)), mu = exp(lambda), size = 1/disp), nrow = genes)
+
+  libnames = colnames(paschold@counts)
+  libnames = gsub("B73xMo17_Mo17xB73", "hybrids", libnames)
+  libnames = gsub("B73xMo17", "hybrid1", libnames)
+  libnames = gsub("Mo17xB73", "hybrid2", libnames)
+  libnames = gsub("B73", "parent1", libnames)
+  libnames = gsub("Mo17", "parent2", libnames)
+  libnames = gsub("_.*", "", libnames)
+  libnames = paste0(libnames[ns], "_", 1:libraries)
+
   rownames(counts) = paste0("gene_", 1:genes)
-  colnames(counts) = paste0("library_", 1:libraries)
+  colnames(counts) = rownames(design) = libnames
 
   truth = list(
     beta = beta,

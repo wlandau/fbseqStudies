@@ -19,7 +19,6 @@ fit_edgeR = function(counts, design, group = NULL, ncores = 1){
   fit = glmFit(y = dge, design = design)
   beta = fit$coef
   beta[,1] = beta[,1] + rowMeans(fit$offset)
-  normfactors = dge$samples$norm.factors
 
   contr = beta %*% do.call(cbind, paschold@contrasts)
   prob0 = 1 - sapply(paschold@contrasts, function(x){glmLRT(fit, contrast = x)$table$PValue})
@@ -37,5 +36,9 @@ fit_edgeR = function(counts, design, group = NULL, ncores = 1){
   colnames(effectSizes) = paste0("effect_", ns)
 
   unsink(logs)
-  list(analysis = "edgeR", estimates = cbind(beta, prob, effectSizes), dge = dge, fit = fit, runtime = my.proc.time() - t)
+  list(analysis = "edgeR", 
+       estimates = cbind(beta, prob, effectSizes), 
+       dispersion = fit$dispersion,
+       norm_factors = dge$samples$norm.factors,
+       runtime = my.proc.time() - t)
 }

@@ -10,16 +10,14 @@ simulation_edgeR = function(genes = 3.5e4, libraries = 16, fit = NULL){
   paschold = get("paschold")
   if(is.null(fit)) fit = fit_edgeR(paschold@counts, paschold@design)
 
-  beta = fit$fit$coef
-  beta[,1] = beta[,1] + rowMeans(fit$fit$offset)
-
+  beta = fit$estimates[,grep("beta_", colnames(fit$estimates))]
   gs = sample.int(nrow(paschold@counts), genes, replace = T)
   ns = 0:(libraries -1) %% ncol(paschold@counts) + 1
   group = (ns + (ns %% 2)) / 2
 
   beta = beta[gs,]
-  disp = fit$fit$dispersion[gs]
-  norm_factors = fit$dge$samples$norm.factors[ns]
+  disp = fit$dispersion[gs]
+  norm_factors = fit$norm_factors[ns]
 
   norm_mat = matrix(rep(norm_factors, each = genes), nrow = genes)
   disp_mat = matrix(rep(disp, times = libraries), nrow = genes)
@@ -28,8 +26,18 @@ simulation_edgeR = function(genes = 3.5e4, libraries = 16, fit = NULL){
   lambda = t(design %*% t(beta)) + norm_mat
 
   counts = matrix(rnbinom(n = prod(dim(lambda)), mu = exp(lambda), size = 1/disp_mat), nrow = genes)
-  rownames(counts) = rownames(paschold@counts)[gs]
-  colnames(counts) = rownames(design)
+
+  libnames = colnames(paschold@counts)
+  libnames = gsub("B73xMo17_Mo17xB73", "hybrids", libnames)
+  libnames = gsub("B73xMo17", "hybrid1", libnames)
+  libnames = gsub("Mo17xB73", "hybrid2", libnames)
+  libnames = gsub("B73", "parent1", libnames)
+  libnames = gsub("Mo17", "parent2", libnames)
+  libnames = gsub("_.*", "", libnames)
+  libnames = paste0(libnames[ns], "_", 1:libraries)
+
+  rownames(counts) = paste0("gene_", 1:genes)
+  colnames(counts) = rownames(design) = libnames
 
   truth = list(
     fit = fit, 

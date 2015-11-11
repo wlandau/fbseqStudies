@@ -6,23 +6,22 @@
 #' @param design design matrix
 get_hyperparameters = function(counts, design) {
   fit = fit_edgeR(counts, design)
-  beta = fit$fit$coef
-  beta[,1] = beta[,1] + rowMeans(fit$fit$offset)
-  normfactors = fit$dge$samples$norm.factors
+  beta = fit$estimates[,grep("beta_", colnames(fit$estimates))]
+  norm_factors = fit$norm_factors
 
   list(eta_1 = mean(beta[,1]),
         eta_2 = mean(beta[,2]),
         eta_3 = mean(beta[,3]),
         eta_4 = mean(beta[,4]),
         eta_5 = mean(beta[,5]),
-        eta_psi = mean(log(normfactors)),
+        eta_psi = mean(log(norm_factors)),
         sigma_1 = sd(beta[,1]),
         sigma_2 = sd(beta[,2])/sqrt(2), # Fix sd for Laplace priors
         sigma_3 = sd(beta[,3])/sqrt(2), # Fix sd for Laplace priors
         sigma_4 = sd(beta[,4])/sqrt(2), # Fix sd for Laplace priors
         sigma_5 = sd(beta[,5])/sqrt(2), # Fix sd for Laplace priors
-        sigma_psi = sd(log(normfactors)),
-        c = log(normfactors))
+        sigma_psi = sd(log(norm_factors)),
+        c = log(norm_factors))
 }
 
 #' @title Function \code{single_gene_analysis}
@@ -38,6 +37,7 @@ single_gene_analysis = function(x, group, hyperparameters, model) {
   attempt = 1
   pars = c(paste0("beta_", 1:5), "psi", "hph", "lph", "hph1", "lph1", "hph2", "lph2")
 
+  logs = mysink()
   while (diverge) {
     print(paste("Attempt", attempt))
     r = sampling(model, 
@@ -52,7 +52,8 @@ single_gene_analysis = function(x, group, hyperparameters, model) {
     diverge = any(s[,"n_eff"] < 1000)
     attempt = attempt + 1
   }
-  
+  unsink(logs)  
+
   data(paschold)
   chain = Chain(get("paschold"))
   chain@betaPostMean = s[paste0("beta_", 1:5), "mean"]
@@ -79,7 +80,6 @@ single_gene_analysis = function(x, group, hyperparameters, model) {
     effect_low_parent_hybrid1  = effectSizes[4],
     effect_high_parent_hybrid2 = effectSizes[5],
     effect_low_parent_hybrid2  = effectSizes[6])
-  colnames(out) = gsub("_parent", "-parent", colnames(out))
   out
 }
 
@@ -168,15 +168,15 @@ fit_Niemi = function(counts, design, group, ncores = 1){
     hph2 <- (2*beta_2  - beta_4 > 0)  && ( 2*beta_3 - beta_4 > 0);
     lph2 <- (-2*beta_2 + beta_4 > 0)  && (-2*beta_3 + beta_4 > 0);
   }")
+  unsink(logs)
 
-  print("About to call single_gene_analysis().")
   registerDoMC(cores = ncores)
   out = adply(as.matrix(counts), 1, 
     function(x){single_gene_analysis(x, group, hyperparameters, model)},
                      .parallel = T,
                      .paropts = list(.export=c("single_gene_analysis", "group", "hyperparameters", "model"), 
                      .packages='rstan'))
+  out = out[,colnames(out) != "X"]
   registerDoSEQ()
-  unsink(logs)
   list(analysis = "Niemi", estimates = out, runtime = my.proc.time() - t)
 }
