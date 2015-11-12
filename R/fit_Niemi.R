@@ -176,7 +176,8 @@ fit_Niemi = function(counts, design, group, ncores = 1){
                      .parallel = T,
                      .paropts = list(.export=c("single_gene_analysis", "group", "hyperparameters", "model"), 
                      .packages='rstan'))
-  out = out[,colnames(out) != "X"]
+  attempts = out$attempt
+  out = out[,colnames(out) != "X1" & colnames(out) != "attempt"]
   registerDoSEQ()
-  list(analysis = "Niemi", estimates = out, runtime = my.proc.time() - t)
+  list(analysis = "Niemi", attempts = attempts, estimates = out, runtime = my.proc.time() - t)
 }
