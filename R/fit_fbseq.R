@@ -50,7 +50,7 @@ fit_fbseq = function(sim, depth = "fullybayes", prior = "normal", debug = F){
   colnames(beta) = paste0("beta_", 1:5)
   eff = effect_sizes(chain)
   prob = probs(chain)
-  est = cbind(beta, eff, prob)
+  est = cbind(beta, prob, eff)
   rownames(est) = rownames(s@counts)
 
   unsink(logs)
