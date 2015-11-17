@@ -11,7 +11,7 @@ fit_fbseq = function(sim, depth = "fullybayes", prior = "normal", debug = F){
   t = my.proc.time()
 
   s = sim$scenario
-  configs = Configs(priors = prior, iterations = 1e3, burnin = 1e5, thin = 1e2)
+  configs = Configs(priors = prior)
   if(debug){
     configs@iterations = 10
     configs@burnin = 0
@@ -43,6 +43,7 @@ fit_fbseq = function(sim, depth = "fullybayes", prior = "normal", debug = F){
   }
  
   chain = Chain(s, configs, starts)
+  configs = Configs(chain)
   starts = Starts(chain)
   chain = fbseq(chain)
 
@@ -54,5 +55,6 @@ fit_fbseq = function(sim, depth = "fullybayes", prior = "normal", debug = F){
   rownames(est) = rownames(s@counts)
 
   unsink(logs)
-  list(analysis = paste0(depth, "_", prior), estimates = est, chain = chain, runtime = my.proc.time() - t, starts = starts)
+  list(analysis = paste0(depth, "_", prior), estimates = est, chain = chain, 
+    runtime = my.proc.time() - t, configs = configs, starts = starts)
 }
