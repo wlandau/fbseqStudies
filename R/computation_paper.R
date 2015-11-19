@@ -1,7 +1,7 @@
 #' @include simulation_model.R
 NULL
 
-#' @title Function \code{simulations}
+#' @title Function \code{computation_paper}
 #' @description workflow of the computation paper
 #' @export
 #' @return path to simulated objects
@@ -14,8 +14,28 @@ computation_paper = function(path = newdir(), genes = c(1024, 4096, 16384), libr
   for(g in genes) for(n in libraries) for(r in 1:reps)
     saveRDS(simulation_model(genes = g, libraries = n, priors = "normal"), paste0(path, "model_", g, "_", n, "_", r, ".rds"))
   fit(path, benchmarks = NULL,  fbseq_methods = "fullybayes", priors = "normal")  
-
-# runtime plots
-  
+  computation_paper_runtimes(path)
   path
+}
+
+#' @title Function \code{computation_paper_runtimes}
+#' @description plot runtimes for computation paper
+#' @export
+#' @return path to simulated objects
+#' @param path to directory to save simulations and results
+computation_paper_runtimes = function(path){
+  for(f in list.files(path)){
+    l = readRDS(paste0(path, f))
+    d = rbind(d, c(l$runtime/60, N = ch@N, G = ch@G, file = f))
+  }
+  d = as.data.frame(d)
+  pl = ggplot(d) + geom_line(aes(x = G, y = elapsed, group = file)) + 
+    facet_grid(~N) + 
+    xlab("\nNumber of genes") +
+    ylab("Elapsed time (minutes)\n") +
+    theme(panel.background = element_rect(fill='white'),
+               panel.border = element_rect(color="black", fill = NA),
+               panel.grid.major = element_line(color="lightgray"),
+               panel.grid.minor = element_blank())
+  ggsave(pl, file = "runtimes.pdf")
 }
