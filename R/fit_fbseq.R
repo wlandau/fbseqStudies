@@ -3,10 +3,10 @@
 #' @export
 #' @return information for a fitted model
 #' @param sim a list, the current simulation object
-#' @param depth one of "ebayes", "ebayesFromTruth", or "fullybayes"
+#' @param method one of "ebayes", "ebayesFromTruth", or "fullybayes"
 #' @param prior prior distribution on betas
 #' @param debug debug mode, TRUE/FALSE
-fit_fbseq = function(sim, depth = "fullybayes", prior = "normal", debug = F){
+fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F){
   logs = mysink()
   t = my.proc.time()
 
@@ -23,7 +23,7 @@ fit_fbseq = function(sim, depth = "fullybayes", prior = "normal", debug = F){
   hyper = c("nu", "omegaSquared", "sigmaSquared", "tau", "theta")
   starts = Starts()
 
-  if(depth == "ebayes"){
+  if(method == "ebayes"){
     ch = sim$analyses[[paste0("fullybayes_", prior)]]$chain
     for(p in hyper){
       slot(starts, p) = slot(ch, paste0(p, "PostMean"))
@@ -32,7 +32,7 @@ fit_fbseq = function(sim, depth = "fullybayes", prior = "normal", debug = F){
     }
   }
 
-  if(depth == "ebayesFromTruth"){
+  if(method == "ebayesFromTruth"){
     truth = s@supplement$truth
     if(!is(truth, "Starts")) return(NULL)
     for(p in hyper){
@@ -55,6 +55,6 @@ fit_fbseq = function(sim, depth = "fullybayes", prior = "normal", debug = F){
   rownames(est) = rownames(s@counts)
 
   unsink(logs)
-  list(analysis = paste0(depth, "_", prior), estimates = est, chain = chain, 
+  list(analysis = paste0(method, "_", prior), estimates = est, chain = chain, 
     runtime = my.proc.time() - t, configs = configs, starts = starts)
 }
