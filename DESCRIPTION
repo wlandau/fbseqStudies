@@ -36,6 +36,7 @@ Collate:
     'fit_edgeR.R'
     'fit_fbseq.R'
     'namespace.R'
+    'progress.R'
     'roc.R'
     'simulation_edgeR.R'
     'simulation_paschold.R'
