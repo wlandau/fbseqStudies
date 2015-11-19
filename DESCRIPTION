@@ -29,6 +29,8 @@ Suggests:
 VignetteBuilder: knitr
 License: GPL (>= 3)
 Collate:
+    'simulation_model.R'
+    'computation_paper.R'
     'fit.R'
     'fit_Niemi.R'
     'fit_edgeR.R'
@@ -36,7 +38,6 @@ Collate:
     'namespace.R'
     'roc.R'
     'simulation_edgeR.R'
-    'simulation_model.R'
     'simulation_paschold.R'
     'simulation_simple.R'
     'simulations.R'
