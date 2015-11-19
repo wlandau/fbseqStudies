@@ -6,7 +6,7 @@
 #' @param method one of "ebayes", "ebayesFromTruth", or "fullybayes"
 #' @param prior prior distribution on betas
 #' @param debug debug mode, TRUE/FALSE
-fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F){
+fit_fbseq = function(sim, method = "fullybayes", prior = "Laplace", debug = F){
   logs = mysink()
   t = my.proc.time()
 

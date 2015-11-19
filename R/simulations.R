@@ -10,7 +10,7 @@ NULL
 #' @param libraries number of libraries. Can be a vector.
 #' @param reps number of reps for each #genes/#libraries combination. Should be a scalar.
 #' @param paschold_too TRUE/FALSE, include Paschold data
-simulations = function(path = newdir(), genes = 3.5e4, libraries = c(16, 64), reps = 10, paschold_too = T){
+simulations = function(path = newdir(), genes = 3e4, libraries = c(16, 32), reps = 10, paschold_too = T){
   path = newdir(path)
   data(paschold)
   paschold = get("paschold")
