@@ -11,5 +11,5 @@ simulation_model = function(genes = 3.5e4, libraries = 16){
   ns = 0:(libraries -1) %% ncol(paschold@counts) + 1
   s@supplement$group = (ns + (ns %% 2)) / 2
   s@supplement$simulation = "model"
-  list(scenario = s, analyses = list())
+  list(scenario = s, analyses = list(), simulation = "model")
 }

@@ -64,5 +64,5 @@ simulation_edgeR = function(genes = 3.5e4, libraries = 16, fit = NULL){
     supplement = supplement
   )
 
-  list(scenario = scenario, analyses = list())
+  list(scenario = scenario, analyses = list(), simulation = "edgeR")
 }

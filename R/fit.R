@@ -8,8 +8,8 @@
 #' @param priors priors on the betas
 #' @param ncores number of cores for CPU-parallel methods
 #' @param debug debug mode, TRUE/FALSE
-fit = function(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes", "ebayes", "ebayes_from_truth"), 
-  priors = c("normal", alternate_priors()), ncores = 1, debug = F){
+fit = function(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes", "ebayes", "ebayesFromTruth"), 
+  priors = c(special_beta_priors(), "normal"), ncores = 1, debug = F){
 
   path = newdir(path)
   files = list.files(path)

@@ -8,5 +8,5 @@ simulation_paschold = function(){
   ns = 1:ncol(paschold@counts)
   paschold@supplement$group = (ns + (ns %% 2)) / 2
   paschold@supplement$simulation = "paschold"  
-  list(scenario = paschold, analyses = list())
+  list(scenario = paschold, analyses = list(), simulation = "paschold")
 }

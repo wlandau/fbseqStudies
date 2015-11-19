@@ -3,7 +3,7 @@
 #' @export
 #' @return information for a fitted model
 #' @param sim a list, the current simulation object
-#' @param depth one of "ebayes", "ebayes_from_truth", or "fullybayes"
+#' @param depth one of "ebayes", "ebayesFromTruth", or "fullybayes"
 #' @param prior prior distribution on betas
 #' @param debug debug mode, TRUE/FALSE
 fit_fbseq = function(sim, depth = "fullybayes", prior = "normal", debug = F){
@@ -32,7 +32,7 @@ fit_fbseq = function(sim, depth = "fullybayes", prior = "normal", debug = F){
     }
   }
 
-  if(depth == "ebayes_from_truth"){
+  if(depth == "ebayesFromTruth"){
     truth = s@supplement$truth
     if(!is(truth, "Starts")) return(NULL)
     for(p in hyper){

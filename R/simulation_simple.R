@@ -16,16 +16,11 @@ simulation_simple = function(genes = 3.5e4, libraries = 16){
   colnames(beta) = colnames(design)
   rownames(beta) = paste0("gene_", 1:genes)
   
-  beta[,1] = rnorm(genes, 5, 0.1)
-  beta[,2] = sample(c(0, -2, 2), genes, prob = c(0.6, 0.2, 0.2), replace = T)
-  beta[,3] = sample(c(0, -2, 2), genes, prob = c(0.6, 0.2, 0.2), replace = T)
-  beta[,4] = rnorm(genes, 0.1, 0.1)
-  beta[,5] = rnorm(genes, 0.1, 0.1)
-
-  beta = t(apply(beta, 1, function(x){
-    if(abs(sum(x[2:3])) == 2) x[2:3] = 0
-    x
-  }))
+  beta[,1] = rnorm(genes, 3, 1)
+  beta[,2] = sample(c(0, -0.25, 0.25), genes, prob = c(0.6, 0.2, 0.2), replace = T)
+  beta[,3] = sample(c(0, -0.25, 0.25), genes, prob = c(0.6, 0.2, 0.2), replace = T)
+  beta[,4] = sample(c(0, -0.25, 0.25), genes, prob = c(0.9, 0.05, 0.05), replace = T)
+  beta[,5] = rnorm(genes, 0, 1e-9)
 
   lambda = t(design %*% t(beta))
   disp = 0.01
@@ -65,5 +60,5 @@ simulation_simple = function(genes = 3.5e4, libraries = 16){
     supplement = supplement
   )
 
-  list(scenario = scenario, analyses = list())
+  list(scenario = scenario, analyses = list(), simulation = "simple")
 }

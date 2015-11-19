@@ -5,7 +5,7 @@
 \title{Function \code{fit}}
 \usage{
 fit(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes",
-  "ebayes", "ebayes_from_truth"), priors = c("normal", alternate_priors()),
+  "ebayes", "ebayesFromTruth"), priors = c(special_beta_priors(), "normal"),
   ncores = 1, debug = F)
 }
 \arguments{

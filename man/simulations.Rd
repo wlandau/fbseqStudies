@@ -4,8 +4,8 @@
 \alias{simulations}
 \title{Function \code{simulations}}
 \usage{
-simulations(path = newdir(), genes = 35000, libraries = c(16, 64, 256),
-  reps = 10)
+simulations(path = newdir(), genes = 35000, libraries = c(16, 64),
+  reps = 10, paschold_too = T)
 }
 \arguments{
 \item{path}{to directory to save simulations and results}
@@ -15,6 +15,8 @@ simulations(path = newdir(), genes = 35000, libraries = c(16, 64, 256),
 \item{libraries}{number of libraries. Can be a vector.}
 
 \item{reps}{number of reps for each #genes/#libraries combination. Should be a scalar.}
+
+\item{paschold_too}{TRUE/FALSE, include Paschold data}
 }
 \value{
 path to simulated objects
