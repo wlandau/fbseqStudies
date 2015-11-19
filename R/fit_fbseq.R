@@ -24,7 +24,7 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "Laplace", debug = F){
   starts = Starts()
 
   if(method == "ebayes"){
-    ch = sim$analyses[[paste0("fullybayes_", prior)]]$chain
+    ch = sim$analyses[[paste0("fullybayes+", prior)]]$chain
     for(p in hyper){
       slot(starts, p) = slot(ch, paste0(p, "PostMean"))
       configs@parameter_sets_return = setdiff(configs@parameter_sets_return, p)
@@ -55,6 +55,6 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "Laplace", debug = F){
   rownames(est) = rownames(s@counts)
 
   unsink(logs)
-  list(analysis = paste0(method, "_", prior), estimates = est, chain = chain, 
+  list(analysis = paste0(method, "+", prior), estimates = est, chain = chain, 
     runtime = my.proc.time() - t, configs = configs, starts = starts)
 }

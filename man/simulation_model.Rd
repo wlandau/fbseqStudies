@@ -4,12 +4,15 @@
 \alias{simulation_model}
 \title{Function \code{simulation_model}}
 \usage{
-simulation_model(genes = 35000, libraries = 16)
+simulation_model(genes = 35000, libraries = 16, priors = "Laplace")
 }
 \arguments{
 \item{genes}{number of genes}
 
 \item{libraries}{number of libraries}
+
+\item{priors}{character string, element of \code{special_beta_priors()} or another
+character string for normal}
 }
 \value{
 a list if pertinent scenario information
