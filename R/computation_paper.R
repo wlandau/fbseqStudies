@@ -26,10 +26,10 @@ computation_paper = function(path = newdir(), genes = c(1024, 4096, 16384), libr
 computation_paper_runtimes = function(path){
   for(f in list.files(path)){
     l = readRDS(paste0(path, f))
-    d = rbind(d, c(l$runtime/60, N = ch@N, G = ch@G, file = f))
+    d = rbind(d, c(l$runtime/60, N = ncol(l$scenario@counts), G = nrow(l$scenario@counts), file = f))
   }
   d = as.data.frame(d)
-  pl = ggplot(d) + geom_line(aes(x = G, y = elapsed, group = file)) + 
+  pl = ggplot(d) + geom_line(aes_string(x = "G", y = "elapsed", group = "file")) + 
     facet_grid(~N) + 
     xlab("\nNumber of genes") +
     ylab("Elapsed time (minutes)\n") +
@@ -37,5 +37,5 @@ computation_paper_runtimes = function(path){
                panel.border = element_rect(color="black", fill = NA),
                panel.grid.major = element_line(color="lightgray"),
                panel.grid.minor = element_blank())
-  ggsave(pl, file = "runtimes.pdf")
+  ggsave(filename = "runtimes.pdf", pl)
 }

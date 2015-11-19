@@ -6,6 +6,9 @@
 \usage{
 progress(path)
 }
+\arguments{
+\item{path}{path to simulated objects}
+}
 \value{
 path to simulated objects
 }

@@ -2,6 +2,7 @@
 #' @description check on progress of simulation study
 #' @export
 #' @return path to simulated objects
+#' @param path path to simulated objects
 progress = function(path){
   path = newdir(path)
   n = NULL
