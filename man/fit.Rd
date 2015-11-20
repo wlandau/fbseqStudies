@@ -6,7 +6,7 @@
 \usage{
 fit(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes",
   "ebayes", "ebayesFromTruth"), priors = special_beta_priors(), ncores = 1,
-  debug = F)
+  debug = F, configs = Configs())
 }
 \arguments{
 \item{path}{to directory to save simulations and results}
@@ -20,6 +20,8 @@ fit(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes",
 \item{ncores}{number of cores for CPU-parallel methods}
 
 \item{debug}{debug mode, TRUE/FALSE}
+
+\item{configs}{\code{Configs} object for \code{fbseq}}
 }
 \value{
 path to simulated objects

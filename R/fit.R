@@ -8,8 +8,9 @@
 #' @param priors priors on the betas
 #' @param ncores number of cores for CPU-parallel methods
 #' @param debug debug mode, TRUE/FALSE
+#' @param configs \code{Configs} object for \code{fbseq}
 fit = function(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes", "ebayes", "ebayesFromTruth"), 
-  priors = special_beta_priors(), ncores = 1, debug = F){
+  priors = special_beta_priors(), ncores = 1, debug = F, configs = Configs()){
 
   path = newdir(path)
   files = list.files(path)
@@ -34,10 +35,10 @@ fit = function(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullyb
     p = paste0(path, f)
     o = readRDS(paste0(path, f))
     s = o$scenario
-    method = paste0(fbseq_method, "_", prior)
+    method = paste0(fbseq_method, "+", prior)
 
     if(is.null(o$analyses[[method]])){
-      o$analyses[[method]] = fit_fbseq(o, fbseq_method, prior, debug)
+      o$analyses[[method]] = fit_fbseq(o, fbseq_method, prior, debug, configs = configs)
       saveRDS(o, p)
     }
   }

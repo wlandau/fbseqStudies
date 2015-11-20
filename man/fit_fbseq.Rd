@@ -4,7 +4,8 @@
 \alias{fit_fbseq}
 \title{Function \code{fit_fbseq}}
 \usage{
-fit_fbseq(sim, method = "fullybayes", prior = "Laplace", debug = F)
+fit_fbseq(sim, method = "fullybayes", prior = "Laplace", debug = F,
+  configs = Configs())
 }
 \arguments{
 \item{sim}{a list, the current simulation object}
@@ -14,6 +15,8 @@ fit_fbseq(sim, method = "fullybayes", prior = "Laplace", debug = F)
 \item{prior}{prior distribution on betas}
 
 \item{debug}{debug mode, TRUE/FALSE}
+
+\item{configs}{\code{Configs} object for \code{fbseq}}
 }
 \value{
 information for a fitted model

@@ -12,8 +12,9 @@ NULL
 computation_paper = function(path = newdir(), genes = c(1024, 4096, 16384), libraries = c(16, 32, 64), reps = 10){
   path = newdir(path)
   for(g in genes) for(n in libraries) for(r in 1:reps)
-    saveRDS(simulation_model(genes = g, libraries = n, priors = "normal"), paste0(path, "model_", g, "_", n, "_", r, ".rds"))
-  fit(path, benchmarks = NULL,  fbseq_methods = "fullybayes", priors = "normal")  
+    saveRDS(simulation_model(genes = g, libraries = n), paste0(path, "model_", g, "_", n, "_", r, ".rds"))
+  fit(path, benchmarks = NULL,  fbseq_methods = "fullybayes", priors = "normal", 
+    configs = Configs(max_attempts_diag = 0, max_attempts_ess = 0))  
   computation_paper_runtimes(path)
   path
 }

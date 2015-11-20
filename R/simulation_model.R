@@ -4,12 +4,10 @@
 #' @return a list if pertinent scenario information
 #' @param genes number of genes
 #' @param libraries number of libraries
-#' @param priors character string, element of \code{special_beta_priors()} or another 
-#' character string for normal
-simulation_model = function(genes = 3.5e4, libraries = 16, priors = "Laplace"){
+simulation_model = function(genes = 3.5e4, libraries = 16){
   data(paschold)
   paschold = get("paschold")
-  s = scenario_heterosis_model(genes, libraries, priors = priors)
+  s = scenario_heterosis_model(genes, libraries)
   ns = 0:(libraries -1) %% ncol(paschold@counts) + 1
   s@supplement$group = (ns + (ns %% 2)) / 2
   s@supplement$simulation = "model"

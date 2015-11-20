@@ -6,12 +6,13 @@
 #' @param method one of "ebayes", "ebayesFromTruth", or "fullybayes"
 #' @param prior prior distribution on betas
 #' @param debug debug mode, TRUE/FALSE
-fit_fbseq = function(sim, method = "fullybayes", prior = "Laplace", debug = F){
+#' @param configs \code{Configs} object for \code{fbseq}
+fit_fbseq = function(sim, method = "fullybayes", prior = "Laplace", debug = F, configs = Configs()){
   logs = mysink()
   t = my.proc.time()
 
   s = sim$scenario
-  configs = Configs(priors = prior)
+  configs@priors = prior
   if(debug){
     configs@iterations = 10
     configs@burnin = 0
