@@ -34,7 +34,8 @@ computation_paper_runtimes = function(path){
     facet_grid(~N) + 
     xlab("\nNumber of genes") +
     ylab("Elapsed time (minutes)\n") +
-    theme(panel.background = element_rect(fill='white'),
+    theme(legend.position="none",
+               panel.background = element_rect(fill='white'),
                panel.border = element_rect(color="black", fill = NA),
                panel.grid.major = element_line(color="lightgray"),
                panel.grid.minor = element_blank())
