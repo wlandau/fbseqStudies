@@ -7,7 +7,7 @@
 #' @param prior prior distribution on betas
 #' @param debug debug mode, TRUE/FALSE
 #' @param configs \code{Configs} object for \code{fbseq}
-fit_fbseq = function(sim, method = "fullybayes", prior = "Laplace", debug = F, configs = Configs()){
+fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, configs = Configs()){
   logs = mysink()
   t = my.proc.time()
 
@@ -18,7 +18,8 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "Laplace", debug = F, c
     configs@burnin = 0
     configs@thin = 0
     configs@ess = 0
-    configs@max_attempts = 1
+    configs@max_attempts_diag = 1
+    configs@max_attempts_ess = 0
   }
 
   hyper = c("nu", "omegaSquared", "sigmaSquared", "tau", "theta")

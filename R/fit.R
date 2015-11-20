@@ -10,7 +10,7 @@
 #' @param debug debug mode, TRUE/FALSE
 #' @param configs \code{Configs} object for \code{fbseq}
 fit = function(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes", "ebayes", "ebayesFromTruth"), 
-  priors = special_beta_priors(), ncores = 1, debug = F, configs = Configs()){
+  priors = c("normal", special_beta_priors()), ncores = 1, debug = F, configs = Configs()){
 
   path = newdir(path)
   files = list.files(path)
