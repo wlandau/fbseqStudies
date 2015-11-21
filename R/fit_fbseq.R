@@ -44,6 +44,7 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
     }
   }
  
+  if(sim$simulation != "paschold") starts@h = 0
   chain = Chain(s, configs, starts)
   configs = Configs(chain)
   starts = Starts(chain)

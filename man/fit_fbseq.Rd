@@ -4,7 +4,7 @@
 \alias{fit_fbseq}
 \title{Function \code{fit_fbseq}}
 \usage{
-fit_fbseq(sim, method = "fullybayes", prior = "Laplace", debug = F,
+fit_fbseq(sim, method = "fullybayes", prior = "normal", debug = F,
   configs = Configs())
 }
 \arguments{

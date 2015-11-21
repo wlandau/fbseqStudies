@@ -5,8 +5,8 @@
 \title{Function \code{fit}}
 \usage{
 fit(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes",
-  "ebayes", "ebayesFromTruth"), priors = special_beta_priors(), ncores = 1,
-  debug = F, configs = Configs())
+  "ebayes", "ebayesFromTruth"), priors = c("normal", special_beta_priors()),
+  ncores = 1, debug = F, configs = Configs())
 }
 \arguments{
 \item{path}{to directory to save simulations and results}
