@@ -2,7 +2,9 @@
 
 export(auc)
 export(computation_paper)
-export(computation_paper_runtimes)
+export(computation_paper_gelman)
+export(computation_paper_runtime_plots)
+export(computation_paper_runtime_table)
 export(default_logfiles)
 export(dir_name)
 export(fit)
