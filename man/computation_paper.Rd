@@ -4,8 +4,8 @@
 \alias{computation_paper}
 \title{Function \code{computation_paper}}
 \usage{
-computation_paper(path = newdir(), genes = c(1024, 4096, 16384),
-  libraries = c(16, 32, 64), reps = 10)
+computation_paper(path = newdir(), genes = c(1024, 8192, 65536),
+  libraries = c(16, 64, 256), reps = 5)
 }
 \arguments{
 \item{path}{to directory to save simulations and results}

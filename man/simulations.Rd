@@ -5,7 +5,7 @@
 \title{Function \code{simulations}}
 \usage{
 simulations(path = newdir(), genes = 30000, libraries = c(16, 32),
-  reps = 10, paschold_too = T)
+  reps = 5, paschold_too = T)
 }
 \arguments{
 \item{path}{to directory to save simulations and results}

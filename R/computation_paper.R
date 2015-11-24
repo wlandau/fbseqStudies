@@ -9,12 +9,12 @@ NULL
 #' @param genes number of genes. Can be a vector.
 #' @param libraries number of libraries. Can be a vector.
 #' @param reps number of reps for each #genes/#libraries combination. Should be a scalar.
-computation_paper = function(path = newdir(), genes = c(1024, 4096, 16384), libraries = c(16, 32, 64), reps = 10){
+computation_paper = function(path = newdir(), genes = c(1024, 8192, 65536), libraries = c(16, 64, 256), reps = 5){
   path = newdir(path)
   for(g in genes) for(n in libraries) for(r in 1:reps)
     saveRDS(simulation_model(genes = g, libraries = n), paste0(path, "model_", g, "_", n, "_", r, ".rds"))
   fit(path, benchmarks = NULL,  fbseq_methods = "fullybayes", priors = "normal", 
-    configs = Configs(burnin = 5e4, thin = 50, max_attempts_diag = 1, max_attempts_ess = 0))  
+    configs = Configs(burnin = 4e4, thin = 40, iterations = 4e3, max_attempts_diag = 1, max_attempts_ess = 0))  
   computation_paper_gelman(path)
   computation_paper_runtime_plots(path)
   computation_paper_runtime_table(path)
