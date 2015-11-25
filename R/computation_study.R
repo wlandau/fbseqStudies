@@ -1,32 +1,32 @@
 #' @include simulation_model.R
 NULL
 
-#' @title Function \code{computation_paper}
-#' @description workflow of the computation paper
+#' @title Function \code{computation_study}
+#' @description workflow of the computation study paper
 #' @export
 #' @return path to simulated objects
 #' @param path to directory to save simulations and results
 #' @param genes number of genes. Can be a vector.
 #' @param libraries number of libraries. Can be a vector.
 #' @param reps number of reps for each #genes/#libraries combination. Should be a scalar.
-computation_paper = function(path = newdir(), genes = c(1024, 8192, 65536), libraries = c(16, 64, 256), reps = 5){
+computation_study = function(path = newdir(), genes = c(1024, 8192, 65536), libraries = c(16, 64, 256), reps = 5){
   path = newdir(path)
   for(g in genes) for(n in libraries) for(r in 1:reps)
     saveRDS(simulation_model(genes = g, libraries = n), paste0(path, "model_", g, "_", n, "_", r, ".rds"))
   fit(path, benchmarks = NULL,  fbseq_methods = "fullybayes", priors = "normal", 
     configs = Configs(burnin = 4e4, thin = 40, iterations = 4e3, max_attempts_diag = 1, max_attempts_ess = 0))  
-  computation_paper_gelman(path)
-  computation_paper_runtime_plots(path)
-  computation_paper_runtime_table(path)
+  computation_study_gelman(path)
+  computation_study_runtime_plots(path)
+  computation_study_runtime_table(path)
   path
 }
 
-#' @title Function \code{computation_paper_gelman}
+#' @title Function \code{computation_study_gelman}
 #' @description list of gelman factors
 #' @export
 #' @return path to simulated objects
 #' @param path to directory to save simulations and results
-computation_paper_gelman = function(path){
+computation_study_gelman = function(path){
   path = newdir(path)
   d = list()
   for(f in list.files(path)){
@@ -40,12 +40,12 @@ computation_paper_gelman = function(path){
   saveRDS(d, "gelman.rds")
 }
 
-#' @title Function \code{computation_paper_runtime_plots}
+#' @title Function \code{computation_study_runtime_plots}
 #' @description plot runtimes for computation paper
 #' @export
 #' @return path to simulated objects
 #' @param path to directory to save simulations and results
-computation_paper_runtime_plots = function(path){
+computation_study_runtime_plots = function(path){
   path = newdir(path)
   d = NULL
   for(f in list.files(path)){
@@ -85,12 +85,12 @@ computation_paper_runtime_plots = function(path){
   ggsave(filename = "runtimes2.pdf", pl)
 }
 
-#' @title Function \code{computation_paper_runtime_table}
+#' @title Function \code{computation_study_runtime_table}
 #' @description table of runtimes for computation paper
 #' @export
 #' @return path to simulated objects
 #' @param path to directory to save simulations and results
-computation_paper_runtime_table = function(path){
+computation_study_runtime_table = function(path){
   path = newdir(path)
   d = NULL
   for(f in list.files(path)){

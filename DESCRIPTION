@@ -29,8 +29,10 @@ Suggests:
 VignetteBuilder: knitr
 License: GPL (>= 3)
 Collate:
+    'case_study.R'
+    'comparison_study.R'
     'simulation_model.R'
-    'computation_paper.R'
+    'computation_study.R'
     'fit.R'
     'fit_Niemi.R'
     'fit_edgeR.R'
