@@ -9,7 +9,7 @@ NULL
 #' @param genes number of genes. Can be a vector.
 #' @param libraries number of libraries. Can be a vector.
 #' @param reps number of reps for each #genes/#libraries combination. Should be a scalar.
-computation_study = function(path = newdir(), genes = c(8192, 32768), libraries = c(16, 64), reps = 5){
+computation_study = function(path = newdir(), genes = c(8192, 16384, 32768), libraries = c(16, 32, 64), reps = 5){
   path = newdir(path)
   for(g in genes) for(n in libraries) for(r in 1:reps)
     saveRDS(simulation_model(genes = g, libraries = n), paste0(path, "model_", g, "_", n, "_", r, ".rds"))
