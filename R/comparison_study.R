@@ -5,6 +5,6 @@
 #' @param path to directory to save simulations and results
 comparison_study = function(path = newdir()){
   path = newdir(path)
-#  simulations(path)
+  simulations(path)
   fit(path, fbseq_methods = "fullybayes")
 }

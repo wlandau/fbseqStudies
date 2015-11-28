@@ -4,8 +4,8 @@
 \alias{computation_study}
 \title{Function \code{computation_study}}
 \usage{
-computation_study(path = newdir(), genes = c(1024, 8192, 65536),
-  libraries = c(16, 64, 256), reps = 5)
+computation_study(path = newdir(), genes = c(8192, 16384, 32768),
+  libraries = c(16, 32, 64), reps = 5)
 }
 \arguments{
 \item{path}{to directory to save simulations and results}

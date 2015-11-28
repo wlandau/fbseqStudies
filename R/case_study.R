@@ -5,6 +5,6 @@
 #' @param path to directory to save simulations and results
 case_study = function(path = newdir()){
   path = newdir(path)
-#  simulations(path)
+  simulations(path)
   fit(path, priors = "normal")
 }

@@ -15,11 +15,11 @@ simulations = function(path = newdir(), genes = 3e4, libraries = c(16, 32), reps
   data(paschold)
   paschold = get("paschold")
   fit = fit_edgeR(paschold@counts, paschold@design)
-  if(paschold_too) saveRDS(simulation_paschold(), paste0(path, "paschold_39656_16_1.rds"))
-  for(g in genes) for(n in libraries) for(r in 1:reps){
-    saveRDS(simulation_edgeR(genes = g, libraries = n, fit = fit), paste0(path, "edgeR_", g, "_", n, "_", r, ".rds"))
-    saveRDS(simulation_model(genes = g, libraries = n), paste0(path, "model_", g, "_", n, "_", r, ".rds"))
-    saveRDS(simulation_simple(genes = g, libraries = n), paste0(path, "simple_", g, "_", n, "_", r, ".rds"))
+  if(paschold_too) if(!file.exists(f <- paste0(path, "paschold_39656_16_1.rds"))) saveRDS(simulation_paschold(), f)
+  for(g in genes) for(n in libraries) for(r in 1:reps) {
+    if(!file.exists(f <- paste0(path, "edgeR_", g, "_", n, "_", r, ".rds"))) saveRDS(simulation_edgeR(genes = g, libraries = n, fit = fit), f)
+    if(!file.exists(f <- paste0(path, "model_", g, "_", n, "_", r, ".rds"))) saveRDS(simulation_model(genes = g, libraries = n), f)
+    if(!file.exists(f <- paste0(path, "simple_", g, "_", n, "_", r, ".rds"))) saveRDS(simulation_simple(genes = g, libraries = n), f)
   }
   path
 }
