@@ -4,10 +4,19 @@
 \alias{case_study}
 \title{Function \code{case_study}}
 \usage{
-case_study(path = newdir())
+case_study(path = newdir(), genes = 30000, libraries = c(16, 32),
+  reps = 5, paschold_too = T)
 }
 \arguments{
 \item{path}{to directory to save simulations and results}
+
+\item{genes}{number of genes. Can be a vector.}
+
+\item{libraries}{number of libraries. Can be a vector.}
+
+\item{reps}{number of reps for each #genes/#libraries combination. Should be a scalar.}
+
+\item{paschold_too}{TRUE/FALSE, include Paschold data}
 }
 \value{
 path to simulated objects
