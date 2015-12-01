@@ -22,7 +22,7 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
     configs@max_attempts_ess = 0
   }
 
-  hyper = c("nu", "omegaSquared", "sigmaSquared", "tau", "theta")
+  hyper = c("nu", "sigmaSquared", "tau", "theta")
   starts = Starts()
 
   if(method == "ebayes"){
