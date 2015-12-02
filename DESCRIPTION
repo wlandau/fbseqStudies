@@ -22,7 +22,8 @@ Imports:
     pracma,
     reshape2,
     rstan,
-    snowfall
+    snowfall,
+    xtable
 Suggests:
     fbseqCUDA,
     knitr

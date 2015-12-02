@@ -65,7 +65,7 @@ computation_study_runtime_plots = function(path){
     xlab("\nNumber of genes") +
     ylab("Elapsed time (minutes)\n") +
     theme(legend.position="none",
-               panel.background = element_rect(fill='white'),
+               panel.backgsignif = element_rect(fill='white'),
                panel.border = element_rect(color="black", fill = NA),
                panel.grid.major = element_line(color="lightgray"),
                panel.grid.minor = element_blank())
@@ -78,7 +78,7 @@ computation_study_runtime_plots = function(path){
     xlab("\nNumber of libraries") +
     ylab("Elapsed time (minutes)\n") +
     theme(legend.position="none",
-               panel.background = element_rect(fill='white'),
+               panel.backgsignif = element_rect(fill='white'),
                panel.border = element_rect(color="black", fill = NA),
                panel.grid.major = element_line(color="lightgray"),
                panel.grid.minor = element_blank())
@@ -92,23 +92,39 @@ computation_study_runtime_plots = function(path){
 #' @param path to directory to save simulations and results
 computation_study_runtime_table = function(path){
   path = newdir(path)
-  d = NULL
+  l = list()
+  e = list()
+  hyper = "theta|sigmaSquared|nu|tau"
+
   for(f in list.files(path)){
     print(f)
-    l = readRDS(paste0(path, f))
-    d = rbind(d, c(l$analyses[[1]]$runtime/60, N = ncol(l$scenario@counts), G = nrow(l$scenario@counts), file = f))
+    r = readRDS(paste0(path, f))
+    flat = flatten(r$analyses[[1]]$chain)
+    flat = flat[,grep(hyper, colnames(flat))]
+    ess = effectiveSize(flat)
+    l[[f]] = r$analyses[[1]]$runtime
+    e[[f]] = ess
   }
-  d = as.data.frame(d)
-  for(n in c("elapsed", "G", "N"))
-    d[[n]] = as.numeric(as.character(d[[n]]))
-  d2 = ddply(d, c("N", "G"), function(df){
-    min = mean(df$elapsed)
-    sec = (min - floor(min)) * 60
-    data.frame(N = df$N[1], G = df$G[1], min = floor(min), sec = round(sec))
+
+  alltimes = do.call("rbind", l)
+  alless = do.call("rbind", e)
+  miness = apply(alless, 1, min)
+  medianess = apply(alless, 1, median)
+
+  meta = do.call("rbind", strsplit(rownames(alltimes), split = "_|\\."))
+  G = as.numeric(meta[,2])
+  N = as.numeric(meta[,3])
+  rep = as.numeric(meta[,4])
+
+  d = data.frame(G = as.integer(G), N = as.integer(N), rep = rep, minutes = signif(alltimes[,"elapsed"]/60, 3), min_ess = signif(miness, 3), median_ess =  signif(medianess, 3))
+  avg = ddply(d, c("G", "N"), function(x){
+    data.frame(G = x$G[1], N = x$N[1], total_minutes = signif(mean(x$minutes), 3), seconds_per_min_ess = signif(mean(60*x$minutes/x$min_ess), 3), seconds_per_median_ess = signif(mean(60*x$minutes/x$median_ess), 3))
   })
-  write.table(d2, row.names = F, file = "mean_runtimes.txt")
-  d3 = ddply(d, c("N", "G"), function(df){
-    data.frame(N = df$N[1], G = df$G[1], sd_runtime = sd(df$elapsed))
+
+  sds = ddply(d, c("G", "N"), function(x){
+    data.frame(G = x$G[1], N = x$N[1], total_minutes = signif(sd(x$minutes), 3), seconds_per_min_ess = signif(sd(60*x$minutes/x$min_ess), 3), seconds_per_median_ess = signif(sd(60*x$minutes/x$median_ess), 3))
   })
-  write.table(d3, row.names = F, file = "sd_runtimes.txt")
+
+  write.table(print(xtable(avg), include.rownames = F), row.names = F, file = "mean_runtimes.txt")
+  write.table(print(xtable(sds), include.rownames = F), row.names = F, file = "sd_runtimes.txt")
 }

@@ -14,4 +14,5 @@
 #' @import methods
 #' @import parallel
 #' @import snowfall
+#' @import xtable
 NULL
