@@ -9,6 +9,6 @@
 #' @param paschold_too TRUE/FALSE, include Paschold data
 case_study = function(path = newdir(), genes = 3e4, libraries = c(16, 32), reps = 5, paschold_too = T){
   path = newdir(path)
-  simulations(path, genes, libraries, reps, paschold_too)
+#  simulations(path, genes, libraries, reps, paschold_too)
   fit(path, priors = "normal")
 }
