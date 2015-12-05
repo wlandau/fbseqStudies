@@ -1,3 +1,6 @@
+#' @include fit_edgeR.R fit_fbseq.R fit_Niemi.R
+NULL
+
 #' @title Function \code{fit}
 #' @description run benchmark methods on simulation objects
 #' @export
