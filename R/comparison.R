@@ -10,6 +10,7 @@ comparison = function(path = newdir()){
   path = newdir(path)
   comparison_init(path)
   comparison_fit(path)
+  fit(path, fbseq_methods = NULL)
   comparison_analyze(path)
   path
 }
