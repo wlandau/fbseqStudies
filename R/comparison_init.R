@@ -8,6 +8,9 @@ comparison_init = function(path = newdir()){
   genes = 3e4
   libraries = c(16, 32)
   reps = 1
+  data(paschold)
+  paschold = get("paschold")
+  fit = fit_edgeR(paschold@counts, paschold@design)
   for(g in genes) for(n in libraries) for(r in 1:reps) {
     if(!file.exists(f <- paste0(path, "edgeR_", g, "_", n, "_", r, ".rds"))) 
       saveRDS(simulation_edgeR(genes = g, libraries = n, fit = fit), f)
