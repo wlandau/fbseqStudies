@@ -48,16 +48,17 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
   chain = Chain(s, configs, starts)
   configs = Configs(chain)
   starts = Starts(chain)
-  chain = fbseq(chain)
+  chains = fbseq(chain)
 
-  beta = matrix(chain@betaPostMean, nrow = chain@G)
+  est = estimates(chains)
+  beta = matrix(est[grep("beta_", rownames(est)), "mean"], nrow = chains[[1]]@G)
   colnames(beta) = paste0("beta_", 1:5)
-  eff = effect_sizes(chain)
-  prob = probs(chain)
+  eff = effect_sizes(chains)
+  prob = probs(chains)
   est = cbind(beta, prob, eff)
   rownames(est) = rownames(s@counts)
 
   unsink(logs)
-  list(analysis = paste0(method, "+", prior), estimates = est, chain = chain, 
+  list(analysis = paste0(method, "+", prior), estimates = est, chains = chains, 
     runtime = my.proc.time() - t, configs = configs, starts = starts)
 }
