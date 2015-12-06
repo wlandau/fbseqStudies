@@ -8,6 +8,7 @@ NULL
 #' @param path to directory to save simulations and results
 computation = function(path = newdir()){
   path = newdir(path)
+  real("real")
   computation_init(path)
   computation_fit(path)
   computation_analyze(path)

@@ -8,6 +8,7 @@ NULL
 #' @param path to directory to save simulations and results
 comparison = function(path = newdir()){
   path = newdir(path)
+  real("real")
   comparison_init(path)
   comparison_fit(path)
   fit(path, fbseq_methods = NULL)
