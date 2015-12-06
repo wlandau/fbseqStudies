@@ -6,12 +6,6 @@
 \usage{
 case()
 }
-\arguments{
-\item{path}{to directory to save simulations and results}
-}
-\value{
-path to simulated objects
-}
 \description{
 Whole orkflow for the part of the case study paper that looks at gene detection power
 }
