@@ -5,6 +5,7 @@
 #' @param path to directory to save simulations and results
 real_fit = function(path = newdir()){
   path = newdir(path)
-  fit(path, benchmarks = NULL)
+  fit(path, benchmarks = NULL, priors = "normal")
+  fit(path, benchmarks = NULL, fbseq_methods = "fullybayes")
   path
 }
