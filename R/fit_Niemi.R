@@ -55,9 +55,13 @@ single_gene_analysis = function(x, group, hyperparameters, model) {
   unsink(logs)  
 
   data(paschold)
-  chain = Chain(get("paschold"))
-  chain@betaPostMean = s[paste0("beta_", 1:5), "mean"]
+  paschold = get("paschold")
+
+  chain = Chain(paschold)
   chain@G = as.integer(1)
+  chain@betaPostMean = s[paste0("beta_", 1:5), "mean"]
+  chain@betaPostMeanSquare = rep(Inf, length(as.numeric(chain@betaPostMean)))
+  chain@gammaPostMean = chain@gammaPostMeanSquare = rep(0, chain@G)
   chain@gene_names = character(0)
   effectSizes = effect_sizes(chain)
 

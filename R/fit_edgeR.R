@@ -26,8 +26,10 @@ fit_edgeR = function(counts, design, group = NULL, ncores = 1){
   prob = sapply(paschold@propositions, function(x){apply(prob0[,x], 1, min)})
 
   chain = Chain(paschold)
-  chain@betaPostMean = as.numeric(beta)
   chain@G = nrow(beta)
+  chain@betaPostMean = as.numeric(beta)
+  chain@betaPostMeanSquare = rep(Inf, length(as.numeric(chain@betaPostMean)))
+  chain@gammaPostMean = chain@gammaPostMeanSquare = rep(0, chain@G)
   chain@gene_names = character(0)
   effectSizes = effect_sizes(chain)
 

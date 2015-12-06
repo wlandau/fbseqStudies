@@ -16,17 +16,14 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
   if(debug){
     configs@iterations = 10
     configs@burnin = 0
-    configs@thin = 0
-    configs@ess = 0
-    configs@max_attempts_diag = 1
-    configs@max_attempts_ess = 0
+    configs@thin = 1
   }
 
   hyper = c("nu", "sigmaSquared", "tau", "theta")
   starts = Starts()
 
   if(method == "ebayes"){
-    ch = sim$analyses[[paste0("fullybayes+", prior)]]$chain
+    ch = sim$analyses[[paste0("fullybayes+", prior)]]$chains[[1]]
     for(p in hyper){
       slot(starts, p) = slot(ch, paste0(p, "PostMean"))
       configs@parameter_sets_return = setdiff(configs@parameter_sets_return, p)
