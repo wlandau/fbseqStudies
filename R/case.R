@@ -6,7 +6,7 @@ NULL
 #' @export
 #' @return path to simulated objects
 #' @param path to directory to save simulations and results
-case_power = function(){
+case = function(){
   real("real")
   case_coverage("case_coverage")
   case_power("case_power")
