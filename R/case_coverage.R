@@ -10,7 +10,6 @@ case_coverage = function(path = newdir()){
   path = newdir(path)
   case_coverage_init(path)
   case_coverage_fit(path)
-  fit(path, fbseq_methods = NULL)
   case_coverage_analyze(path)
   path
 }
