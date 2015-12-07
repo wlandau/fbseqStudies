@@ -57,5 +57,6 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
 
   unsink(logs)
   list(analysis = paste0(method, "+", prior), estimates = est, chains = chains, 
-    runtime = my.proc.time() - t, configs = configs, starts = starts)
+    runtime = my.proc.time() - t, configs = configs, starts = starts, psrf = psrf(chains),
+    ess = effectiveSize(mcmc_samples(chains)))
 }
