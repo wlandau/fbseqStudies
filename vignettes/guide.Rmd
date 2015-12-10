@@ -14,7 +14,7 @@ vignette: >
 
 # Purpose
 
-`fbseqStudies` runs a comparison study, comparing the `fbseq` package to other packages.
+`fbseqStudies` reproduces the results of academic studies of the methodology behind the `fbseq` and `fbseqCUDA` packages.
 
 # System requirements
 
@@ -55,23 +55,12 @@ Note: in `R CMD INSTALL fbseqStudies_0.0.tar.gz`, you may have to replace `fbseq
 
 # Run the studies
 
-## Everything in two lines.
+Each function below reproduces the results of a paper.
 
-Just open an R session and run 
-
-```{r, eval = F}
-library(fbseqStudies)
-fbseqStudies()
-```
-
-## Breaking down the comparison study
-
-You can run the steps of `fbseqStudies()` separately. First, create the simulation objects with `simulations()`. Output files are saved. These are lists $-$ each with a `fbseq::Scenario` object with the count data, design matrix, etc. $-$ and a list to store analyses of that scenario. Next, run `fit` to fit the benchmark methods along with the method described in the `fbseq` package. In summary,
-
-```{r, eval = F}
-path = simulations()
-fit(path)
-```
+|------------------------------------|--------------------------------------------------| 
+| `computation()`   | publication pending | 
+| `case()`  | publication pending |
+| `comparison()`  | publication pending |
 
 
 
