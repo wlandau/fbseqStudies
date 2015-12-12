@@ -1,14 +1,3 @@
-#' @title Function \code{fpr_point}
-#' @description internal function for computing ROC curves
-#' @export
-#' @return false positive rate
-#' @param cutoff cutoff for fpr calculation
-#' @param probs probabilities
-#' @param n number of probabilities, not necessarily in \code{probs}
-fpr_point = Vectorize(function(cutoff, probs, n){
-  sum(probs >= cutoff)/n
-}, "cutoff")
-
 #' @title Function \code{roc}
 #' @description function for calculating ROC curves
 #' @export
@@ -17,28 +6,15 @@ fpr_point = Vectorize(function(cutoff, probs, n){
 #' @param truth logical or 0/1 vector of classifications
 roc = function(probs, truth){
   probs[is.na(probs)] = 0
-  index = order(probs, decreasing = T)
-  truth = truth[index]
-  probs = probs[index]
-  fpr = fpr_point(probs, probs[!truth], length(truth) - sum(truth))
-  tpr = fpr_point(probs, probs[truth], sum(truth))
-  fpr[!is.finite(fpr)] = 0
-  tpr[!is.finite(tpr)] = 0
-  data.frame(fpr = fpr, tpr = tpr)
-}
-
-#' @title Function \code{auc}
-#' @description calculates areas under ROC curves
-#' @export
-#' @return area under an ROC curve
-#' @param roc data frame with columns named \code{fpr} and \code{tpr}
-#' @param cutoff fpr cutoff below which area will be calculated
-auc = function(roc, cutoff = 0.1){
-  fpr = roc$fpr
-  tpr = roc$tpr
+  truth = truth[order(probs, decreasing = T)]
+  fp = cumsum(!truth)
+  tp = cumsum(truth)
+  fpr = fp/max(fp)
+  tpr = tp/max(tp)
   fn = stepfun(x = fpr, y = c(0, tpr))
-  xs = seq(from = 0, to = cutoff, length.out = 1e3)
-  trapz(x = xs, y = fn(xs))
+  xs = seq(from = 0, to = 1, length.out = 1e2)
+  ys = fn(xs)
+  data.frame(fpr = xs, tpr = ys)
 }
 
 #' @title Function \code{roc_over}
@@ -74,4 +50,13 @@ roc_over = function(l, a){
   for(i in 1:ncol(probs))
     ROC[[n[i]]] = roc(probs[,i], truth[,i])
   ROC
+}
+
+#' @title Function \code{rocs}
+#' @description Compute roc curves for every \code{analyses} element of every simulation list in a directory
+#' @export
+#' @param from directory with simulation lists
+#' @param to output directory
+rocs = function(from, to){
+  over_ans(from = from, to = to, fun = roc_over)
 }
