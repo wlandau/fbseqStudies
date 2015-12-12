@@ -12,7 +12,7 @@ fdr = function(probs, truth){
   bayesian_fdr = cumsum(pH0)/(1:length(pH0))
   fdp = cumsum(!truth)/(1:length(truth))
   fn = stepfun(x = bayesian_fdr, y = c(0, fdp))
-  xs = seq(from = 0, to = 1, length.out = 4e2)
+  xs = seq(from = 0, to = max(bayesian_fdr), length.out = 4e2)
   ys = fn(xs)
   data.frame(bayesian_fdr = xs, fdp = ys, fdp_minus_fdr = ys - xs) # plot vs fdr
 }

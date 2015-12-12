@@ -8,7 +8,7 @@ calibration = function(probs, truth){
   index = order(probs)
   probs = probs[index]
   truth = as.numeric(truth[index])
-  k = ksmooth(x = probs, y = truth)
+  k = ksmooth(x = probs, y = truth, bandwidth = 0.1)
   fn = stepfun(x = k$x, y = c(0, k$y))
   xs = seq(from = 0, to = 1, length.out = 4e2)
   ys = fn(xs)
