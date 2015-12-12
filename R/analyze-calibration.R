@@ -1,28 +1,26 @@
-#' @title Function \code{fdr}
-#' @description function for calculating fdr curves
+#' @title Function \code{calibration}
+#' @description assess calibration of posterior probabilities
 #' @export
-#' @return data frame with an fdr curve
+#' @return data frame with an calibration curve
 #' @param probs probabilities
 #' @param truth logical or 0/1 vector of classifications
-fdr = function(probs, truth){
-  index = order(probs, decreasing = T)
+calibration = function(probs, truth){
+  index = order(probs)
   probs = probs[index]
-  truth = truth[index]
-  pH0 = 1 - probs
-  bayesian_fdr = cumsum(pH0)/(1:length(pH0))
-  fdp = cumsum(!truth)/(1:length(truth))
-  fn = stepfun(x = bayesian_fdr, y = c(0, fdp))
+  truth = as.numeric(truth[index])
+  k = ksmooth(x = probs, y = truth)
+  fn = stepfun(x = k$x, y = c(0, k$y))
   xs = seq(from = 0, to = 1, length.out = 4e2)
   ys = fn(xs)
-  data.frame(bayesian_fdr = xs, fdp = ys, fdp_minus_fdr = ys - xs) # plot vs fdr
+  data.frame(fdr = xs, fdp = ys, fdr_minus_fdp = ys - xs) # plot vs fdr
 }
 
-#' @title Function \code{fdr_over}
-#' @description use with \code{over_ans} to calculate fdr curves on analysis elements of simulation lists
+#' @title Function \code{calibration_over}
+#' @description use with \code{over_ans} to calculate calibration curves on analysis elements of simulation lists
 #' @export
 #' @param l simulation list
 #' @param a analysis list
-fdr_over = function(l, a){
+calibration_over = function(l, a){
   if(l$simulation == "paschold") return(NULL)
   ch = Chain(l$scenario)
   
@@ -46,17 +44,17 @@ fdr_over = function(l, a){
 
   e = a$estimates
   probs = e[,grep("prob", colnames(e))]
-  fdr = list()
+  calibration = list()
   for(i in 1:ncol(probs))
-    fdr[[n[i]]] = fdr(probs[,i], truth[,i])
-  fdr
+    calibration[[n[i]]] = calibration(probs[,i], truth[,i])
+  calibration
 }
 
-#' @title Function \code{fdrs}
-#' @description Compute fdr curves for every \code{analyses} element of every simulation list in a directory
+#' @title Function \code{calibrations}
+#' @description Compute calibration curves for every \code{analyses} element of every simulation list in a directory
 #' @export
 #' @param from directory with simulation lists
 #' @param to output directory
-fdrs = function(from, to){
-  over_ans(from = from, to = to, fun = fdr_over)
+calibrations = function(from, to){
+  over_ans(from = from, to = to, fun = calibration_over)
 }

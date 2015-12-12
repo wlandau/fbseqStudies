@@ -12,7 +12,7 @@ roc = function(probs, truth){
   fpr = fp/max(fp)
   tpr = tp/max(tp)
   fn = stepfun(x = fpr, y = c(0, tpr))
-  xs = seq(from = 0, to = 1, length.out = 1e2)
+  xs = seq(from = 0, to = 1, length.out = 4e2)
   ys = fn(xs)
   data.frame(fpr = xs, tpr = ys)
 }
