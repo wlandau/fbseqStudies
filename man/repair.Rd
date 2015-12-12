@@ -2,7 +2,7 @@
 % Please edit documentation in R/repair.R
 \name{repair}
 \alias{repair}
-\title{Function \code{rocs}}
+\title{Function \code{repair}}
 \usage{
 repair(l)
 }
