@@ -30,6 +30,7 @@ Suggests:
 VignetteBuilder: knitr
 License: GPL (>= 3)
 Collate:
+    'analyze-fdr.R'
     'analyze-gelman.R'
     'analyze-roc.R'
     'analyze-runtime_plots.R'

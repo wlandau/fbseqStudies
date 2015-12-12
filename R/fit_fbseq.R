@@ -51,7 +51,9 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
   beta = matrix(est[grep("beta_", rownames(est)), "mean"], nrow = chains[[1]]@G)
   colnames(beta) = paste0("beta_", 1:5)
   eff = effect_sizes(chains)
+  colnames(eff) = paste0("effect_", colnames(eff))
   prob = probs(chains)
+  colnames(prob) = paste0("prob_", colnames(prob))
   est = cbind(beta, prob, eff)
   rownames(est) = rownames(s@counts)
 

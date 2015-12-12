@@ -58,6 +58,7 @@ roc_over = function(l, a){
   }
 
   ch@betaPostMean = beta
+  ch@betaPostMeanSquare = 2*beta^2
   ef = effect_sizes(ch)
   truth = ef > 0
 
