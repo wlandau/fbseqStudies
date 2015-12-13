@@ -62,6 +62,7 @@ Collate:
     'fit_Niemi.R'
     'fit.R'
     'namespace.R'
+    'plotting-ggplot2_df.R'
     'repair.R'
     'simulation_simple.R'
     'simulation_paschold.R'

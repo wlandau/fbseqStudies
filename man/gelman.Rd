@@ -9,9 +9,6 @@ gelman(path)
 \arguments{
 \item{path}{to directory to save simulations and results}
 }
-\value{
-path to simulated objects
-}
 \description{
 list of gelman factors
 }

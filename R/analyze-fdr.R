@@ -9,12 +9,12 @@ fdr = function(probs, truth){
   probs = probs[index]
   truth = truth[index]
   pH0 = 1 - probs
-  bayesian_fdr = cumsum(pH0)/(1:length(pH0))
+  fdr = cumsum(pH0)/(1:length(pH0))
   fdp = cumsum(!truth)/(1:length(truth))
-  fn = stepfun(x = bayesian_fdr, y = c(0, fdp))
-  xs = seq(from = 0, to = max(bayesian_fdr), length.out = 4e2)
+  fn = stepfun(x = fdr, y = c(0, fdp))
+  xs = seq(from = 0, to = max(fdr), length.out = 4e2)
   ys = fn(xs)
-  data.frame(bayesian_fdr = xs, fdp = ys, fdp_minus_fdr = ys - xs) # plot vs fdr
+  data.frame(fdr = xs, fdp = ys, fdp_minus_fdr = ys - xs) # plot vs fdr
 }
 
 #' @title Function \code{fdr_over}
