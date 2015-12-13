@@ -4,12 +4,14 @@
 \alias{roc}
 \title{Function \code{roc}}
 \usage{
-roc(probs, truth)
+roc(probs, truth, cutoff = 0.1)
 }
 \arguments{
 \item{probs}{probabilities}
 
 \item{truth}{logical or 0/1 vector of classifications}
+
+\item{cutoff}{cutoff for calculating the area below}
 }
 \value{
 data frame with an roc curve
