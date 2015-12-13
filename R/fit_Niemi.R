@@ -37,7 +37,10 @@ single_gene_analysis = function(x, group, hyperparameters, model) {
   attempt = 1
   pars = c(paste0("beta_", 1:5), "psi", "hph", "lph", "hph1", "lph1", "hph2", "lph2")
 
-  logs = mysink()
+  con = file("/dev/null", "w")
+  sink("/dev/null", type = "output")
+  sink(con, type = "message")
+
   while (diverge) {
     print(paste("Attempt", attempt))
     r = sampling(model, 
@@ -52,7 +55,10 @@ single_gene_analysis = function(x, group, hyperparameters, model) {
     diverge = any(s[,"n_eff"] < 1000)
     attempt = attempt + 1
   }
-  unsink(logs)  
+
+  sink(NULL, type = "output")
+  sink(NULL, type = "message")
+  close(con)
 
   data(paschold)
   paschold = get("paschold")
