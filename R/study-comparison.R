@@ -1,4 +1,4 @@
-#' @include comparison_analyze.R comparison_fit.R comparison_init.R
+#' @include study-comparison_analyze.R study-comparison_init.R
 NULL
 
 #' @title Function \code{comparison}
@@ -8,9 +8,9 @@ NULL
 #' @param path to directory to save simulations and results
 comparison = function(path = newdir()){
   path = newdir(path)
-  real("real")
   comparison_init(path)
-  comparison_fit(path)
+  fit(path, benchmarks = NULL, priors = "normal")
+  fit(path, benchmarks = NULL, fbseq_methods = "fullybayes")  
   fit(path, fbseq_methods = NULL)
   comparison_analyze(path)
   path

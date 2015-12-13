@@ -1,9 +1,9 @@
-#' @title Function \code{case_coverage_init}
+#' @title Function \code{coverage_init}
 #' @description Initialize the part of the case study paper that looks at the coverage of credible intervals
 #' @export
 #' @return path to simulated objects
 #' @param path to directory to save simulations and results
-case_coverage_init = function(path = newdir()){
+coverage_init = function(path = newdir()){
   path = newdir(path)
   genes = 3e4
   libraries = 16

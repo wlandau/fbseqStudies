@@ -58,9 +58,9 @@ Note: in `R CMD INSTALL fbseqStudies_0.0.tar.gz`, you may have to replace `fbseq
 Each function below reproduces the results of a paper.
 
 |------------------------------------|--------------------------------------------------| 
-| `computation()`   | publication pending | 
-| `case()`  | publication pending |
-| `priors()`  | publication pending |
+| `paper_computation()`   | publication pending | 
+| `paper_case()`  | publication pending |
+| `paper_priors()`  | publication pending |
 
 
 

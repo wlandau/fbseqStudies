@@ -1,4 +1,4 @@
-#' @include computation_analyze.R computation_fit.R computation_init.R
+#' @include study-computation_analyze.R study-computation_init.R
 NULL
 
 #' @title Function \code{computation}
@@ -10,7 +10,7 @@ computation = function(path = newdir()){
   path = newdir(path)
   real("real")
   computation_init(path)
-  computation_fit(path)
+  fit(path, benchmarks = NULL, fbseq_methods = "fullybayes", priors = "normal")
   computation_analyze(path)
   path
 }
