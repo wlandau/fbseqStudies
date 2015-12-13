@@ -63,6 +63,7 @@ Collate:
     'fit.R'
     'namespace.R'
     'plotting-ggplot2_df.R'
+    'plotting-powerplots.R'
     'repair.R'
     'simulation_simple.R'
     'simulation_paschold.R'

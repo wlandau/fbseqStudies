@@ -9,7 +9,7 @@ ggplot2_df = function(path){
     x = readRDS(paste0(path, f))
     x = lapply(x, function(y){do.call(cbind, y)})
     for(n in names(x)) x[[n]] = data.frame(x[[n]], heterosis = n)
-    mt = meta(f)
+    mt = c(file = f, meta(f))
     m = as.data.frame(matrix(mt, nrow = nrow(x[[1]]), ncol = length(mt), byrow = T))
     colnames(m) = names(mt)
     for(n in names(x)) x[[n]] = cbind(x[[n]], m)
