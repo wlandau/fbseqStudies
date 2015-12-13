@@ -5,7 +5,7 @@
 #' @param probs probabilities
 #' @param truth logical or 0/1 vector of classifications
 #' @param cutoff cutoff for calculating the area below
-roc = function(probs, truth, cutoff = 0.1){
+roc = function(probs, truth, cutoffs = c(0.05, 0.1, 0.15, 0.2, 0.5, 1)){
   probs[is.na(probs)] = 0
   truth = truth[order(probs, decreasing = T)]
   fp = cumsum(!truth)
@@ -15,7 +15,10 @@ roc = function(probs, truth, cutoff = 0.1){
   fn = stepfun(x = fpr, y = c(0, tpr))
   xs = seq(from = 0, to = 1, length.out = 4e2)
   ys = fn(xs)
-  list(fpr = xs, tpr = ys, auc = trapz(x = xs[xs < cutoff], y = ys[xs < cutoff]))
+  out = list(fpr = xs, tpr = ys)
+  for(ct in cutoffs)
+    out[[paste0("auc_", ct)]] = trapz(x = xs[xs < ct], y = ys[xs < ct])
+  out
 }
 
 #' @title Function \code{roc_over}
