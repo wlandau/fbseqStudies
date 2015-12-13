@@ -11,7 +11,7 @@ roc(probs, truth, cutoffs = c(0.05, 0.1, 0.15, 0.2, 0.5, 1))
 
 \item{truth}{logical or 0/1 vector of classifications}
 
-\item{cutoff}{cutoff for calculating the area below}
+\item{cutoffs}{cutoffs for calculating the area below}
 }
 \value{
 data frame with an roc curve

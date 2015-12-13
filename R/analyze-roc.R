@@ -4,7 +4,7 @@
 #' @return data frame with an roc curve
 #' @param probs probabilities
 #' @param truth logical or 0/1 vector of classifications
-#' @param cutoff cutoff for calculating the area below
+#' @param cutoffs cutoffs for calculating the area below
 roc = function(probs, truth, cutoffs = c(0.05, 0.1, 0.15, 0.2, 0.5, 1)){
   probs[is.na(probs)] = 0
   truth = truth[order(probs, decreasing = T)]
