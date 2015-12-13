@@ -23,9 +23,9 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
   starts = Starts()
 
   if(method == "ebayes"){
-    ch = sim$analyses[[paste0("fullybayes+", prior)]]$chains[[1]]
+    est = estimates(sim$analyses[[paste0("fullybayes+", prior)]]$chains)
     for(p in hyper){
-      slot(starts, p) = slot(ch, paste0(p, "PostMean"))
+      slot(starts, p) = est[p, "mean"]
       configs@parameter_sets_return = setdiff(configs@parameter_sets_return, p)
       configs@parameter_sets_update = setdiff(configs@parameter_sets_update, p)
     }
