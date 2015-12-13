@@ -15,7 +15,7 @@ fit(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes",
 \item{benchmarks}{benchmark methods to run}
 
 \item{fbseq_methods}{"ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth", "fullybayes",
-or a combination/vector of these. "fullybayes" must come before any of the "ebayes" ones.}
+or a combination/vector of these. "fullybayes" must come before "ebayesFromFullybayes".}
 
 \item{priors}{priors on the betas}
 
