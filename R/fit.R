@@ -8,7 +8,7 @@ NULL
 #' @param path to directory to save simulations and results
 #' @param benchmarks benchmark methods to run
 #' @param fbseq_methods "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth", "fullybayes", 
-#' or a combination/vector of these. "fullybayes" must come before any of the "ebayes" ones.
+#' or a combination/vector of these. "fullybayes" must come before "ebayesFromFullybayes".
 #' @param priors priors on the betas
 #' @param ncores number of cores for CPU-parallel methods
 #' @param debug debug mode, TRUE/FALSE
