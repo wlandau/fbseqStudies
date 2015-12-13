@@ -5,7 +5,7 @@
 #' @param genes number of genes
 #' @param libraries number of libraries
 #' @param fit output object from fit_edgeR
-simulation_edgeR = function(genes = 3.5e4, libraries = 16, fit = NULL){
+simulation_edgeR = function(genes = 3e4, libraries = 16, fit = NULL){
   data(paschold)
   paschold = get("paschold")
   if(is.null(fit)) fit = fit_edgeR(paschold@counts, paschold@design)

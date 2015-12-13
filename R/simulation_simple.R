@@ -4,7 +4,7 @@
 #' @return a list if pertinent scenario information
 #' @param genes number of genes
 #' @param libraries number of libraries
-simulation_simple = function(genes = 3.5e4, libraries = 16){
+simulation_simple = function(genes = 3e4, libraries = 16){
   data(paschold)
   paschold = get("paschold")
 
@@ -20,7 +20,7 @@ simulation_simple = function(genes = 3.5e4, libraries = 16){
   beta[,2] = sample(c(0, -0.25, 0.25), genes, prob = c(0.6, 0.2, 0.2), replace = T)
   beta[,3] = sample(c(0, -0.25, 0.25), genes, prob = c(0.6, 0.2, 0.2), replace = T)
   beta[,4] = sample(c(0, -0.25, 0.25), genes, prob = c(0.9, 0.05, 0.05), replace = T)
-  beta[,5] = rnorm(genes, 0, 1e-9)
+  beta[,5] = rnorm(genes, 0, 0.1)
 
   lambda = t(design %*% t(beta))
   disp = 0.01

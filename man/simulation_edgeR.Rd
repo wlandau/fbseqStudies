@@ -4,7 +4,7 @@
 \alias{simulation_edgeR}
 \title{Function \code{simulation_edgeR}}
 \usage{
-simulation_edgeR(genes = 35000, libraries = 16, fit = NULL)
+simulation_edgeR(genes = 30000, libraries = 16, fit = NULL)
 }
 \arguments{
 \item{genes}{number of genes}

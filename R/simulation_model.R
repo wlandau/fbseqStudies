@@ -4,7 +4,7 @@
 #' @return a list if pertinent scenario information
 #' @param genes number of genes
 #' @param libraries number of libraries
-simulation_model = function(genes = 3.5e4, libraries = 16){
+simulation_model = function(genes = 3e4, libraries = 16){
   data(paschold)
   paschold = get("paschold")
   s = scenario_heterosis_model(genes, libraries)

@@ -4,7 +4,7 @@
 \alias{simulation_model}
 \title{Function \code{simulation_model}}
 \usage{
-simulation_model(genes = 35000, libraries = 16)
+simulation_model(genes = 30000, libraries = 16)
 }
 \arguments{
 \item{genes}{number of genes}
