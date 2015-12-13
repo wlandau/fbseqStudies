@@ -5,15 +5,17 @@
 \title{Function \code{fit}}
 \usage{
 fit(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes",
-  "ebayes", "ebayesFromTruth"), priors = c("normal", special_beta_priors()),
-  ncores = detectCores(), debug = F, configs = Configs())
+  "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth"),
+  priors = c("normal", special_beta_priors()), ncores = detectCores(),
+  debug = F, configs = Configs())
 }
 \arguments{
 \item{path}{to directory to save simulations and results}
 
 \item{benchmarks}{benchmark methods to run}
 
-\item{fbseq_methods}{"fullybayes", "ebayes", "ebayes_from_truth" or a vector with a combination. "fullybayes" must come before "ebayes".}
+\item{fbseq_methods}{"ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth", "fullybayes",
+or a combination/vector of these. "fullybayes" must come before any of the "ebayes" ones.}
 
 \item{priors}{priors on the betas}
 

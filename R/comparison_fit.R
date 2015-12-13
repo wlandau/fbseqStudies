@@ -5,5 +5,6 @@
 #' @param path to directory to save simulations and results
 comparison_fit = function(path = newdir()){
   path = newdir(path)
+  fit(path, priors = "normal", benchmarks = NULL)
   fit(path, fbseq_methods = "fullybayes", benchmarks = NULL)
 }

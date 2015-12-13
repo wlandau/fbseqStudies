@@ -60,7 +60,7 @@ Each function below reproduces the results of a paper.
 |------------------------------------|--------------------------------------------------| 
 | `computation()`   | publication pending | 
 | `case()`  | publication pending |
-| `comparison()`  | publication pending |
+| `priors()`  | publication pending |
 
 
 

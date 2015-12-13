@@ -5,6 +5,5 @@
 #' @param path to directory to save simulations and results
 real_analyze = function(path = newdir()){
   path = newdir(path)
-  gelman(path)
   path
 }

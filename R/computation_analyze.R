@@ -5,8 +5,5 @@
 #' @param path to directory to save simulations and results
 computation_analyze = function(path = newdir()){
   path = newdir(path)
-  gelman(path)
-  runtime_plots(path)
-  runtime_tables(path)
   path
 }

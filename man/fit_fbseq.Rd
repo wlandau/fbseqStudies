@@ -10,7 +10,7 @@ fit_fbseq(sim, method = "fullybayes", prior = "normal", debug = F,
 \arguments{
 \item{sim}{a list, the current simulation object}
 
-\item{method}{one of "ebayes", "ebayesFromTruth", or "fullybayes"}
+\item{method}{one of "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth", or "fullybayes"}
 
 \item{prior}{prior distribution on betas}
 

@@ -7,12 +7,13 @@ NULL
 #' @return path to simulated objects
 #' @param path to directory to save simulations and results
 #' @param benchmarks benchmark methods to run
-#' @param fbseq_methods "fullybayes", "ebayes", "ebayes_from_truth" or a vector with a combination. "fullybayes" must come before "ebayes".
+#' @param fbseq_methods "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth", "fullybayes", 
+#' or a combination/vector of these. "fullybayes" must come before any of the "ebayes" ones.
 #' @param priors priors on the betas
 #' @param ncores number of cores for CPU-parallel methods
 #' @param debug debug mode, TRUE/FALSE
 #' @param configs \code{Configs} object for \code{fbseq}
-fit = function(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes", "ebayes", "ebayesFromTruth"), 
+fit = function(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes", "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth"), 
   priors = c("normal", special_beta_priors()), ncores = detectCores(), debug = F, configs = Configs()){
 
   path = newdir(path)

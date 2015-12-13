@@ -3,7 +3,7 @@
 #' @export
 #' @return information for a fitted model
 #' @param sim a list, the current simulation object
-#' @param method one of "ebayes", "ebayesFromTruth", or "fullybayes"
+#' @param method one of "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth", or "fullybayes"
 #' @param prior prior distribution on betas
 #' @param debug debug mode, TRUE/FALSE
 #' @param configs \code{Configs} object for \code{fbseq}
@@ -19,26 +19,23 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
     configs@thin = 1
   }
 
-  hyper = c("nu", "sigmaSquared", "tau", "theta")
   starts = Starts()
-
-  if(method == "ebayes"){
-    est = estimates(sim$analyses[[paste0("fullybayes+", prior)]]$chains)
+  hyper = c("nu", "sigmaSquared", "tau", "theta")
+  if(grepl("ebayes", method))
     for(p in hyper){
-      slot(starts, p) = est[p, "mean"]
       configs@parameter_sets_return = setdiff(configs@parameter_sets_return, p)
       configs@parameter_sets_update = setdiff(configs@parameter_sets_update, p)
     }
+
+  if(method == "ebayesFromFullybayes"){
+    est = estimates(sim$analyses[[paste0("fullybayes+", prior)]]$chains)
+    for(p in hyper) slot(starts, p) = est[p, "mean"]
   }
 
   if(method == "ebayesFromTruth"){
     truth = s@supplement$truth
     if(!is(truth, "Starts")) return(NULL)
-    for(p in hyper){
-      slot(starts, p) = slot(truth, p)
-      configs@parameter_sets_return = setdiff(configs@parameter_sets_return, p)
-      configs@parameter_sets_update = setdiff(configs@parameter_sets_update, p)
-    }
+    for(p in hyper) slot(starts, p) = slot(truth, p)
   }
  
   if(sim$simulation != "paschold") starts@h = 0
