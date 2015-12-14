@@ -31,8 +31,9 @@ VignetteBuilder: knitr
 License: GPL (>= 3)
 Collate:
     'analyze-calibration.R'
-    'analyze-fdr.R'
     'analyze-gelman.R'
+    'analyze-plot_calibration.R'
+    'analyze-plot_roc.R'
     'analyze-roc.R'
     'analyze-runtime_plots.R'
     'analyze-runtime_tables.R'
@@ -57,7 +58,6 @@ Collate:
     'paper_computation.R'
     'paper_priors.R'
     'plotting-ggplot2_df.R'
-    'plotting-powerplots.R'
     'simulation_simple.R'
     'simulation_paschold.R'
     'simulation_model.R'

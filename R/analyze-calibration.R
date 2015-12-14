@@ -12,7 +12,7 @@ calibration = function(probs, truth){
   fn = stepfun(x = k$x, y = c(0, k$y))
   xs = seq(from = 0, to = 1, length.out = 4e2)
   ys = fn(xs)
-  data.frame(fdr = xs, fdp = ys, fdp_minus_fdr = ys - xs) # plot vs fdr
+  data.frame(probability = xs, proportion = ys) # plot vs expected
 }
 
 #' @title Function \code{calibration_over}
