@@ -8,10 +8,11 @@ plot_calibration = function(from, to){
   to = newdir(to)
   df = ggplot2_df(from)
   t = theme(axis.text = element_text(family = "Helvetica", colour = 'black'),
-                      panel.background = element_rect(fill='white'),
-                      panel.border = element_rect(color="black", fill = NA),
-                      panel.grid.major = element_line(color="lightgray"),
-                      text = element_text(family = "Helvetica", colour= "black"))
+                  legend.position = "top",
+                  panel.background = element_rect(fill='white'),
+                  panel.border = element_rect(color="black", fill = NA),
+                  panel.grid.major = element_line(color="lightgray"),
+                  text = element_text(family = "Helvetica", colour= "black"))
 
   for(h in levels(df$heterosis)){
     d = df[df$heterosis == h,]

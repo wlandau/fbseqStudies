@@ -8,14 +8,15 @@ plot_roc = function(from, to){
   to = newdir(to)
   df = ggplot2_df(from)
   t = theme(axis.text = element_text(family = "Helvetica", colour = 'black'),
-                      panel.background = element_rect(fill='white'),
-                      panel.border = element_rect(color="black", fill = NA),
-                      panel.grid.major = element_line(color="lightgray"),
-                      text = element_text(family = "Helvetica", colour= "black"))
+                  legend.position = "top",
+                  panel.background = element_rect(fill='white'),
+                  panel.border = element_rect(color="black", fill = NA),
+                  panel.grid.major = element_line(color="lightgray"),
+                  text = element_text(family = "Helvetica", colour= "black"))
 
   for(h in levels(df$heterosis)){
     d = df[df$heterosis == h,]
-    pl = ggplot(d) + t + 
+    pl = ggplot(d) + t + xlim(c(0, 0.1)) + 
       geom_line(aes_string(x = "fpr", y = "tpr", group = "file", color = "analysis", linetype = "analysis")) + 
       geom_abline(slope = 1, intercept = 0, alpha = 0.25) + 
       facet_grid(libraries ~ simulation)

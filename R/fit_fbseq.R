@@ -14,6 +14,10 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
 
   s = sim$scenario
   configs@priors = prior
+  if(prior %in% special_beta_priors()){
+    configs@parameter_sets_return = c(configs@parameter_sets_return, "xi")
+    configs@parameter_sets_update = c(configs@parameter_sets_update, "xi")
+  }
   if(debug){
     configs@iterations = 10
     configs@burnin = 0
