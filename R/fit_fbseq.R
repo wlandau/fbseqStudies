@@ -34,7 +34,7 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
 
   if(method == "ebayesFromFullybayes"){
     est = estimates(sim$analyses[[paste0("fullybayes+", prior)]]$chains)
-    for(p in hyper) slot(starts, p) = est[p, "mean"]
+    for(p in hyper) slot(starts, p) = est[grep(p, rownames(est)), "mean"]
   }
 
   if(method == "ebayesFromTruth"){
