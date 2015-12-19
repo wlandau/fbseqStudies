@@ -31,10 +31,14 @@ VignetteBuilder: knitr
 License: GPL (>= 3)
 Collate:
     'analyze-calibration.R'
+    'analyze-ci_beta_list.R'
+    'analyze-ci_hyper_list.R'
+    'analyze-ess.R'
     'analyze-gelman.R'
     'analyze-plot_calibration.R'
     'analyze-plot_roc.R'
     'analyze-roc.R'
+    'analyze-runtime.R'
     'analyze-runtime_plots.R'
     'analyze-runtime_tables.R'
     'fit_fbseq.R'
