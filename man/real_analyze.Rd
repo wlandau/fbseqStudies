@@ -4,7 +4,7 @@
 \alias{real_analyze}
 \title{Function \code{real_analyze}}
 \usage{
-real_analyze(path = newdir())
+real_analyze(from, to)
 }
 \arguments{
 \item{from}{to directory to save simulations and results}

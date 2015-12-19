@@ -4,10 +4,12 @@
 \alias{runtime}
 \title{Function \code{runtime}}
 \usage{
-runtime(path)
+runtime(from, to)
 }
 \arguments{
-\item{path}{directory with simulation lists}
+\item{from}{directory with simulation lists}
+
+\item{to}{output directory}
 }
 \value{
 runtime table

@@ -9,7 +9,7 @@ coverage_analyze = function(from, to){
   gelman(from, paste0(to, "gelman"))
   ess(from, paste0(to, "ess"))
   ci_hyper(from, paste0(to, "ci_hyper"))
-  ci_ci_beta(from, paste0(to, "ci_beta"))
+  ci_beta(from, paste0(to, "ci_beta"))
   roc(from, paste0(to, "roc"))
   plot_roc(from, paste0(to, "plot_roc"))
   calibration(from, paste0(to, "calibration"))

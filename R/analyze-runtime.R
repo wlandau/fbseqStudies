@@ -2,13 +2,15 @@
 #' @description Runtimes in computation study
 #' @export
 #' @return runtime table
-#' @param path directory with simulation lists
-runtime = function(path){
-  path = newdir(path)
+#' @param from directory with simulation lists
+#' @param to output directory
+runtime = function(from, to){
+  from = newdir(from)
+  to = newdir(to)
   long = NULL
-  for(f in list.files(path)){
+  for(f in list.files(from)){
     print(f)
-    l = readRDS(paste0(path, f))
+    l = readRDS(paste0(from, f))
     a = l$analyses[["fullybayes+normal"]]
     runtime = a$runtime["elapsed"]/3600
     names(runtime) = NULL
@@ -30,6 +32,6 @@ runtime = function(path){
     rownames(out[[n]]) = unique(long$G)
     colnames(out[[n]]) = unique(long$N)
   }
-  out
+  saveRDS(out, paste0(to, "runtime.rds"))
 }
 

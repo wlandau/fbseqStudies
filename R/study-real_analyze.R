@@ -3,7 +3,7 @@
 #' @export
 #' @param from to directory to save simulations and results
 #' @param to output directory
-real_analyze = function(path = newdir()){
+real_analyze = function(from, to){
   from = newdir(from)
   to = newdir(to)
   gelman(from, paste0(to, "gelman"))

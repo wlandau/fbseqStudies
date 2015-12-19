@@ -8,6 +8,8 @@ gelman(from, to)
 }
 \arguments{
 \item{from}{to directory to save simulations and results}
+
+\item{to}{output directory}
 }
 \description{
 list of gelman factors

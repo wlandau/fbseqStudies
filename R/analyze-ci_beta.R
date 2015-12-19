@@ -14,7 +14,7 @@ ci_beta = function(from, to){
   for(n in parms){
     d = data.frame(lower = l$lower[n,] - l$truth[n,], upper = l$upper[n,] - l$truth[n,], rep = 1:length(l$truth[n,]))
     pl = ggplot(d) + mytheme() + 
-      geom_segment(aes(x = rep, xend = rep, y = lower, yend = upper)) + 
+      geom_segment(aes_string(x = "rep", xend = "rep", y = "lower", yend = "upper")) + 
       geom_abline(slope = 0, intercept = 0)
     ggsave(paste0(to, n, "_5.pdf"), pl)
   }
@@ -31,12 +31,12 @@ ci_beta = function(from, to){
     dcover$index = 1:dim(dcover)[1]
     dmiss$index = 1:dim(dmiss)[1]
     pl = ggplot(dcover) + mytheme() + 
-      geom_segment(aes(x = index, xend = index, y = lower, yend = upper), color = "darkGray") + 
-      geom_point(aes(x = index, y = truth), size = I(0.5))
+      geom_segment(aes_string(x = "index", xend = "index", y = "lower", yend = "upper"), color = "darkGray") + 
+      geom_point(aes_string(x = "index", y = "truth"), size = I(0.5))
     ggsave(paste0(to, "beta_", ell, "_cover_95_", rep, ".pdf"), pl)
     pl = ggplot(dmiss) + mytheme() + 
-      geom_segment(aes(x = index, xend = index, y = lower, yend = upper), alpha = 0.5, color = "darkGray") + 
-      geom_point(aes(x = index, y = truth), size = I(0.5))
+      geom_segment(aes_string(x = "index", xend = "index", y = "lower", yend = "upper"), alpha = 0.5, color = "darkGray") + 
+      geom_point(aes_string(x = "index", y = "truth"), size = I(0.5))
     ggsave(paste0(to, "beta_", ell, "_miss_95_", rep, ".pdf"), pl)
     out[["ci_0.95"]][paste0("beta_", ell)] = dim(dcover)[1]/(dim(dcover)[1] + dim(dmiss)[1])
   }

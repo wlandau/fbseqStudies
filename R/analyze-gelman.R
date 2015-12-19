@@ -2,6 +2,7 @@
 #' @description list of gelman factors
 #' @export
 #' @param from to directory to save simulations and results
+#' @param to output directory
 gelman = function(from, to){
   from = newdir(from)
   to = newdir(to)

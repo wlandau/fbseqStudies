@@ -12,7 +12,7 @@ ci_hyper = function(from, to){
   for(n in rownames(l$truth)){
     d = data.frame(lower = l$lower[n,] - l$truth[n,], upper = l$upper[n,] - l$truth[n,], rep = 1:length(l$truth[n,]))
     pl = ggplot(d) + mytheme() + 
-      geom_segment(aes(x = rep, xend = rep, y = lower, yend = upper)) + 
+      geom_segment(aes_string(x = "rep", xend = "rep", y = "lower", yend = "upper")) + 
       geom_abline(slope = 0, intercept = 0)
     ggsave(paste0(to, n, ".pdf"), pl)
   }

@@ -2,7 +2,8 @@
 #' @description list effective sample sizes
 #' @export
 #' @param from to directory to save simulations and results
-ess = function(from){
+#' @param to output directory
+ess = function(from, to){
   from = newdir(from)
   to = newdir(to)
   out = list()
