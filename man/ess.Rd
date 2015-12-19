@@ -4,10 +4,10 @@
 \alias{ess}
 \title{Function \code{ess}}
 \usage{
-ess(path)
+ess(from)
 }
 \arguments{
-\item{path}{to directory to save simulations and results}
+\item{from}{to directory to save simulations and results}
 }
 \description{
 list effective sample sizes

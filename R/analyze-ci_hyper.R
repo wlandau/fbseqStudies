@@ -1,0 +1,21 @@
+#' @include analyze-mytheme.R
+NULL
+
+#' @title Function \code{ci_hyper}
+#' @description plot roc curves using rds files extracted from simulation lists
+#' @export
+#' @param from directory of extracted results files
+#' @param to directory to save plots
+ci_hyper = function(from, to){
+  l = ci_hyper_list(from, level = 0.5)
+  to = newdir(to)
+  for(n in rownames(l$truth)){
+    d = data.frame(lower = l$lower[n,] - l$truth[n,], upper = l$upper[n,] - l$truth[n,], rep = 1:length(l$truth[n,]))
+    pl = ggplot(d) + mytheme() + 
+      geom_segment(aes(x = rep, xend = rep, y = lower, yend = upper)) + 
+      geom_abline(slope = 0, intercept = 0)
+    ggsave(paste0(to, n, ".pdf"), pl)
+  }
+  out = rowMeans(l$lower < l$truth & l$truth < l$upper)
+  saveRDS(out, paste0(to, "coverage.rds"))
+}

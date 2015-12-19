@@ -1,16 +1,17 @@
 #' @title Function \code{gelman}
 #' @description list of gelman factors
 #' @export
-#' @param path to directory to save simulations and results
-gelman = function(path){
-  path = newdir(path)
+#' @param from to directory to save simulations and results
+gelman = function(from, to){
+  from = newdir(from)
+  to = newdir(to)
   out = list()
-  for(f in list.files(path)){
-    l = readRDS(paste0(path, f))
+  for(f in list.files(from)){
+    l = readRDS(paste0(from, f))
     for(a in names(l$analyses)){
       n = paste(f, a, sep = "_")
       out[[n]] = sort(l$analyses[[a]]$psrf, decreasing = T)
     }
   }
-  out
+  saveRDS(out, paste0(to, "gelman.rds"))
 }

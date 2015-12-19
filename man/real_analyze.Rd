@@ -7,10 +7,9 @@
 real_analyze(path = newdir())
 }
 \arguments{
-\item{path}{to directory to save simulations and results}
-}
-\value{
-path to simulated objects
+\item{from}{to directory to save simulations and results}
+
+\item{to}{output directory}
 }
 \description{
 Plot and summarize results from the real data analysis

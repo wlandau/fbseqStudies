@@ -1,9 +1,13 @@
 #' @title Function \code{computation_analyze}
 #' @description Plot and summarize results from simulation study
 #' @export
-#' @return path to simulated objects
-#' @param path to directory to save simulations and results
-computation_analyze = function(path = newdir()){
+#' @param from to directory to save simulations and results
+#' @param to output directory
+computation_analyze = function(from, to){
   path = newdir(path)
-  path
+  from = newdir(from)
+  to = newdir(to)
+  gelman(from, paste0(to, "gelman"))
+  ess(from, paste0(to, "ess"))
+  runtime(from, paste0(to, "runtime"))
 }

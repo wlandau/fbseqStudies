@@ -1,9 +1,11 @@
 #' @title Function \code{real_analyze}
 #' @description Plot and summarize results from the real data analysis
 #' @export
-#' @return path to simulated objects
-#' @param path to directory to save simulations and results
+#' @param from to directory to save simulations and results
+#' @param to output directory
 real_analyze = function(path = newdir()){
-  path = newdir(path)
-  path
+  from = newdir(from)
+  to = newdir(to)
+  gelman(from, paste0(to, "gelman"))
+  ess(from, paste0(to, "ess"))
 }

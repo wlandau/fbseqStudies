@@ -4,13 +4,12 @@
 \alias{coverage_analyze}
 \title{Function \code{coverage_analyze}}
 \usage{
-coverage_analyze(path = newdir())
+coverage_analyze(from, to)
 }
 \arguments{
-\item{path}{to directory to save simulations and results}
-}
-\value{
-path to simulated objects
+\item{from}{to directory to save simulations and results}
+
+\item{to}{output directory}
 }
 \description{
 Plot and summarize results from simulation study

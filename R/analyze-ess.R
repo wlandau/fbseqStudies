@@ -1,16 +1,17 @@
 #' @title Function \code{ess}
 #' @description list effective sample sizes
 #' @export
-#' @param path to directory to save simulations and results
-ess = function(path){
-  path = newdir(path)
+#' @param from to directory to save simulations and results
+ess = function(from){
+  from = newdir(from)
+  to = newdir(to)
   out = list()
-  for(f in list.files(path)){
-    l = readRDS(paste0(path, f))
+  for(f in list.files(from)){
+    l = readRDS(paste0(from, f))
     for(a in names(l$analyses)){
       n = paste(f, a, sep = "_")
       out[[n]] = sort(l$analyses[[a]]$ess)
     }
   }
-  out
+  saveRDS(out, paste0(to, "ess.rds"))
 }

@@ -1,9 +1,15 @@
-#' @title Function \code{power_analyze}
+#' @title Function \code{comparison_analyze}
 #' @description Plot and summarize results from comparison study
 #' @export
-#' @return path to simulated objects
-#' @param path to directory to save simulations and results
-comparison_analyze = function(path = newdir()){
-  path = newdir(path)
-  path
+#' @param from to directory to save simulations and results
+#' @param to output directory
+comparison_analyze = function(from, to){
+  from = newdir(from)
+  to = newdir(to)
+  gelman(from, paste0(to, "gelman"))
+  ess(from, paste0(to, "ess"))
+  roc(from, paste0(to, "roc"))
+  plot_roc(from, paste0(to, "plot_roc"))
+  calibration(from, paste0(to, "calibration"))
+  plot_calibration(from, paste0(to, "plot_calibration"))
 }

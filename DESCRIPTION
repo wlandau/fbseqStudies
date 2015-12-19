@@ -31,7 +31,10 @@ VignetteBuilder: knitr
 License: GPL (>= 3)
 Collate:
     'analyze-calibration.R'
+    'analyze-mytheme.R'
+    'analyze-ci_beta.R'
     'analyze-ci_beta_list.R'
+    'analyze-ci_hyper.R'
     'analyze-ci_hyper_list.R'
     'analyze-ess.R'
     'analyze-gelman.R'
@@ -68,7 +71,6 @@ Collate:
     'simulation_edgeR.R'
     'simulation_duplicated.R'
     'simulation.R'
-    'study-priors_analyze.R'
     'util-dir.R'
     'util-logfiles.R'
     'util-meta.R'

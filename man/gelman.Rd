@@ -4,10 +4,10 @@
 \alias{gelman}
 \title{Function \code{gelman}}
 \usage{
-gelman(path)
+gelman(from, to)
 }
 \arguments{
-\item{path}{to directory to save simulations and results}
+\item{from}{to directory to save simulations and results}
 }
 \description{
 list of gelman factors

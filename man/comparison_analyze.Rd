@@ -2,15 +2,14 @@
 % Please edit documentation in R/study-comparison_analyze.R
 \name{comparison_analyze}
 \alias{comparison_analyze}
-\title{Function \code{power_analyze}}
+\title{Function \code{comparison_analyze}}
 \usage{
-comparison_analyze(path = newdir())
+comparison_analyze(from, to)
 }
 \arguments{
-\item{path}{to directory to save simulations and results}
-}
-\value{
-path to simulated objects
+\item{from}{to directory to save simulations and results}
+
+\item{to}{output directory}
 }
 \description{
 Plot and summarize results from comparison study
