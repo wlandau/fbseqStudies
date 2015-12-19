@@ -4,7 +4,6 @@
 #' @param from to directory to save simulations and results
 #' @param to output directory
 computation_analyze = function(from, to){
-  path = newdir(path)
   from = newdir(from)
   to = newdir(to)
   gelman(from, paste0(to, "gelman"))

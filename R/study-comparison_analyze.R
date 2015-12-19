@@ -8,8 +8,8 @@ comparison_analyze = function(from, to){
   to = newdir(to)
   gelman(from, paste0(to, "gelman"))
   ess(from, paste0(to, "ess"))
-  roc(from, paste0(to, "roc"))
+  rocs(from, paste0(to, "roc"))
   plot_roc(from, paste0(to, "plot_roc"))
-  calibration(from, paste0(to, "calibration"))
+  calibrations(from, paste0(to, "calibration"))
   plot_calibration(from, paste0(to, "plot_calibration"))
 }
