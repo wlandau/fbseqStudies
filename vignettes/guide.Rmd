@@ -2,6 +2,7 @@
 title: "`fbseqStudies` package installation and usage guide"
 author: Will Landau
 date: 2015
+bibliography: bibliography.bib
 output: 
   rmarkdown::html_vignette:
     number_sections: true
@@ -61,4 +62,21 @@ Each function below reproduces the results of a paper.
 | `paper_computation()`   | publication pending | 
 | `paper_case()`  | publication pending |
 | `paper_priors()`  | publication pending |
+
+For further control, choose among the following.
+
+|------------------------------------|--------------------------------------------------| 
+| `real_mcmc()`  | Run different versions of the model on the @paschold dataset. | 
+| `computation_mcmc()`  | Duplicate sections of the @paschold dataset to create datasets of varying size. Fit the default model to see how runtime scales with the number of genes and the number of libraries. | 
+| `coverage_mcmc()`  | Simulate different datasets from the model to assess the ability to recapture parameters of interest in credible intervals calculated from the estimated full joint posterior distribution. | 
+| `comparison_mcmc()`  | Simulate datasets from multiple scenarios and fit multiple versions of the model to assess gene detection power and the calibration of posterior probabilites. | 
+| `real_analyze()`  | Extract figures, tables, and other results from the output of `real_mcmc()` | 
+| `computation_analyze()` | Similar, but for `computation_mcmc()` | 
+| `coverage_analyze()` | Similar, but for `coverage_mcmc()` | 
+| `comparison_analyze()`  | Similar, but for `comparison_mcmc()`  | 
+
+# References
+
+For even finer-grained control, see the manual and help files.
+
 
