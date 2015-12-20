@@ -10,6 +10,7 @@ plot_auc = function(from, to){
   from = newdir(from)
   to = newdir(to)
   df = auc_df(from)
+  write.table(df, file = paste0(to, "auc.txt"), row.names = F)
   df$group = paste(df$genes, df$libraries, df$rep, sep = "_")
   cutoffs = colnames(df)[grepl("auc_", colnames(df))]
   for(h in levels(df$heterosis)) for(cutoff in cutoffs){
