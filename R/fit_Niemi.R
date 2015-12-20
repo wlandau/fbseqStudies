@@ -94,7 +94,6 @@ single_gene_analysis = function(x, group, hyperparameters, model) {
 #' @param group group vector
 #' @param ncores number of cores for parallel execution
 fit_Niemi = function(counts, design, group, ncores = 1){
-  logs = mysink()
   t = my.proc.time()
   hyperparameters = get_hyperparameters(counts, design)
 
@@ -170,13 +169,13 @@ fit_Niemi = function(counts, design, group, ncores = 1){
     hph2 <- (2*beta_2  - beta_4 > 0)  && ( 2*beta_3 - beta_4 > 0);
     lph2 <- (-2*beta_2 + beta_4 > 0)  && (-2*beta_3 + beta_4 > 0);
   }")
-  unsink(logs)
+
+  registerDoMC(cores = ncores)
 
   con = file("/dev/null", "w")
   sink("/dev/null", type = "output")
   sink(con, type = "message")
 
-  registerDoMC(cores = ncores)
   out = adply(as.matrix(counts), 1, 
     function(x){single_gene_analysis(x, group, hyperparameters, model)},
                      .parallel = T,
