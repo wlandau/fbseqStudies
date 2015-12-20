@@ -1,14 +1,14 @@
-#' @include study-comparison.R study-real.R
+#' @include study-comparison_mcmc.R study-real_mcmc.R
 NULL
 
 #' @title Function \code{paper_priors}
 #' @description Workflow for the priors comparison study paper
 #' @export
 paper_priors = function(){
-  path = real_init("real")
+  path = real_init("real_mcmc")
   fit(path, benchmarks = NULL, fbseq_methods = "fullybayes")
-  real_analyze(path, paste0("results_", path))
-  path = comparison_init("comparison")
+  real_analyze(path, "real_analyze")
+  path = comparison_init("comparison_analyze")
   fit(path, benchmarks = NULL, fbseq_methods = "fullybayes")
-  comparison_analyze(path, paste0("results_", path))
+  comparison_analyze(path, "comparison_analyze")
 }
