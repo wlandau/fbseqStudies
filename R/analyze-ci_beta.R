@@ -31,11 +31,11 @@ ci_beta = function(from, to){
     dmiss = d[!d$cover,]
     dcover$index = 1:dim(dcover)[1]
     dmiss$index = 1:dim(dmiss)[1]
-    pl = ggplot(dcover) + mytheme() + 
+    pl = ggplot(dcover) + mytheme_straight() + 
       geom_segment(aes_string(x = "index", xend = "index", y = "lower", yend = "upper"), color = "darkGray") + 
       geom_point(aes_string(x = "index", y = "truth"), size = I(0.5))
     ggsave(paste0(to, "beta_", ell, "_cover_95_", rep, ".pdf"), pl)
-    pl = ggplot(dmiss) + mytheme() + 
+    pl = ggplot(dmiss) + mytheme_straight() + 
       geom_segment(aes_string(x = "index", xend = "index", y = "lower", yend = "upper"), alpha = 0.5, color = "darkGray") + 
       geom_point(aes_string(x = "index", y = "truth"), size = I(0.5))
     ggsave(paste0(to, "beta_", ell, "_miss_95_", rep, ".pdf"), pl)
