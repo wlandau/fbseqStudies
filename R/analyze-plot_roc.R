@@ -6,14 +6,16 @@ NULL
 #' @export
 #' @param from directory with roc information
 #' @param to directory to save plots
-plot_roc = function(from, to){
+#' @param cutoff for fpr
+plot_roc = function(from, to, cutoff = 0.1){
   from = newdir(from)
   to = newdir(to)
   df = ggplot2_df(from)
 
   for(h in levels(df$heterosis)){
     d = df[df$heterosis == h,]
-    pl = ggplot(d) + mytheme() + xlim(c(0, 0.1)) + 
+    d = d[d$fpr < cutoff,]
+    pl = ggplot(d) + mytheme() + xlim(c(0, cutoff)) + 
       geom_line(aes_string(x = "fpr", y = "tpr", group = "file", color = "analysis", linetype = "analysis")) + 
       geom_abline(slope = 1, intercept = 0, alpha = 0.25) + 
       facet_grid(libraries ~ simulation)

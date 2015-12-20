@@ -17,8 +17,7 @@ plot_auc = function(from, to){
     d = df[df$heterosis == h,]
     pl = ggplot(d) + mytheme() + 
       geom_line(aes_string(x = "analysis", y = cutoff, group = "group")) +
-      facet_grid(libraries ~ simulation) +
-      theme(axis.text.x = element_text(angle = -80, hjust = 0))
+      facet_grid(libraries ~ simulation)
     suppressMessages(ggsave(paste0(to, h, "_", cutoff, ".pdf"), pl))
   }
 }
