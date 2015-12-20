@@ -1,4 +1,4 @@
-#' @include analyze-mytheme.R
+#' @include analyze-mytheme.R util-relevel.R
 NULL
 
 #' @title Function \code{plot_roc}
@@ -14,6 +14,7 @@ plot_roc = function(from, to, cutoff = 0.1, analysis = analyses()){
   df = ggplot2_df(from)
   df = df[df$fpr < cutoff,]
   df = df[df$analysis %in% analysis,]
+  df$analysis = relevel(df$analysis)
   for(h in levels(df$heterosis)){
     d = df[df$heterosis == h,]
     pl = ggplot(d) + mytheme() + xlim(c(0, cutoff)) + 

@@ -40,6 +40,7 @@ Collate:
     'analyze-ess.R'
     'analyze-gelman.R'
     'analyze-ggplot2_df.R'
+    'util-relevel.R'
     'analyze-plot_auc.R'
     'analyze-plot_calibration.R'
     'analyze-plot_roc.R'
@@ -80,4 +81,3 @@ Collate:
     'util-myproctime.R'
     'util-over.R'
     'util-progress.R'
-    'utils.R'

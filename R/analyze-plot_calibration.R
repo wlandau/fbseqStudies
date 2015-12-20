@@ -1,3 +1,6 @@
+#' @include analyze-mytheme.R util-relevel.R
+NULL
+
 #' @title Function \code{plot_calibration}
 #' @description plot posterior probability calibration curves using rds files extracted from simulation lists
 #' @export
@@ -9,6 +12,7 @@ plot_calibration = function(from, to, analysis = analyses()){
   to = newdir(to)
   df = ggplot2_df(from)
   df = df[df$analysis %in% analysis,]
+  df$analysis = relevel(df$analysis)
   for(h in levels(df$heterosis)){
     d = df[df$heterosis == h,]
     pl = ggplot(d) + mytheme() + 
