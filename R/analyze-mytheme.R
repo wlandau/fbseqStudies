@@ -9,3 +9,15 @@ mytheme = function(){
                   panel.grid.major = element_line(color="lightgray"),
                   text = element_text(family = "Helvetica", colour= "black"))
 }
+
+#' @title Function \code{mytheme_straigth}
+#' @description ggplot2 theme
+#' @export
+#' @return ggplot2 theme
+mytheme_straight = function(){
+  theme(axis.text.x = element_text(family = "Helvetica", colour = 'black'),
+                  panel.background = element_rect(fill='white'),
+                  panel.border = element_rect(color="black", fill = NA),
+                  panel.grid.major = element_line(color="lightgray"),
+                  text = element_text(family = "Helvetica", colour= "black"))
+}

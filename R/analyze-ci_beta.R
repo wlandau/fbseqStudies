@@ -14,7 +14,7 @@ ci_beta = function(from, to){
   parms = paste0("beta_", rep(1:5, each = 2), "_", sample.int(G, 1))
   for(n in parms){
     d = data.frame(lower = l$lower[n,] - l$truth[n,], upper = l$upper[n,] - l$truth[n,], rep = 1:length(l$truth[n,]))
-    pl = ggplot(d) + mytheme() + 
+    pl = ggplot(d) + mytheme_straight() + 
       geom_segment(aes_string(x = "rep", xend = "rep", y = "lower", yend = "upper")) + 
       geom_abline(slope = 0, intercept = 0)
     ggsave(paste0(to, n, "_5.pdf"), pl)
