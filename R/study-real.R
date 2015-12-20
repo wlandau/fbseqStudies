@@ -11,6 +11,6 @@ real = function(path = newdir()){
   real_init(path)
   fit(path, benchmarks = NULL, priors = "normal")
   fit(path, benchmarks = NULL, fbseq_methods = "fullybayes")
-  real_analyze(path)
+  real_analyze(path, paste0("results_", path))
   path
 }

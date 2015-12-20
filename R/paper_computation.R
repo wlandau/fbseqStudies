@@ -7,6 +7,6 @@ NULL
 paper_computation = function(){
   path = real_init("real")
   fit(path, benchmarks = NULL, priors = "normal", fbseq_methods = "fullybayes")
-  real_analyze(path)
+  real_analyze(path, paste0("results_", path))
   computation("computation")
 }

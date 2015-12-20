@@ -12,6 +12,6 @@ comparison = function(path = newdir()){
   fit(path, benchmarks = NULL, priors = "normal")
   fit(path, benchmarks = NULL, fbseq_methods = "fullybayes")  
   fit(path, fbseq_methods = NULL)
-  comparison_analyze(path)
+  comparison_analyze(path, paste0("results_", path))
   path
 }

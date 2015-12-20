@@ -13,11 +13,12 @@ ci_beta_list = function(path, level = 0.5){
     a = l$analyses[["fullybayes+normal"]]
     est = estimates(a$chains, level = level)
     est = est[grep("beta", rownames(est)),]
+    ns = rownames(est)
     t0 = l$scenario@supplement$truth
     truth = cbind(truth, c(t0@beta))
     lower = cbind(lower, est[, grep("lower", colnames(est))])
     upper = cbind(upper, est[, grep("upper", colnames(est))])
   }
-  rownames(truth) = rownames(lower)
+  rownames(truth) = rownames(lower) = rownames(upper) = ns
   list(truth = truth, lower = lower, upper = upper, level = level)
 }

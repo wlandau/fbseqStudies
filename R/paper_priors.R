@@ -7,8 +7,8 @@ NULL
 paper_priors = function(){
   path = real_init("real")
   fit(path, benchmarks = NULL, fbseq_methods = "fullybayes")
-  real_analyze(path)
+  real_analyze(path, paste0("results_", path))
   path = comparison_init("comparison")
   fit(path, benchmarks = NULL, fbseq_methods = "fullybayes")
-  comparison_analyze(path)
+  comparison_analyze(path, paste0("results_", path))
 }

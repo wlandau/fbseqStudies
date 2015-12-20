@@ -10,6 +10,6 @@ coverage = function(path = newdir()){
   path = newdir(path)
   coverage_init(path)
   fit(path,  benchmarks = NULL, priors = "normal", fbseq_methods = "fullybayes")
-  coverage_analyze(path)
+  coverage_analyze(path, paste0("results_", path))
   path
 }
