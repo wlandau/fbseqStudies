@@ -17,5 +17,6 @@ auc_df = function(path){
     for(n in names(x)) x[[n]] = cbind(x[[n]], m)
     for(n in names(x)) out = rbind(out, x[[n]])
   }
+  out$analysis = ordered(out$analysis, levels = levels(analyses()))
   out
 }

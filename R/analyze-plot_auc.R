@@ -6,17 +6,21 @@ NULL
 #' @export
 #' @param from directory of extracted results files
 #' @param to directory to save plots
-plot_auc = function(from, to){
+#' @param analysis analysis methods to plot
+plot_auc = function(from, to, analysis = analyses()){
   from = newdir(from)
   to = newdir(to)
   df = auc_df(from)
-  write.table(df, file = paste0(to, "auc.txt"), row.names = F)
+  saveRDS(df, paste0(to, "auc.rds"))
+  df = df[df$analysis %in% analysis,]
   df$group = paste(df$genes, df$libraries, df$rep, sep = "_")
   cutoffs = colnames(df)[grepl("auc_", colnames(df))]
   for(h in levels(df$heterosis)) for(cutoff in cutoffs){
     d = df[df$heterosis == h,]
     pl = ggplot(d) + mytheme() + 
       geom_line(aes_string(x = "analysis", y = cutoff, group = "group")) +
+      geom_point(aes_string(x = "analysis", y = cutoff, shape = 4)) + 
+      scale_shape_identity() +
       facet_grid(libraries ~ simulation)
     suppressMessages(ggsave(paste0(to, h, "_", cutoff, ".pdf"), pl))
   }

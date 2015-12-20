@@ -4,12 +4,14 @@
 \alias{plot_calibration}
 \title{Function \code{plot_calibration}}
 \usage{
-plot_calibration(from, to)
+plot_calibration(from, to, analysis = analyses())
 }
 \arguments{
 \item{from}{directory of extracted results files}
 
 \item{to}{directory to save plots}
+
+\item{analysis}{analysis methods to plot}
 }
 \description{
 plot posterior probability calibration curves using rds files extracted from simulation lists

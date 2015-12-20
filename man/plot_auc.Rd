@@ -4,12 +4,14 @@
 \alias{plot_auc}
 \title{Function \code{plot_auc}}
 \usage{
-plot_auc(from, to)
+plot_auc(from, to, analysis = analyses())
 }
 \arguments{
 \item{from}{directory of extracted results files}
 
 \item{to}{directory to save plots}
+
+\item{analysis}{analysis methods to plot}
 }
 \description{
 plot areas under roc curves using rds files extracted from simulation lists

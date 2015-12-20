@@ -3,10 +3,12 @@
 #' @export
 #' @param from directory of extracted results files
 #' @param to directory to save plots
-plot_calibration = function(from, to){
+#' @param analysis analysis methods to plot
+plot_calibration = function(from, to, analysis = analyses()){
   from = newdir(from)
   to = newdir(to)
   df = ggplot2_df(from)
+  df = df[df$analysis %in% analysis,]
   for(h in levels(df$heterosis)){
     d = df[df$heterosis == h,]
     pl = ggplot(d) + mytheme() + 

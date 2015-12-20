@@ -73,6 +73,7 @@ Collate:
     'study-computation_analyze.R'
     'study-coverage_analyze.R'
     'study-real_analyze.R'
+    'util-analyses.R'
     'util-dir.R'
     'util-logfiles.R'
     'util-meta.R'

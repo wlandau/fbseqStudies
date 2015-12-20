@@ -4,7 +4,7 @@
 \alias{plot_roc}
 \title{Function \code{plot_roc}}
 \usage{
-plot_roc(from, to, cutoff = 0.1)
+plot_roc(from, to, cutoff = 0.1, analysis = analyses())
 }
 \arguments{
 \item{from}{directory with roc information}
@@ -12,6 +12,8 @@ plot_roc(from, to, cutoff = 0.1)
 \item{to}{directory to save plots}
 
 \item{cutoff}{for fpr}
+
+\item{analysis}{analysis methods to plot}
 }
 \description{
 plot roc curves using rds files extracted from simulation lists
