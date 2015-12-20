@@ -7,7 +7,7 @@
 plot_roc(from, to)
 }
 \arguments{
-\item{from}{directory of extracted results files}
+\item{from}{directory with roc information}
 
 \item{to}{directory to save plots}
 }

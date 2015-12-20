@@ -4,14 +4,15 @@
 #' @return runtime table
 #' @param from directory with simulation lists
 #' @param to output directory
-runtime = function(from, to){
+#' @param analysis to get runtimes of
+runtime = function(from, to, analysis = "fullybayes+normal"){
   from = newdir(from)
   to = newdir(to)
   long = NULL
   for(f in list.files(from)){
     print(f)
     l = readRDS(paste0(from, f))
-    a = l$analyses[["fullybayes+normal"]]
+    a = l$analyses[[analysis]]
     runtime = a$runtime["elapsed"]/3600
     names(runtime) = NULL
     min_ess = min(a$ess[c("nu", "tau", paste0("theta_", 1:5), paste0("sigmaSquared_", 1:5))])
@@ -28,10 +29,10 @@ runtime = function(from, to){
   long = as.data.frame(long)
   out = list(long = long)
   for(n in colnames(long)[3:7]){
-    out[[n]] = round(t(matrix(long[,n], nrow = length(unique(long$G)), ncol = length(unique(long$N)))), 3)
+    out[[n]] = t(matrix(long[,n], nrow = length(unique(long$G)), ncol = length(unique(long$N))))
     rownames(out[[n]]) = unique(long$G)
     colnames(out[[n]]) = unique(long$N)
   }
-  saveRDS(out, paste0(to, "runtime.rds"))
+  saveRDS(out, paste0(to, "runtime_", analysis, ".rds"))
 }
 

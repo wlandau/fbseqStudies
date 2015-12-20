@@ -30,6 +30,7 @@ Suggests:
 VignetteBuilder: knitr
 License: GPL (>= 3)
 Collate:
+    'analyze-auc_df.R'
     'analyze-calibration.R'
     'analyze-mytheme.R'
     'analyze-ci_beta.R'
@@ -38,6 +39,8 @@ Collate:
     'analyze-ci_hyper_list.R'
     'analyze-ess.R'
     'analyze-gelman.R'
+    'analyze-ggplot2_df.R'
+    'analyze-plot_auc.R'
     'analyze-plot_calibration.R'
     'analyze-plot_roc.R'
     'analyze-roc.R'
@@ -60,7 +63,6 @@ Collate:
     'study-computation_mcmc.R'
     'paper_computation.R'
     'paper_priors.R'
-    'plotting-ggplot2_df.R'
     'simulation_simple.R'
     'simulation_paschold.R'
     'simulation_model.R'

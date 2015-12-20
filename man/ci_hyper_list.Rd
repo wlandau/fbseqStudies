@@ -4,10 +4,12 @@
 \alias{ci_hyper_list}
 \title{Function \code{ci_hyper_list}}
 \usage{
-ci_hyper_list(path, level = 0.5)
+ci_hyper_list(from, to, level = 0.5)
 }
 \arguments{
-\item{path}{directory with simulation lists}
+\item{from}{directory with simulation lists}
+
+\item{to}{where to put ci information}
 
 \item{level}{credible level}
 }

@@ -4,7 +4,7 @@ NULL
 #' @title Function \code{plot_roc}
 #' @description plot roc curves using rds files extracted from simulation lists
 #' @export
-#' @param from directory of extracted results files
+#' @param from directory with roc information
 #' @param to directory to save plots
 plot_roc = function(from, to){
   from = newdir(from)

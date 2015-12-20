@@ -7,7 +7,7 @@
 comparison_analyze(from, to)
 }
 \arguments{
-\item{from}{to directory to save simulations and results}
+\item{from}{to directory to roc information}
 
 \item{to}{output directory}
 }

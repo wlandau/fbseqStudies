@@ -7,7 +7,7 @@
 ci_beta(from, to)
 }
 \arguments{
-\item{from}{directory of extracted results files}
+\item{from}{directory containing ci information}
 
 \item{to}{directory to save plots}
 }

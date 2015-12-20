@@ -4,10 +4,12 @@
 \alias{ci_beta_list}
 \title{Function \code{ci_beta_list}}
 \usage{
-ci_beta_list(path, level = 0.5)
+ci_beta_list(from, to, level = 0.5)
 }
 \arguments{
-\item{path}{directory with simulation lists}
+\item{from}{directory with simulation lists}
+
+\item{to}{where to put ci information}
 
 \item{level}{credible level}
 }

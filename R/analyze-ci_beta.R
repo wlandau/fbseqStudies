@@ -4,13 +4,14 @@ NULL
 #' @title Function \code{ci_beta}
 #' @description plot roc curves using rds files extracted from simulation lists
 #' @export
-#' @param from directory of extracted results files
+#' @param from directory containing ci information
 #' @param to directory to save plots
 ci_beta = function(from, to){
-  l = ci_beta_list(from, level = 0.5)
+  from = newdir(from)
+  l = readRDS(paste0(from, "ci_beta_list_0.5.rds"))
   to = newdir(to)
   G = dim(l$truth)/5
-  parms = paste0("beta_", rep(1:5, each = 2), "_", sample.int(G, 2))
+  parms = paste0("beta_", rep(1:5, each = 2), "_", sample.int(G, 1))
   for(n in parms){
     d = data.frame(lower = l$lower[n,] - l$truth[n,], upper = l$upper[n,] - l$truth[n,], rep = 1:length(l$truth[n,]))
     pl = ggplot(d) + mytheme() + 
@@ -20,7 +21,7 @@ ci_beta = function(from, to){
   }
   out = list(ci_0.5 = rowMeans(l$lower < l$truth & l$truth < l$upper))
   
-  l = ci_beta_list(from, level = 0.95)
+  l = readRDS(paste0(from, "ci_beta_list_0.95.rds"))
   for(ell in 1:5) for(rep in 1:ncol(l$lower)){
     n = grep(paste0("beta_", ell), rownames(l$truth))
     d = data.frame(lower = l$lower[n,rep], upper = l$upper[n,rep], truth = l$truth[n,rep],

@@ -2,14 +2,16 @@
 #' @description Info to assesses coverage of hyperparameters by credible intervals.
 #' @export
 #' @return Info to assesses coverage of hyperparameters by credible intervals.
-#' @param path directory with simulation lists
+#' @param from directory with simulation lists
+#' @param to where to put ci information
 #' @param level credible level
-ci_hyper_list = function(path, level = 0.5){
-  path = newdir(path)
+ci_hyper_list = function(from, to, level = 0.5){
+  from = newdir(from)
+  to = newdir(to)
   lower = upper = truth = NULL
-  for(f in list.files(path)){
+  for(f in list.files(from)){
     print(f)
-    l = readRDS(paste0(path, f))
+    l = readRDS(paste0(from, f))
     a = l$analyses[["fullybayes+normal"]]
     m = mcmc_samples(a$chains)
     m = m[,grep("nu|tau|sigma|theta", colnames(m))]
@@ -19,5 +21,6 @@ ci_hyper_list = function(path, level = 0.5){
     upper = cbind(upper, apply(m, 2, quantile, probs = 1 - (1 - level)/2))
   }
   rownames(truth) = rownames(lower)
-  list(truth = truth, lower = lower, upper = upper, level = level)
+  out = list(truth = truth, lower = lower, upper = upper, level = level)
+  saveRDS(out, paste0(to, "ci_hyper_list_", level, ".rds"))
 }
