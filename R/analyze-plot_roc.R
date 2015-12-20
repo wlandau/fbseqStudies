@@ -11,7 +11,6 @@ plot_roc = function(from, to, cutoff = 0.1){
   from = newdir(from)
   to = newdir(to)
   df = ggplot2_df(from)
-
   for(h in levels(df$heterosis)){
     d = df[df$heterosis == h,]
     d = d[d$fpr < cutoff,]

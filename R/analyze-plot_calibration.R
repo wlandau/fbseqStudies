@@ -7,7 +7,6 @@ plot_calibration = function(from, to){
   from = newdir(from)
   to = newdir(to)
   df = ggplot2_df(from)
-
   for(h in levels(df$heterosis)){
     d = df[df$heterosis == h,]
     pl = ggplot(d) + mytheme() + 
