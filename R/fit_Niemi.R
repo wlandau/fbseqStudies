@@ -37,10 +37,6 @@ single_gene_analysis = function(x, group, hyperparameters, model) {
   attempt = 1
   pars = c(paste0("beta_", 1:5), "psi", "hph", "lph", "hph1", "lph1", "hph2", "lph2")
 
-  con = file("/dev/null", "w")
-  sink("/dev/null", type = "output")
-  sink(con, type = "message")
-
   while (diverge) {
     print(paste("Attempt", attempt))
     r = sampling(model, 
@@ -55,10 +51,6 @@ single_gene_analysis = function(x, group, hyperparameters, model) {
     diverge = any(s[,"n_eff"] < 1000)
     attempt = attempt + 1
   }
-
-  sink(NULL, type = "output")
-  sink(NULL, type = "message")
-  close(con)
 
   data(paschold)
   paschold = get("paschold")
@@ -180,12 +172,21 @@ fit_Niemi = function(counts, design, group, ncores = 1){
   }")
   unsink(logs)
 
+  con = file("/dev/null", "w")
+  sink("/dev/null", type = "output")
+  sink(con, type = "message")
+
   registerDoMC(cores = ncores)
   out = adply(as.matrix(counts), 1, 
     function(x){single_gene_analysis(x, group, hyperparameters, model)},
                      .parallel = T,
                      .paropts = list(.export=c("single_gene_analysis", "group", "hyperparameters", "model"), 
                      .packages='rstan'))
+
+  sink(NULL, type = "output")
+  sink(NULL, type = "message")
+  close(con)
+
   attempts = out$attempt
   out = out[,colnames(out) != "X1" & colnames(out) != "attempt"]
   registerDoSEQ()
