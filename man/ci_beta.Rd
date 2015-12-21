@@ -7,11 +7,14 @@
 ci_beta(from, to)
 }
 \arguments{
-\item{from}{directory containing ci information}
+\item{from}{directory with simulation _levels}
 
-\item{to}{directory to save plots}
+\item{to}{where to put ci information}
+}
+\value{
+Info to assesses coverage of betaparameters by credible intervals.
 }
 \description{
-plot roc curves using rds files extracted from simulation lists
+Info to assesses coverage of betaparameters by credible intervals.
 }
 

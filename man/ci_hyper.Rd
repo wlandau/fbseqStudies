@@ -2,16 +2,19 @@
 % Please edit documentation in R/analyze-ci_hyper.R
 \name{ci_hyper}
 \alias{ci_hyper}
-\title{Function \code{ci_hyper}}
+\title{Function \code{ci_level}}
 \usage{
 ci_hyper(from, to)
 }
 \arguments{
-\item{from}{directory containing ci information}
+\item{from}{directory with simulation lists}
 
-\item{to}{directory to save plots}
+\item{to}{where to put ci information}
+}
+\value{
+Info to assesses coverage of hyperparameters by credible intervals.
 }
 \description{
-plot roc curves using rds files extracted from simulation lists
+Info to assesses coverage of hyperparameters by credible intervals.
 }
 

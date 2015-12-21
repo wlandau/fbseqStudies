@@ -10,7 +10,7 @@ comparison_analyze = function(from, to){
   ess(from, paste0(to, "ess"))
   rocs(from, paste0(to, "roc"))
   plot_roc(paste0(to, "roc"), paste0(to, "plot_roc"))
-  plot_auc(paste0(to, "roc"), paste0(to, "auc"))
+  plot_auc(paste0(to, "roc"), paste0(to, "plot_auc"))
   calibrations(from, paste0(to, "calibration"))
   plot_calibration(paste0(to, "calibration"), paste0(to, "plot_calibration"))
 }
