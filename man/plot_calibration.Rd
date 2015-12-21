@@ -4,16 +4,21 @@
 \alias{plot_calibration}
 \title{Function \code{plot_calibration}}
 \usage{
-plot_calibration(from, to, analysis = analyses())
+plot_calibration(from, to, cutoff = 0.1, analysis = analyses(),
+  reps = 1:10)
 }
 \arguments{
-\item{from}{directory of extracted results files}
+\item{from}{directory with calibration information}
 
 \item{to}{directory to save plots}
 
+\item{cutoff}{for fpr}
+
 \item{analysis}{analysis methods to plot}
+
+\item{reps}{reps to plot}
 }
 \description{
-plot posterior probability calibration curves using rds files extracted from simulation lists
+plot calibration curves using rds files extracted from simulation lists
 }
 
