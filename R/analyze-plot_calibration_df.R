@@ -10,7 +10,6 @@ NULL
 #' @param reps reps to plot
 plot_calibration_df = function(df, to, analysis = analyses(), reps = 1:10){
   to = newdir(to)
-  df = ggplot2_df(from)
   df = df[df$analysis %in% analysis,]
   df = df[as.integer(df$rep) %in% reps,]
   df$analysis = myrelevel(df$analysis)
