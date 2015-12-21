@@ -19,6 +19,6 @@ plot_calibration_df = function(df, to, analysis = analyses(), reps = 1:10){
       geom_line(aes_string(x = "probability", y = "proportion", group = "file", color = "analysis", linetype = "analysis")) + 
       geom_abline(slope = 1, intercept = 0, alpha = 0.25) + 
       facet_grid(libraries ~ simulation)
-    suppressMessages(ggsave(paste0(to, h, ".pdf"), pl))
+    suppressMessages(ggsave(paste0(to, h, "_", paste0(reps, collapse = "_"), ".pdf"), pl))
   }
 }

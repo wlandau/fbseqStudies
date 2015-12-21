@@ -9,6 +9,7 @@ NULL
 plot_ci_hyper = function(from, to){
   from = newdir(from)
   l = readRDS(paste0(from, "ci_hyper_0.5.rds"))
+  if(is.null(l$truth)) return()
   to = newdir(to)
   for(n in rownames(l$truth)){
     d = data.frame(lower = l$lower[n,] - l$truth[n,], upper = l$upper[n,] - l$truth[n,], rep = 1:length(l$truth[n,]))

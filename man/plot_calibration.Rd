@@ -4,15 +4,12 @@
 \alias{plot_calibration}
 \title{Function \code{plot_calibration}}
 \usage{
-plot_calibration(from, to, cutoff = 0.1, analysis = analyses(),
-  reps = 1:10)
+plot_calibration(from, to, analysis = analyses(), reps = 1:10)
 }
 \arguments{
 \item{from}{directory with calibration information}
 
 \item{to}{directory to save plots}
-
-\item{cutoff}{for fpr}
 
 \item{analysis}{analysis methods to plot}
 

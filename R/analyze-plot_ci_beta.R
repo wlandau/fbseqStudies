@@ -8,7 +8,9 @@ NULL
 #' @param to directory to save plots
 plot_ci_beta = function(from, to){
   from = newdir(from)
+  if(!file.exists(paste0(from, "ci_beta_0.5.rds"))) return()
   l = readRDS(paste0(from, "ci_beta_0.5.rds"))
+  if(is.null(l$truth)) return()
   to = newdir(to)
   G = dim(l$truth)/5
   parms = paste0("beta_", rep(1:5, each = 2), "_", sample.int(G, 1))

@@ -21,6 +21,7 @@ ci_beta_level = function(from, to, level = 0.5){
     lower = cbind(lower, est[, grep("lower", colnames(est))])
     upper = cbind(upper, est[, grep("upper", colnames(est))])
   }
+  if(is.null(lower)) return()
   rownames(truth) = rownames(lower) = rownames(upper) = ns
   out = list(truth = truth, lower = lower, upper = upper, level = level)
   saveRDS(out, paste0(to, "ci_beta_", level, ".rds"))

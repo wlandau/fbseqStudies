@@ -7,11 +7,11 @@
 comparison_analyze(from, to)
 }
 \arguments{
-\item{from}{to directory to roc information}
+\item{from}{to directory to save simulations and results}
 
 \item{to}{output directory}
 }
 \description{
-Plot and summarize results from comparison study
+Plot and summarize results from simulation studies
 }
 

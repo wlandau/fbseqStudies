@@ -12,6 +12,6 @@ coverage_analyze(from, to)
 \item{to}{output directory}
 }
 \description{
-Plot and summarize results from simulation study
+Plot and summarize results from simulation studies
 }
 
