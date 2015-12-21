@@ -1,4 +1,4 @@
-#' @include analyze-mytheme.R util-relevel.R
+#' @include analyze-mytheme.R util-myrelevel.R
 NULL
 
 #' @title Function \code{plot_calibration}
@@ -12,7 +12,7 @@ plot_calibration = function(from, to, analysis = analyses()){
   to = newdir(to)
   df = ggplot2_df(from)
   df = df[df$analysis %in% analysis,]
-  df$analysis = relevel(df$analysis)
+  df$analysis = myrelevel(df$analysis)
   for(h in levels(df$heterosis)){
     d = df[df$heterosis == h,]
     pl = ggplot(d) + mytheme() + 
