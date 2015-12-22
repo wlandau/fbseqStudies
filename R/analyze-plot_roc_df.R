@@ -21,6 +21,6 @@ plot_roc_df = function(df, to, cutoff = 0.1, analysis = analyses(), reps = 1:10)
       geom_line(aes_string(x = "fpr", y = "tpr", group = "file", color = "analysis", linetype = "analysis")) + 
       geom_abline(slope = 1, intercept = 0, alpha = 0.25) + 
       facet_grid(libraries ~ simulation)
-    suppressMessages(ggsave(paste0(to, h, "_",  paste0(reps, collapse = "_"), ".pdf"), pl))
+    ggsave(paste0(to, h, "_",  paste0(reps, collapse = "_"), ".pdf"), pl, height = 8, width = 8)
   }
 }

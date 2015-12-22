@@ -23,6 +23,6 @@ plot_auc = function(from, to, analysis = analyses()){
       geom_point(aes_string(x = "analysis", y = cutoff, shape = 4)) + 
       scale_shape_identity() +
       facet_grid(libraries ~ simulation)
-    suppressMessages(ggsave(paste0(to, h, "_", cutoff, ".pdf"), pl))
+    ggsave(paste0(to, h, "_", cutoff, ".pdf"), pl, height = 8, width = 8)
   }
 }

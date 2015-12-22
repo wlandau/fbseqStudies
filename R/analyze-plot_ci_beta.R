@@ -24,7 +24,7 @@ plot_ci_beta = function(from, to){
     pl = ggplot(d) + mytheme_straight() + 
       geom_segment(aes_string(x = "rep", xend = "rep", y = "lower", yend = "upper")) + 
       geom_abline(slope = 0, intercept = 0)
-    ggsave(paste0(to50, iden, "_ci50.pdf"), pl)
+    ggsave(paste0(to50, iden, "_ci50.pdf"), pl, height = 8, width = 8)
   })
   
   to_cover = newdir(paste0(to, "ci95_cover"))
@@ -51,12 +51,12 @@ plot_ci_beta = function(from, to){
       pl = ggplot(cover) + mytheme_straight() + 
         geom_segment(aes_string(x = "index", xend = "index", y = "lower", yend = "upper"), color = "darkGray") + 
         geom_point(aes_string(x = "index", y = "truth"), size = I(0.5))
-      ggsave(paste0(to_cover, iden, "_beta_", ell, "_cover_95.pdf"), pl)
+      ggsave(paste0(to_cover, iden, "_beta_", ell, "_cover_95.pdf"), pl, height = 8, width = 8)
 
       pl = ggplot(miss) + mytheme_straight() + 
         geom_segment(aes_string(x = "index", xend = "index", y = "lower", yend = "upper"), color = "darkGray") + 
         geom_point(aes_string(x = "index", y = "truth"), size = I(0.5))
-      ggsave(paste0(to_miss, iden, "_beta_", ell, "_miss_95.pdf"), pl)
+      ggsave(paste0(to_miss, iden, "_beta_", ell, "_miss_95.pdf"), pl, height = 8, width = 8)
     })
   }
 }
