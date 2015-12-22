@@ -12,6 +12,7 @@ comparison_analyze = function(from, to){
   plot_ci_hyper(paste0(to, "ci_hyper"), paste0(to, "plot_ci_hyper"))
   ci_beta(from, paste0(to, "ci_beta"))
   plot_ci_beta(paste0(to, "ci_beta"), paste0(to, "plot_ci_beta"))
+  table_ci_beta(paste0(to, "ci_beta"), paste0(to, "table_ci_beta"))
   rocs(from, paste0(to, "roc"))
   plot_roc(paste0(to, "roc"), paste0(to, "plot_roc"))
   plot_auc(paste0(to, "roc"), paste0(to, "plot_auc"))
