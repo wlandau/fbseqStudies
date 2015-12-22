@@ -4,17 +4,19 @@
 \alias{ci_beta}
 \title{Function \code{ci_beta}}
 \usage{
-ci_beta(from, to)
+ci_beta(from, to, levels = c(0.5, 0.95))
 }
 \arguments{
-\item{from}{directory with simulation _levels}
+\item{from}{directory with simulation lists}
 
 \item{to}{where to put ci information}
+
+\item{levels}{credible levels}
 }
 \value{
-Info to assesses coverage of betaparameters by credible intervals.
+Info to assesses coverage of beta parameters by credible intervals.
 }
 \description{
-Info to assesses coverage of betaparameters by credible intervals.
+Info to assesses coverage of beta parameters by credible intervals.
 }
 

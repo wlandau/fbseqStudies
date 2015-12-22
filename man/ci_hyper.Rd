@@ -2,14 +2,16 @@
 % Please edit documentation in R/analyze-ci_hyper.R
 \name{ci_hyper}
 \alias{ci_hyper}
-\title{Function \code{ci_level}}
+\title{Function \code{ci_hyper}}
 \usage{
-ci_hyper(from, to)
+ci_hyper(from, to, level = 0.5)
 }
 \arguments{
 \item{from}{directory with simulation lists}
 
 \item{to}{where to put ci information}
+
+\item{level}{credible level}
 }
 \value{
 Info to assesses coverage of hyperparameters by credible intervals.

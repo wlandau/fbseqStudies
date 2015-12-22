@@ -12,6 +12,6 @@ plot_ci_beta(from, to)
 \item{to}{directory to save plots}
 }
 \description{
-plot roc curves using rds files extracted from simulation lists
+plot information about coverage of beta parameters in credible intervals
 }
 
