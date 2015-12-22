@@ -23,12 +23,10 @@ table_ci_beta = function(from, to){
   reps = unique(l$rep)
   for(v in unique(l$level)){
     k = list()
-    for(r in reps){
-      k[[r]] = l[l$rep == r & l$level == v,]
-      cover_df = k[[1]]
-      cover = sapply(k, function(x) x$cover)
-      cover_df$cover = rowMeans(cover)
-      saveRDS(cover_df, paste0(to, "coverage_by_gene_", v, ".rds"))
-    }
+    for(r in reps) k[[r]] = l[l$rep == r & l$level == v,]
+    cover_df = k[[1]][, c("parameter", "simulation", "libraries", "analysis")]
+    cover = sapply(k, function(x) x$cover)
+    cover_df$cover = rowMeans(cover)
+    saveRDS(cover_df, paste0(to, "coverage_by_gene_", v, ".rds"))
   }
 }
