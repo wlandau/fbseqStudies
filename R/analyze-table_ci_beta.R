@@ -16,7 +16,7 @@ table_ci_beta = function(from, to){
   l$beta = gsub("_[0-9]*$", "", l$parameter)
   coverage_by_beta = ddply(l, c("beta", "simulation", "libraries", "rep", "analysis"), function(x){
     data.frame(beta = x$beta[1], simulation = x$simulation[1], libraries = x$libraries[1], rep = x$rep[1],
-      analysis = x$analysis[1], cover50 = mean(x[x$level == 0.5,]$cover), cover95 = mean(x[x$level == 0.5,]$cover))
+      analysis = x$analysis[1], cover50 = mean(x[x$level == 0.5,]$cover), cover95 = mean(x[x$level == 0.95,]$cover))
   }, .progress = "text")
   saveRDS(coverage_by_beta, paste0(to, "coverage_by_beta.rds"))
 
