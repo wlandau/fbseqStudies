@@ -48,8 +48,6 @@ Collate:
     'analyze-plot_roc.R'
     'analyze-roc.R'
     'analyze-runtime.R'
-    'analyze-runtime_plots.R'
-    'analyze-runtime_tables.R'
     'fit_fbseq.R'
     'fit_edgeR.R'
     'fit_Niemi.R'
