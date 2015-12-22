@@ -18,7 +18,7 @@ table_ci_beta = function(from, to){
     data.frame(beta = x$beta[1], simulation = x$simulation[1], libraries = x$libraries[1], rep = x$rep[1],
       analysis = x$analysis[1], cover50 = mean(x[x$level == 0.5,]$cover), cover95 = mean(x[x$level == 0.5,]$cover))
   }, .progress = "text")
-  saveRDS(coverage_by_beta, paste0(to, "cover_by_beta.rds"))
+  saveRDS(coverage_by_beta, paste0(to, "coverage_by_beta.rds"))
 
   reps = unique(l$rep)
   for(v in unique(l$level)){
