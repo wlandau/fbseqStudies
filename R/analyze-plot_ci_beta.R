@@ -25,7 +25,7 @@ plot_ci_beta = function(from, to){
       geom_segment(aes_string(x = "rep", xend = "rep", y = "lower", yend = "upper")) + 
       geom_abline(slope = 0, intercept = 0)
     ggsave(paste0(to50, iden, "_ci50.pdf"), pl, height = 8, width = 8)
-  })
+  }, .progress = "text")
   
   to_cover = newdir(paste0(to, "ci95_cover"))
   to_miss = newdir(paste0(to, "ci95_miss"))
@@ -57,6 +57,6 @@ plot_ci_beta = function(from, to){
         geom_segment(aes_string(x = "index", xend = "index", y = "lower", yend = "upper"), color = "darkGray") + 
         geom_point(aes_string(x = "index", y = "truth"), size = I(0.5))
       ggsave(paste0(to_miss, iden, "_beta_", ell, "_miss_95.pdf"), pl, height = 8, width = 8)
-    })
+    }, .progress = "text")
   }
 }
