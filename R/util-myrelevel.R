@@ -13,13 +13,13 @@ myrelevel = function(x){
   out[out == "fullybayes+t"] = "fully Bayes (t)"
   out[out == "fullybayes+horseshoe"] = "fully Bayes (horseshoe)"
   ordered(out, levels = c(
-    "edgeR",
-    "Niemi",
     "eBayes (oracle)", 
     "eBayes (naive)",
     "eBayes (posterior)",
     "fully Bayes (normal)",
     "fully Bayes (Laplace)",
     "fully Bayes (t)",
-    "fully Bayes (horseshoe)"))
+    "fully Bayes (horseshoe)",
+    "edgeR",
+    "Niemi"))
 }
