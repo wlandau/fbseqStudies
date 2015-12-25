@@ -11,5 +11,6 @@ real_mcmc = function(path = newdir()){
   real_init(path)
   fit(path, benchmarks = NULL, priors = "normal")
   fit(path, benchmarks = NULL, fbseq_methods = "fullybayes")
+  fit(path, fbseq_methods = NULL)
   path
 }
