@@ -6,7 +6,7 @@ NULL
 #' @export
 paper_case = function(){
   path = real_init("real_mcmc")
-  fit(path, benchmarks = NULL, priors = "normal")
+  fit(path, priors = "normal")
   real_analyze(path, "real_analyze")
   coverage_mcmc("coverage_mcmc")
   coverage_analyze("coverage_mcmc", "coverage_analyze")

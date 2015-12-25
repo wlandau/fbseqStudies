@@ -6,7 +6,7 @@ NULL
 #' @export
 paper_priors = function(){
   path = real_init("real_mcmc")
-  fit(path, benchmarks = NULL, fbseq_methods = "fullybayes")
+  fit(path, fbseq_methods = "fullybayes")
   real_analyze(path, "real_analyze")
   path = comparison_init("comparison_analyze")
   fit(path, benchmarks = NULL, fbseq_methods = "fullybayes")
