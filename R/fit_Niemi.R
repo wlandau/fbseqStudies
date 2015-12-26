@@ -189,9 +189,9 @@ fit_Niemi = function(counts, design, group, ncores = 1){
   close(con)
 
   attempts = out$attempt
-  c = out$c
+  lognorm = out$c
   psi = out$psi
   out = out[,colnames(out) != "X1" & !(colnames(out) %in% c("attempt", "c", "psi"))]
   registerDoSEQ()
-  list(analysis = "Niemi", attempts = attempts, estimates = out, psi = psi, runtime = my.proc.time() - t)
+  list(analysis = "Niemi", attempts = attempts, lognorm = lognorm, estimates = out, psi = psi, runtime = my.proc.time() - t)
 }
