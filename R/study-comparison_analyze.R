@@ -8,6 +8,7 @@ comparison_analyze = function(from, to){
   to = newdir(to)
   gelman(from, paste0(to, "gelman"))
   ess(from, paste0(to, "ess"))
+  runtime(from, paste0(to, "runtime"))
   ci_hyper(from, paste0(to, "ci_hyper"))
   plot_ci_hyper(paste0(to, "ci_hyper"), paste0(to, "plot_ci_hyper"))
   ci_beta(from, paste0(to, "ci_beta"))

@@ -4,8 +4,5 @@
 #' @param from to directory to save simulations and results
 #' @param to output directory
 real_analyze = function(from, to){
-  from = newdir(from)
-  to = newdir(to)
-  gelman(from, paste0(to, "gelman"))
-  ess(from, paste0(to, "ess"))
+  computation_analyze(from, to)
 }

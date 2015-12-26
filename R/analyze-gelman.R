@@ -9,7 +9,7 @@ gelman = function(from, to){
   out = list()
   for(f in list.files(from)){
     l = readRDS(paste0(from, f))
-    for(a in names(l$analyses)){
+    for(a in names(l$analyses)) if("psrf" %in% names(l$analyses[[a]])){
       n = paste(f, a, sep = "_")
       out[[n]] = sort(l$analyses[[a]]$psrf, decreasing = T)
     }

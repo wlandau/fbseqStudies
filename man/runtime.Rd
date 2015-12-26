@@ -4,14 +4,12 @@
 \alias{runtime}
 \title{Function \code{runtime}}
 \usage{
-runtime(from, to, analysis = "fullybayes+normal")
+runtime(from, to)
 }
 \arguments{
 \item{from}{directory with simulation lists}
 
 \item{to}{output directory}
-
-\item{analysis}{to get runtimes of}
 }
 \value{
 runtime table
