@@ -31,20 +31,12 @@ runtime = function(from, to){
 
       names(runtime_per_min_ess_100) = NULL
       names(runtime_per_median_ess_100) = NULL
-      long = rbind(long, data.frame(file = f, simulation = l$simulation, analysis = a$analysis, G = G, N = N,
+      long = rbind(long, data.frame(file = f, simulation = l$simulation, analysis = a$analysis, rep = meta(f)["rep"], G = G, N = N,
         runtime = runtime, min_ess = min_ess, which_min_ess = which_min_ess, median_ess = median_ess,
         runtime_per_min_ess_100 =  runtime_per_min_ess_100,
         runtime_per_median_ess_100 = runtime_per_median_ess_100))
     }
   }
   long[long == -1] = NA
-  out = list(long = long)
-  for(n in colnames(long)[6:11]) for(a in unique(long$analysis)){
-    i = paste(n, f, a, sep = "_")
-    out[[i]] = t(matrix(long[long$analysis == a,n], nrow = length(unique(long$G)), ncol = length(unique(long$N))))
-    rownames(out[[i]]) = unique(long$G)
-    colnames(out[[i]]) = unique(long$N)
-  }
-  saveRDS(out, paste0(to, "runtime.rds"))
+  saveRDS(long, paste0(to, "runtime.rds"))
 }
-
