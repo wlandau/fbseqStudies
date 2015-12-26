@@ -1,14 +1,20 @@
+#' @include fit_Niemi.R
+NULL
+
 #' @title Function \code{simulation_Niemi}
 #' @description simulates a scenario using Niemi
 #' @export
 #' @return a list if pertinent scenario information
 #' @param genes number of genes
 #' @param libraries number of libraries
-simulation_Niemi = function(genes = 3e4, libraries = 16){
+#' @param fit output object from fit_Niemi
+#' @param ncores number of cores 
+simulation_Niemi = function(genes = 3e4, libraries = 16, fit = NULL, ncores = detectCores()){
   data(paschold)
-  data(niemi_fit_paschold)
   paschold = get("paschold")
-  fit = get("niemi_fit_paschold")
+  l = simulation_paschold()
+  if(is.null(fit)) fit = fit_Niemi(paschold@counts, paschold@design, group = l$scenario@supplement$group, 
+    ncores = ncores)
 
   beta = fit$estimates[,grep("beta_", colnames(fit$estimates))]
   gs = sample.int(dim(fit$estimates)[1], genes, replace = T)

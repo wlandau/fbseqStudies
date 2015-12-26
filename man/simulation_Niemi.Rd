@@ -4,12 +4,17 @@
 \alias{simulation_Niemi}
 \title{Function \code{simulation_Niemi}}
 \usage{
-simulation_Niemi(genes = 30000, libraries = 16)
+simulation_Niemi(genes = 30000, libraries = 16, fit = NULL,
+  ncores = detectCores())
 }
 \arguments{
 \item{genes}{number of genes}
 
 \item{libraries}{number of libraries}
+
+\item{fit}{output object from fit_Niemi}
+
+\item{ncores}{number of cores}
 }
 \value{
 a list if pertinent scenario information

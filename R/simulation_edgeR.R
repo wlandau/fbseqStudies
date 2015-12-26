@@ -1,3 +1,6 @@
+#' @include fit_edgeR.R
+NULL
+
 #' @title Function \code{simulation_edgeR}
 #' @description simulates a scenario using edgeR
 #' @export

@@ -49,7 +49,6 @@ Collate:
     'analyze-roc.R'
     'analyze-runtime.R'
     'analyze-table_ci_beta.R'
-    'data.R'
     'fit_fbseq.R'
     'fit_edgeR.R'
     'fit_Niemi.R'

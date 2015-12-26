@@ -4,10 +4,12 @@
 \alias{comparison_init}
 \title{Function \code{comparison_init}}
 \usage{
-comparison_init(path = newdir())
+comparison_init(path = newdir(), ncores = detectCores())
 }
 \arguments{
 \item{path}{to directory to save simulations and results}
+
+\item{ncores}{number of cores for \code{fit_Niemi()}}
 }
 \value{
 path to simulated objects
