@@ -14,6 +14,8 @@ comparison_init = function(path = newdir()){
   for(g in genes) for(n in libraries) for(r in 1:reps) {
     if(!file.exists(f <- paste0(path, "edgeR_", g, "_", n, "_", r, ".rds"))) 
       saveRDS(simulation_edgeR(genes = g, libraries = n, fit = fit), f)
+    if(!file.exists(f <- paste0(path, "Niemi_", g, "_", n, "_", r, ".rds"))) 
+      saveRDS(simulation_edgeR(genes = g, libraries = n, fit = fit), f)
     if(!file.exists(f <- paste0(path, "model_", g, "_", n, "_", r, ".rds"))) 
       saveRDS(simulation_model(genes = g, libraries = n), f)
     if(!file.exists(f <- paste0(path, "simple_", g, "_", n, "_", r, ".rds"))) 
