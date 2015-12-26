@@ -23,7 +23,7 @@ simulation_edgeR = function(genes = 3e4, libraries = 16, fit = NULL){
   disp_mat = matrix(rep(disp, times = libraries), nrow = genes)
 
   design = paschold@design[ns,]
-  lambda = t(design %*% t(beta)) + norm_mat
+  lambda = t(design %*% t(beta)) + log(norm_mat)
 
   counts = matrix(rnbinom(n = prod(dim(lambda)), mu = exp(lambda), size = 1/disp_mat), nrow = genes)
 

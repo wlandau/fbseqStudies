@@ -65,6 +65,7 @@ single_gene_analysis = function(x, group, hyperparameters, model) {
 
   out = data.frame(
     attempt = attempt,
+    psi = s["psi", "mean"],
     beta_1 = s["beta_1", "mean"],
     beta_2 = s["beta_2", "mean"],
     beta_3 = s["beta_3", "mean"],
@@ -187,7 +188,8 @@ fit_Niemi = function(counts, design, group, ncores = 1){
   close(con)
 
   attempts = out$attempt
-  out = out[,colnames(out) != "X1" & colnames(out) != "attempt"]
+  psi = out$psi
+  out = out[,colnames(out) != "X1" & !(colnames(out) %in% c("attempt", "psi"))]
   registerDoSEQ()
-  list(analysis = "Niemi", attempts = attempts, estimates = out, runtime = my.proc.time() - t)
+  list(analysis = "Niemi", attempts = attempts, estimates = out, psi = psi, runtime = my.proc.time() - t)
 }
