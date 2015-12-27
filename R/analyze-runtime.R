@@ -38,5 +38,6 @@ runtime = function(from, to){
     }
   }
   long[long == -1] = NA
+  rownames(long) = NULL
   saveRDS(long, paste0(to, "runtime.rds"))
 }
