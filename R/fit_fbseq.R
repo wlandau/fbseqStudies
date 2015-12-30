@@ -43,7 +43,7 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
     for(p in hyper) slot(starts, p) = slot(truth, p)
   }
  
-  if(sim$simulation != "paschold") starts@h = 0
+  if(sim$simulation == "model") starts@h = 0
   chain = Chain(s, configs, starts)
   configs = Configs(chain)
   starts = Starts(chain)
