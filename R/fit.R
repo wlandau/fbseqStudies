@@ -13,8 +13,10 @@ NULL
 #' @param ncores number of cores for CPU-parallel methods
 #' @param debug debug mode, TRUE/FALSE
 #' @param configs \code{Configs} object for \code{fbseq}
+#' @param zeronormfactors TRUE/FALSE. If TRUE, starts@h is set to 0.
 fit = function(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes", "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth"), 
-  priors = c("normal", special_beta_priors()), ncores = detectCores(), debug = F, configs = Configs()){
+  priors = c("normal", special_beta_priors()), ncores = detectCores(), debug = F, configs = Configs(),
+  zeronormfactors = F){
 
   path = newdir(path)
   files = list.files(path)
@@ -42,7 +44,7 @@ fit = function(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullyb
     method = paste0(fbseq_method, "+", prior)
 
     if(is.null(o$analyses[[method]])){
-      o$analyses[[method]] = fit_fbseq(o, fbseq_method, prior, debug, configs = configs)
+      o$analyses[[method]] = fit_fbseq(o, fbseq_method, prior, debug, configs = configs, zeronormfactors = zeronormfactors)
       saveRDS(o, p)
     }
   }

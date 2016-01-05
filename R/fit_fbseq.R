@@ -8,7 +8,8 @@
 #' @param prior prior distribution on betas
 #' @param debug debug mode, TRUE/FALSE
 #' @param configs \code{Configs} object for \code{fbseq}
-fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, configs = Configs()){
+#' @param zeronormfactors TRUE/FALSE. If TRUE, starts@h is set to 0.
+fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, configs = Configs(), zeronormfactors = F){
   logs = mysink()
   t = my.proc.time()
 
@@ -43,7 +44,7 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
     for(p in hyper) slot(starts, p) = slot(truth, p)
   }
  
-  if(sim$simulation == "model") starts@h = 0
+  if(zeronormfactors) starts@h = 0
   chain = Chain(s, configs, starts)
   configs = Configs(chain)
   starts = Starts(chain)

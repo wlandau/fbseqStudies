@@ -9,6 +9,6 @@ NULL
 coverage_mcmc = function(path = newdir()){
   path = newdir(path)
   coverage_init(path)
-  fit(path, benchmarks = NULL, fbseq_methods = "fullybayes")
+  fit(path, benchmarks = NULL, fbseq_methods = "fullybayes", zeronormfactors = T)
   path
 }
