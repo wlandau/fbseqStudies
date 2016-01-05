@@ -5,7 +5,7 @@
 \title{Function \code{fit_fbseq}}
 \usage{
 fit_fbseq(sim, method = "fullybayes", prior = "normal", debug = F,
-  configs = Configs())
+  configs = Configs(), zeronormfactors = F)
 }
 \arguments{
 \item{sim}{a list, the current simulation object}
@@ -18,6 +18,8 @@ fit_fbseq(sim, method = "fullybayes", prior = "normal", debug = F,
 \item{debug}{debug mode, TRUE/FALSE}
 
 \item{configs}{\code{Configs} object for \code{fbseq}}
+
+\item{zeronormfactors}{TRUE/FALSE. If TRUE, starts@h is set to 0.}
 }
 \value{
 information for a fitted model

@@ -8,7 +8,7 @@
 #' @param prior prior distribution on betas
 #' @param debug debug mode, TRUE/FALSE
 #' @param configs \code{Configs} object for \code{fbseq}
-#' @param zeronormfactors TRUE/FALSE. If TRUE, starts@h is set to 0.
+#' @param zeronormfactors TRUE/FALSE. If TRUE, starts@@h is set to 0.
 fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, configs = Configs(), zeronormfactors = F){
   logs = mysink()
   t = my.proc.time()

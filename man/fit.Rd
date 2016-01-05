@@ -7,7 +7,7 @@
 fit(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes",
   "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth"),
   priors = c("normal", special_beta_priors()), ncores = detectCores(),
-  debug = F, configs = Configs())
+  debug = F, configs = Configs(), zeronormfactors = F)
 }
 \arguments{
 \item{path}{to directory to save simulations and results}
@@ -24,6 +24,8 @@ or a combination/vector of these. "fullybayes" must come before "ebayesFromFully
 \item{debug}{debug mode, TRUE/FALSE}
 
 \item{configs}{\code{Configs} object for \code{fbseq}}
+
+\item{zeronormfactors}{TRUE/FALSE. If TRUE, starts@h is set to 0.}
 }
 \value{
 path to simulated objects
