@@ -12,6 +12,7 @@ roc = function(probs, truth, cutoffs = c(0.05, 0.1, 0.15, 0.2, 0.5, 1)){
   tp = cumsum(truth)
   fpr = fp/max(fp)
   tpr = tp/max(tp)
+  tpr[is.na(tpr)] = 0
   fn = stepfun(x = fpr, y = c(0, tpr))
   xs = seq(from = 0, to = 1, length.out = 4e2)
   ys = fn(xs)
