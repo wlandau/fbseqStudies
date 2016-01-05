@@ -12,6 +12,7 @@ plot_calibration = function(from, to, analysis = analyses(), reps = 1:10){
   from = newdir(from)
   to = newdir(to)
   df = ggplot2_df(from)
+  reps = unique(df$rep)
   plot_calibration_df(df = df, to = to, analysis = analysis, reps = reps)
-  if(length(unique(df$rep)) > 1) for(r in reps) plot_calibration_df(df = df, to = to, analysis = analysis, reps = r)
+  if(length(reps) > 1) for(r in reps) plot_calibration_df(df = df, to = to, analysis = analysis, reps = r)
 }

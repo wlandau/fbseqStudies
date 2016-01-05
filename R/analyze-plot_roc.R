@@ -13,6 +13,7 @@ plot_roc = function(from, to, cutoff = 0.1, analysis = analyses(), reps = 1:10){
   from = newdir(from)
   to = newdir(to)
   df = ggplot2_df(from)
+  reps = unique(df$rep)
   plot_roc_df(df = df, to = to, cutoff = cutoff, analysis = analysis, reps = reps)
-  if(length(unique(df$rep)) > 1) for(r in reps) plot_roc_df(df = df, to = to, cutoff = cutoff, analysis = analysis, reps = r)
+  if(length(reps) > 1) for(r in reps) plot_roc_df(df = df, to = to, cutoff = cutoff, analysis = analysis, reps = r)
 }
