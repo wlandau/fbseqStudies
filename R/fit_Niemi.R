@@ -7,6 +7,7 @@
 get_hyperparameters = function(counts, design) {
   fit = fit_edgeR(counts, design)
   beta = fit$estimates[,grep("beta_", colnames(fit$estimates))]
+  dispersion = fit$dispersion
   norm_factors = fit$norm_factors
 
   list(eta_1 = mean(beta[,1]),
@@ -14,13 +15,13 @@ get_hyperparameters = function(counts, design) {
         eta_3 = mean(beta[,3]),
         eta_4 = mean(beta[,4]),
         eta_5 = mean(beta[,5]),
-        eta_psi = mean(log(norm_factors)),
+        eta_psi = mean(log(dispersion)),
         sigma_1 = sd(beta[,1]),
         sigma_2 = sd(beta[,2])/sqrt(2), # Fix sd for Laplace priors
         sigma_3 = sd(beta[,3])/sqrt(2), # Fix sd for Laplace priors
         sigma_4 = sd(beta[,4])/sqrt(2), # Fix sd for Laplace priors
         sigma_5 = sd(beta[,5])/sqrt(2), # Fix sd for Laplace priors
-        sigma_psi = sd(log(norm_factors)),
+        sigma_psi = sd(log(dispersion)),
         c = log(norm_factors))
 }
 
