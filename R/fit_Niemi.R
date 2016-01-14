@@ -95,7 +95,7 @@ single_gene_analysis = function(x, group, hyperparameters, model) {
 #' @param design design matrix
 #' @param group group vector
 #' @param ncores number of cores for parallel execution
-fit_Niemi = function(counts, design, group, ncores = 1){
+fit_Niemi = function(counts, design, group, ncores = detectCores()){
   t = my.proc.time()
   hyperparameters = get_hyperparameters(counts, design)
 
