@@ -5,8 +5,8 @@
 #' @param path to directory to save simulations and results
 computation_init = function(path = newdir()){
   path = newdir(path)
-  genes = c(16384, 32768, 65536)
-  libraries = c(16, 32, 64)
+  genes = c(8192, 16384, 32768, 65536)
+  libraries = c(16, 32, 48, 64)
   reps = 1
   for(g in genes) for(n in libraries) for(r in 1:reps)
     if(!file.exists(f <- paste0(path, "duplicated_", g, "_", n, "_", r, ".rds"))) 
