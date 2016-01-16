@@ -35,7 +35,7 @@ roc_over = function(l, a){
   if(class(tr) == "Starts"){
     beta = l$scenario@supplement$truth@beta
   } else {
-    beta = as.numeric(l$scenario@supplement$truth$beta)
+    beta = as.numeric(as.matrix(l$scenario@supplement$truth$beta))
   }
 
   ch@betaPostMean = beta
