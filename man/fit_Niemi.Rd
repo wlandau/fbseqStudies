@@ -4,7 +4,7 @@
 \alias{fit_Niemi}
 \title{Function \code{fit_Niemi}}
 \usage{
-fit_Niemi(counts, design, group, ncores = 1)
+fit_Niemi(counts, design, group, ncores = detectCores())
 }
 \arguments{
 \item{counts}{RNA-seq count datset}

@@ -1,5 +1,6 @@
 #' @importFrom plyr adply ddply mapvalues
 #' @importFrom dplyr %>% group_by_ mutate rename summarize_
+#' @importFrom gridExtra grid.arrange
 #' @importFrom pracma trapz
 #' @importFrom reshape2 melt
 #' @importFrom rstan sampling stan_model

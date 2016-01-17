@@ -6,7 +6,8 @@ Author: Will Landau <will.landau@gmail.com>
 Maintainer: Will Landau <will.landau@gmail.com>
 Depends:
     R (>= 3.0.0),
-    fbseq
+    fbseq,
+    ggplot2
 Imports:
     coda,
     doMC,
@@ -15,7 +16,7 @@ Imports:
     dplyr,
     edgeR,
     foreach,
-    ggplot2,
+    gridExtra,
     hexbin,
     methods,
     parallel,
@@ -44,6 +45,7 @@ Collate:
     'analyze-plot_ci.R'
     'analyze-plot_roc_df.R'
     'analyze-plot_roc.R'
+    'analyze-plot_runtime.R'
     'analyze-roc.R'
     'analyze-runtime.R'
     'analyze-table_ci.R'

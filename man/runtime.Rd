@@ -11,9 +11,6 @@ runtime(from, to)
 
 \item{to}{output directory}
 }
-\value{
-runtime table
-}
 \description{
 Runtimes in computation study
 }

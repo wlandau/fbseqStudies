@@ -1,7 +1,6 @@
 #' @title Function \code{runtime}
 #' @description Runtimes in computation study
 #' @export
-#' @return runtime table
 #' @param from directory with simulation lists
 #' @param to output directory
 runtime = function(from, to){
@@ -22,19 +21,19 @@ runtime = function(from, to){
         min_ess = min(a$ess[c("nu", "tau", paste0("theta_", 1:5), paste0("sigmaSquared_", 1:5))])
         which_min_ess = names(which.min(a$ess[c("nu", "tau", paste0("theta_", 1:5), paste0("sigmaSquared_", 1:5))]))
         median_ess = median(a$ess[c("nu", "tau", paste0("theta_", 1:5), paste0("sigmaSquared_", 1:5))])
-        runtime_per_min_ess_100 = 100* runtime/min_ess
-        runtime_per_median_ess_100 = 100* runtime/median_ess
+        runtime_per_min_ess_1000 = 1000* runtime/min_ess
+        runtime_per_median_ess_1000 = 1000* runtime/median_ess
       } else {
-        median_ess = min_ess = runtime_per_min_ess_100 = runtime_per_median_ess_100 = -1
+        median_ess = min_ess = runtime_per_min_ess_1000 = runtime_per_median_ess_1000 = -1
         which_min_ess = "-1"
       }
 
-      names(runtime_per_min_ess_100) = NULL
-      names(runtime_per_median_ess_100) = NULL
+      names(runtime_per_min_ess_1000) = NULL
+      names(runtime_per_median_ess_1000) = NULL
       long = rbind(long, data.frame(file = f, simulation = l$simulation, analysis = a$analysis, rep = meta(f)["rep"], G = G, N = N,
         runtime = runtime, min_ess = min_ess, which_min_ess = which_min_ess, median_ess = median_ess,
-        runtime_per_min_ess_100 =  runtime_per_min_ess_100,
-        runtime_per_median_ess_100 = runtime_per_median_ess_100))
+        runtime_per_min_ess_1000 =  runtime_per_min_ess_1000,
+        runtime_per_median_ess_1000 = runtime_per_median_ess_1000))
     }
   }
   long[long == -1] = NA

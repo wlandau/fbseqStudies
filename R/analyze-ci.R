@@ -26,7 +26,7 @@ ci = function(from, to, levels = c(0.5, 0.95)){
       if(l$simulation == "model"){
         truth = flatten(t0)[ns]
       } else {
-        truth = as.numeric(t0$beta)
+        truth = as.numeric(as.matrix(t0$beta))
       }
 
       lower = est[, grep("lower", colnames(est))]
