@@ -5,4 +5,5 @@
 #' @param to output directory
 real_analyze = function(from, to){
   computation_analyze(from, to)
+  explore_real(from, paste0(to, "explore_real"))
 }

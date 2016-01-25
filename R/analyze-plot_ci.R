@@ -22,10 +22,10 @@ plot_ci = function(from, to){
     l0 = l[l$parameter %in% parms & l$level == level,]
     tmp = ddply(l0, c("parameter", "simulation", "libraries", "analysis"), function(x){
       iden = paste(x$simulation[1], x$libraries[1], x$analysis[1], x$parameter[1], sep = "_")
-      d = data.frame(lower = x$lower - x$truth, upper = x$upper - x$truth, rep = ordered(unique(x$rep), sort(unique(x$rep))))
+      d = data.frame(lower = x$lower, upper = x$upper, rep = ordered(unique(x$rep), sort(unique(x$rep))))
       pl = ggplot(d) + mytheme_straight() + 
         geom_segment(aes_string(x = "rep", xend = "rep", y = "lower", yend = "upper")) + 
-        geom_abline(slope = 0, intercept = 0)
+        geom_abline(slope = 0, intercept = x$truth)
       ggsave(paste0(to_coverage_rep, iden, "_ci", level, ".pdf"), pl, height = 8, width = 8)
     }, .progress = "text")
   }

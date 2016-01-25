@@ -35,6 +35,7 @@ Collate:
     'analyze-calibration.R'
     'analyze-ci.R'
     'analyze-ess.R'
+    'analyze-explore_real.R'
     'analyze-gelman.R'
     'analyze-ggplot2_df.R'
     'analyze-mytheme.R'

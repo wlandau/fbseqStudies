@@ -22,15 +22,22 @@ ci = function(from, to, levels = c(0.5, 0.95)){
       est = est[grep(pattern, rownames(est)),]
       ns = rownames(est)
       t0 = l$scenario@supplement$truth
-      
+   
+      lower = est[, grep("lower", colnames(est))]
+      upper = est[, grep("upper", colnames(est))]
+   
       if(l$simulation == "model"){
         truth = flatten(t0)[ns]
+        hp =  "nu|tau|sigma|theta"
+        p = grep(hp, names(truth))
+        m = mcmc_samples(a$chains)
+        m = m[,names(truth[p])]
+        lower[p] = apply(m, 2, function(x){quantile(x, (1 - level)/2)})
+        upper[p] = apply(m, 2, function(x){quantile(x, 1 - (1 - level)/2)})
       } else {
         truth = as.numeric(as.matrix(t0$beta))
       }
 
-      lower = est[, grep("lower", colnames(est))]
-      upper = est[, grep("upper", colnames(est))]
       analysis = a$analysis
       simulation = l$simulation
       libraries =  meta(f)["libraries"]
