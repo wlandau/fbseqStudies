@@ -43,5 +43,17 @@ explore_real = function(from, to){
         color = "darkGray") + 
       geom_point(aes_string(x = "index", y = "mean"), size = I(0.5))
     ggsave(paste0(tof, "cred.png"), plot = pl, width = 8, height = 6)
+
+    p = as.data.frame(probs(a$chains))
+    p$geneID = rownames(p)
+    data(paschold)
+    ct = paschold@counts %*% kronecker(diag(4), matrix(1, nrow = 4))/4
+    colnames(ct) = unique(gsub("_[0-9]$", "", colnames(paschold@counts)))
+    p = cbind(p, ct)
+    d = melt(p, id.vars = c("geneID", colnames(ct)))
+    d = d[,c(7, 6, 1:5)]
+    colnames(d) = c("heterosis_prob", "heterosis_type", "geneID", paste0(colnames(d)[4:7], "_mean_count"))
+    d = d[order(d$heterosis_prob, decreasing = T),]
+    write.table(d, paste0(tof, "heterosis_probs.txt"), row.names = F)
   }
 }
