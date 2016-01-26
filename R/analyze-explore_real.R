@@ -42,6 +42,6 @@ explore_real = function(from, to){
       geom_segment(aes_string(x = "index", xend = "index", y = "lower_ci_0.95", yend = "upper_ci_0.95"), 
         color = "darkGray") + 
       geom_point(aes_string(x = "index", y = "mean"), size = I(0.5))
-    ggsave(paste0(tof, "cred.pdf"), plot = pl, width = 8, height = 6)
+    ggsave(paste0(tof, "cred.png"), plot = pl, width = 8, height = 6)
   }
 }
