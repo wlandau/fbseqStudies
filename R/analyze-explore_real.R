@@ -48,11 +48,12 @@ explore_real = function(from, to){
     p$geneID = rownames(p)
     data(paschold)
     ct = paschold@counts %*% kronecker(diag(4), matrix(1, nrow = 4))/4
-    colnames(ct) = unique(gsub("_[0-9]$", "", colnames(paschold@counts)))
+    ct = cbind(ct, paschold@counts)
+    colnames(ct) = c(paste0(unique(gsub("_[0-9]$", "", colnames(paschold@counts))), "_mean_count"), colnames(paschold@counts))
     p = cbind(p, ct)
     d = melt(p, id.vars = c("geneID", colnames(ct)))
-    d = d[,c(7, 6, 1:5)]
-    colnames(d) = c("heterosis_prob", "heterosis_type", "geneID", paste0(colnames(d)[4:7], "_mean_count"))
+    d = d[,c(23, 22, 1:21)]
+    colnames(d)[1:2] = c("heterosis_prob", "heterosis_type")
     d = d[order(d$heterosis_prob, decreasing = T),]
     write.table(d, paste0(tof, "heterosis_probs.txt"), row.names = F)
   }
