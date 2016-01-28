@@ -17,8 +17,7 @@ plot_ci = function(from, to){
     to_coverage_rep = newdir(paste0(to, "ci", level))
     gs = as.integer(gsub("beta_[0-9]_", "", l[grepl("beta", l$parameter),"parameter"]))
     G = max(gs)
-    parms = c("nu", "tau", paste0("theta_", 1:5), paste0("sigmaSquared_", 1:5), 
-      paste0("beta_", rep(1:5, each = 2), "_", sample.int(G, 1)))
+    parms = c("nu", "tau", paste0("theta_", 1:5), paste0("sigmaSquared_", 1:5))
     l0 = l[l$parameter %in% parms & l$level == level,]
     tmp = ddply(l0, c("parameter", "simulation", "libraries", "analysis"), function(x){
       iden = paste(x$simulation[1], x$libraries[1], x$analysis[1], x$parameter[1], sep = "_")
@@ -60,7 +59,7 @@ plot_ci = function(from, to){
       })
 
       pl = ggplot(y) + geom_line(aes_string(x = "truth", y = "cover")) + geom_abline(slope = 0, intercept = level) +
-        facet_wrap(as.formula("~type"), scales = "free")
+        facet_wrap(as.formula("~type"), scales = "free") + mytheme_straight()
       ggsave(paste0(to_trend, iden, "_beta_", level, " .png"), pl, height = 8, width = 8)
     })
 
@@ -85,34 +84,33 @@ plot_ci = function(from, to){
       ggsave(paste0(to_trend, iden, "_beta_", level, " .png"), pl, height = 8, width = 8)
     })
 
-    for(ell in 1:5){
-      l0 = l[grepl(paste0("beta_", ell), l$parameter) & l$level == level & l$rep == unique(l$rep)[1],]
-      tmp =  ddply(l0, c("simulation", "libraries", "rep", "analysis"), function(x){
-        iden = paste(x$simulation[1], x$libraries[1], x$rep[1], x$analysis[1], sep = "_")
-        x = x[order(x$truth),]
-        ds = list(cover = x[x$cover,], miss = x[!x$cover,])
+
+    l0 = l[grepl("beta", l$parameter) & l$level == level & l$rep == unique(l$rep)[1],]
+    tmp =  ddply(l0, c("simulation", "libraries", "rep", "analysis"), function(x){
+      iden = paste(x$simulation[1], x$libraries[1], x$rep[1], x$analysis[1], sep = "_")
+      x = x[order(x$truth),]
+      ds = list(cover = x[x$cover,], miss = x[!x$cover,])
       
-        for(i in 1:length(ds)){
-          if(!nrow(ds[[i]])){ 
-            ds[[i]] = rbind(ds[[i]], rep(0, ncol(ds[[i]])))
-            colnames(ds[[i]]) = colnames(x)
-          }
-          ds[[i]]$index = 1:dim(ds[[i]])[1]
+      for(i in 1:length(ds)){
+        if(!nrow(ds[[i]])){ 
+          ds[[i]] = rbind(ds[[i]], rep(0, ncol(ds[[i]])))
+          colnames(ds[[i]]) = colnames(x)
         }
+        ds[[i]]$index = 1:dim(ds[[i]])[1]
+      }
 
-        cover = ds[["cover"]]
-        miss = ds[["miss"]]
+      cover = ds[["cover"]]
+      miss = ds[["miss"]]
 
-        pl = ggplot(cover) + mytheme_straight() + 
-          geom_segment(aes_string(x = "index", xend = "index", y = "lower", yend = "upper"), color = "darkGray") + 
-          geom_point(aes_string(x = "index", y = "truth"), size = I(0.5))
-        ggsave(paste0(to_cover, iden, "_beta_", ell, "_cover_", level, " .pdf"), pl, height = 8, width = 8)
+      pl = ggplot(cover) + mytheme_straight() + facet_wrap(as.formula("~type"), scales = "free") +
+        geom_segment(aes_string(x = "index", xend = "index", y = "lower", yend = "upper"), color = "darkGray") + 
+        geom_point(aes_string(x = "index", y = "truth"), size = I(0.5))
+      ggsave(paste0(to_cover, iden, "_beta_cover_", level, " .pdf"), pl, height = 8, width = 8)
 
-        pl = ggplot(miss) + mytheme_straight() + 
-          geom_segment(aes_string(x = "index", xend = "index", y = "lower", yend = "upper"), color = "darkGray") + 
-          geom_point(aes_string(x = "index", y = "truth"), size = I(0.5))
-        ggsave(paste0(to_miss, iden, "_beta_", ell, "_miss_", level, ".pdf"), pl, height = 8, width = 8)
-      }, .progress = "text")
-    }
+      pl = ggplot(miss) + mytheme_straight() + facet_wrap(as.formula("~type"), scales = "free") +
+        geom_segment(aes_string(x = "index", xend = "index", y = "lower", yend = "upper"), color = "darkGray") + 
+        geom_point(aes_string(x = "index", y = "truth"), size = I(0.5))
+      ggsave(paste0(to_miss, iden, "_beta_miss_", level, ".pdf"), pl, height = 8, width = 8)
+    }, .progress = "text")
   }
 }
