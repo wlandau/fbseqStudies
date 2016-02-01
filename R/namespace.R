@@ -10,6 +10,7 @@
 #' @import edgeR
 #' @import foreach
 #' @import ggplot2
+#' @import ggthemes
 #' @import fbseq
 #' @import hexbin
 #' @import methods

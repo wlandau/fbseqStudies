@@ -16,6 +16,7 @@ Imports:
     dplyr,
     edgeR,
     foreach,
+    ggthemes,
     gridExtra,
     hexbin,
     methods,
@@ -66,6 +67,7 @@ Collate:
     'study-computation_mcmc.R'
     'paper_computation.R'
     'paper_priors.R'
+    'publish-comparehprobs.R'
     'simulation_simple.R'
     'simulation_paschold.R'
     'simulation_model.R'
