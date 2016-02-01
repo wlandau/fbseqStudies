@@ -18,7 +18,7 @@ comparehprobs = function(from, from_s3, to){
   to = newdir(to)
 
   if(!file.exists(paste0(from_s3, "tableS3part.txt"))) return()
-  groups = read.table(paste0(from_s3, "tableS3part.txt"), sep = "\t", head = T, stringsAsFactors = F)
+  groups = read.table(paste0(from_s3, "tableS3part.txt"), sep = "\t", header = T, stringsAsFactors = F)
 
   l = readRDS(paste0(from, list.files(from)[1]))
   a = l$analyses[["fullybayes+normal"]]
@@ -57,6 +57,7 @@ comparehprobs = function(from, from_s3, to){
   ggsave(paste0(to, "comparehprobs.tiff"), pl, width = 8, height = 4, dpi = 1200)
 
   data(paschold)
+  paschold = get("paschold")
   ct = paschold@counts
 
   for(type in levels(d$heterosis)){

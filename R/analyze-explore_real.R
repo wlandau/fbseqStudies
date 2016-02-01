@@ -47,6 +47,7 @@ explore_real = function(from, to){
     p = as.data.frame(probs(a$chains))
     p$geneID = rownames(p)
     data(paschold)
+    paschold = get("paschold")
     ct = paschold@counts %*% kronecker(diag(4), matrix(1, nrow = 4))/4
     ct = cbind(ct, paschold@counts)
     colnames(ct) = c(paste0(unique(gsub("_[0-9]$", "", colnames(paschold@counts))), "_mean_count"), colnames(paschold@counts))
