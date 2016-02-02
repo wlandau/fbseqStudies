@@ -52,9 +52,9 @@ Collate:
     'analyze-roc.R'
     'analyze-runtime.R'
     'analyze-table_ci.R'
+    'fit_Niemi.R'
     'fit_fbseq.R'
     'fit_edgeR.R'
-    'fit_Niemi.R'
     'fit.R'
     'namespace.R'
     'study-real_init.R'
@@ -64,6 +64,7 @@ Collate:
     'study-comparison_init.R'
     'study-comparison_mcmc.R'
     'paper_case.R'
+    'paper_case_figures.R'
     'study-computation_init.R'
     'study-computation_mcmc.R'
     'paper_computation.R'
@@ -86,3 +87,4 @@ Collate:
     'util-myproctime.R'
     'util-over.R'
     'util-progress.R'
+RoxygenNote: 5.0.1

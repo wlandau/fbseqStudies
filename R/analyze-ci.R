@@ -61,7 +61,11 @@ ci = function(from, to, levels = c(0.5, 0.95)){
   }
   out$type = as.character(out$parameter)
   out$type[grepl("beta", out$type)] = gsub("_[0-9]*$", "", out$type[grepl("beta", out$type)])
-  out$type = as.factor(out$type)
+  for(i in 1:5){
+    out$type = gsub(paste0("sigmaSquared_", i), paste0("sigma[",i, "]^2"), out$type)
+    out$type = gsub(paste0("theta_", i), paste0("theta[",i, "]"), out$type)
+    out$type = gsub(paste0("beta_", i), paste0("beta[",i, "]"), out$type)
+  }
   if(is.null(out)) return()
   saveRDS(out, paste0(to, "ci.rds"))
 }

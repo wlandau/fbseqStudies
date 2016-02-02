@@ -1,7 +1,7 @@
 #' @include study-comparison_mcmc.R study-coverage_mcmc.R study-real_mcmc.R
 NULL
 
-#' @title Function \code{case}
+#' @title Function \code{paper_case}
 #' @description Workflow for the case study paper
 #' @export
 paper_case = function(){
@@ -13,4 +13,5 @@ paper_case = function(){
   path = comparison_init("comparison_mcmc")
   fit(path, benchmarks = NULL, priors = "normal")
   comparison_analyze(path, "comparison_analyze")
+  paper_case_figures()
 }
