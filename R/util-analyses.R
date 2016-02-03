@@ -3,8 +3,8 @@
 #' @export
 #' @return analysis analyses
 analyses = function(){
-  out = c("edgeR", "Niemi", 
+  out = c(
      "ebayesFromTruth+normal", "ebayesFromStarts+normal", "ebayesFromFullybayes+normal",
-    "fullybayes+normal", "fullybayes+Laplace", "fullybayes+t", "fullybayes+horseshoe")
+    "fullybayes+normal", "fullybayes+Laplace", "fullybayes+t", "fullybayes+horseshoe", "edgeR", "Niemi")
   ordered(out, levels = out)
 }

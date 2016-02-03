@@ -1,4 +1,4 @@
-#' @include analyze-mytheme.R util-myrelevel.R
+#' @include util-mytheme.R util-myrelevel.R
 NULL
 
 #' @title Function \code{plot_roc_df}
@@ -9,7 +9,7 @@ NULL
 #' @param cutoff for fpr
 #' @param analysis analysis methods to plot
 #' @param reps reps to plot
-plot_roc_df = function(df, to, cutoff = 0.1, analysis = analyses(), reps = 1:10){
+plot_roc_df = function(df, to, cutoff = 1, analysis = analyses(), reps = 1:10){
   to = newdir(to)
   df = df[df$fpr < cutoff,]
   df = df[df$analysis %in% analysis,]

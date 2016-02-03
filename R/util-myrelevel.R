@@ -8,7 +8,7 @@ myrelevel = function(x){
   out[out == "ebayesFromTruth+normal"] = "eBayes (oracle)"
   out[out == "ebayesFromStarts+normal"] = "eBayes (naive)"
   out[out == "ebayesFromFullybayes+normal"] = "eBayes (posterior)"
-  out[out == "fullybayes+normal"] = "fully Bayes (normal)"
+  out[out == "fullybayes+normal"] = "fully Bayes"
   out[out == "fullybayes+Laplace"] = "fully Bayes (Laplace)"
   out[out == "fullybayes+t"] = "fully Bayes (t)"
   out[out == "fullybayes+horseshoe"] = "fully Bayes (horseshoe)"
@@ -16,7 +16,7 @@ myrelevel = function(x){
     "eBayes (oracle)", 
     "eBayes (naive)",
     "eBayes (posterior)",
-    "fully Bayes (normal)",
+    "fully Bayes",
     "fully Bayes (Laplace)",
     "fully Bayes (t)",
     "fully Bayes (horseshoe)",

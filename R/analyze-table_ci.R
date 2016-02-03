@@ -1,4 +1,4 @@
-#' @include analyze-mytheme.R
+#' @include util-mytheme.R
 NULL
 
 #' @title Function \code{table_ci}

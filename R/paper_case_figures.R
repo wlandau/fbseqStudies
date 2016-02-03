@@ -1,3 +1,6 @@
+#' @include util-myrelevel.R util-relevel_heterosis.R util-mytheme.R
+NULL
+
 #' @title Function \code{paper_case_figures}
 #' @description Reproduce the figures and tables of the case study paper
 #' @export
@@ -7,12 +10,12 @@ paper_case_figures = function(){
 # setwd("~/home/work/projects/thesis_data/results")
 
 # control parms
-extns = c("pdf", "ps", "eps", "tiff")
+dir = newdir("case_study_paper_figures")
+extns = c("pdf", "ps", "eps")
 
 # credible interval info
 l = as.data.frame(readRDS("coverage_analyze/ci/ci.rds"))
 l$rep = ordered(l$rep, levels = 1:10)
-dir = newdir("case_study_paper_figures")
 
 # fig:hypercoverage
 dir_hypercoverage = newdir(paste0(dir, "fig_hypercoverage"))
@@ -28,7 +31,7 @@ pl = ggplot(l1) +
   geom_abline(aes(slope = 0, intercept = l1$truth)) + 
   xlab("simulated dataset") +
   ylab("credible interval") + 
-  theme_few() + theme(strip.text.x = element_text(size = 14))
+  mytheme_pub() + theme(strip.text.x = element_text(size = 14))
 for(extn in extns)
   ggsave(paste0(dir_hypercoverage, "fig_hypercoverage.", extn), pl, height = 4, width = 5, dpi = 1200)
 
@@ -44,7 +47,7 @@ pl = ggplot(l1) +
   geom_hline(yintercept = level) + 
   facet_wrap(as.formula("~type"), labeller = label_parsed) +
   xlab("simulated dataset") +
-  theme_few() + theme(strip.text.x = element_text(size = 14))
+  mytheme_pub() + theme(strip.text.x = element_text(size = 14))
 for(extn in extns)
   ggsave(paste0(dir_betarates, "fig_betarates.", extn), pl, height = 4, width = 5, dpi = 1200)
 
@@ -55,7 +58,7 @@ df = df[df$heterosis == "high-parent_hybrid1",]
 pl = ggplot(df) +
   geom_line(aes_string(x = "probability", y = "proportion", group = "file", linetype = "analysis"), color = "black") + 
   geom_abline(slope = 1, intercept = 0, linetype = 2) +
-  theme_few() + theme(legend.position = "none")
+  mytheme_pub() + theme(legend.position = "none")
 for(extn in extns)
   ggsave(paste0(dir_hphcalibration, "fig_hphcalibration.", extn), pl, height = 4, width = 4, dpi = 1200)
 
@@ -73,7 +76,7 @@ pl = ggplot(l0) +
   geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
   facet_wrap(as.formula("~type"), scales = "free", labeller = label_parsed) +
   xlab("credible interval") + ylab("parameter value") + 
-  theme_few() + theme(strip.text.x = element_text(size = 14))
+  mytheme_pub() + theme(strip.text.x = element_text(size = 14))
 for(extn in extns)
   ggsave(paste0(dir_betacred, "fig_betacred.", extn), pl, height = 6, width = 7, dpi = 1200)
 
@@ -94,16 +97,78 @@ pl = ggplot(l1) +
   facet_wrap(as.formula("~type"), scales = "free_x", labeller = label_parsed) +
   xlab("parameter value") +
   ylab("coverage") +
-  theme_few() + theme(strip.text.x = element_text(size = 14))
+  mytheme_pub() + theme(strip.text.x = element_text(size = 14))
 for(extn in extns)
   ggsave(paste0(dir_betacoveragetrend, "fig_betacoveragetrend.", extn), pl, height = 6, width = 7, dpi = 1200)
 
+# fig:roc16 and fig:roc32
+for(N in c(16, 32)){
+  dir_roc = newdir(paste0(dir, "fig_roc", N))
+  d = readRDS("comparison_analyze/plot_roc/roc.rds")
+  ans = c("Niemi", as.character(analyses()[grep("+normal", analyses())]))
+  d = d[d$analysis %in% ans & d$libraries == N,]
+  d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
+  d$analysis = myrelevel(d$analysis)
+  d$analysis = ordered(d$analysis, levels = c("fully Bayes", "eBayes (naive)", "eBayes (posterior)", "eBayes (oracle)", "Niemi"))
+  d$heterosis = relevel_heterosis(d$heterosis)
 
-# fig:roc
+  pl = ggplot(d) + 
+    geom_line(aes_string(x = "fpr", y = "tpr", group = "file", linetype = "analysis"), color = "black") +
+    facet_grid(as.formula("simulation~heterosis")) +
+    xlab("False positive rate") + 
+    ylab("True positive rate") +
+    labs(linetype = "Analysis") +
+    mytheme_pub() +
+    theme(axis.text.x = element_text(angle = -80, hjust = 0))
+  for(extn in extns)
+    ggsave(paste0(dir_roc, "fig_roc", N, ".", extn), pl, height = 8, width = 10, dpi = 1200)
+}
 
-# fig:auc
+# fig:auc16 and fig:auc32
+dir_auc = newdir(paste0(dir, "fig_auc"))
+d = readRDS("comparison_analyze/plot_auc/auc.rds")
+ans = c("Niemi", as.character(analyses()[grep("+normal", analyses())]))
+d = d[d$analysis %in% ans,]
+d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
+d$analysis = myrelevel(d$analysis)
+d$analysis = ordered(d$analysis, levels = c("eBayes (oracle)", "eBayes (naive)", "eBayes (posterior)", "fully Bayes", "Niemi"))
+d$heterosis = relevel_heterosis(d$heterosis)
 
-# fig:compare-cal
+pl = ggplot(d) + 
+  geom_line(aes_string(x = "analysis", y = "auc_1", group = "libraries"), color = "black") +
+  geom_point(aes_string(x = "analysis", y = "auc_1", pch = "libraries"), color = "black") +
+  facet_grid(as.formula("simulation~heterosis"), scales = "free_y") +
+  xlab("Analysis") + 
+  ylab("Area under ROC curve") +
+  labs(pch = "N") +
+  mytheme_pub() +
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_auc, "fig_auc.", extn), pl, height = 8, width = 10, dpi = 1200)
+
+# fig:comparecal
+for(N in c(16, 32)){
+  dir_comparecal = newdir(paste0(dir, "fig_comparecal", N))
+  d = readRDS("comparison_analyze/plot_calibration/calibration.rds")
+  ans = c("Niemi", as.character(analyses()[grep("+normal", analyses())]))
+  d = d[d$analysis %in% ans & d$libraries == N,]
+  d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
+  d$analysis = myrelevel(d$analysis)
+  d$analysis = ordered(d$analysis, levels = c("fully Bayes", "eBayes (naive)", "eBayes (posterior)", "eBayes (oracle)", "Niemi"))
+  d$heterosis = relevel_heterosis(d$heterosis)
+
+  pl = ggplot(d) + 
+    geom_abline(slope = 1, intercept = 0) +
+    geom_line(aes_string(x = "probability", y = "proportion", group = "file", linetype = "analysis"), color = "black") +
+    facet_grid(as.formula("simulation~heterosis")) +
+    xlab("Probability") + 
+    ylab("Proportion") +
+    labs(linetype = "Analysis") +
+    mytheme_pub() +
+    theme(axis.text.x = element_text(angle = -80, hjust = 0))
+  for(extn in extns)
+    ggsave(paste0(dir_comparecal, "fig_comparecal", N, ".", extn), pl, height = 8, width = 10, dpi = 1200)
+}
 
 # fig:hyperhist
 

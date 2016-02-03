@@ -16,4 +16,5 @@ plot_roc = function(from, to, cutoff = 0.1, analysis = analyses(), reps = 1:10){
   reps = unique(df$rep)
   plot_roc_df(df = df, to = to, cutoff = cutoff, analysis = analysis, reps = reps)
   if(length(reps) > 1) for(r in reps) plot_roc_df(df = df, to = to, cutoff = cutoff, analysis = analysis, reps = r)
+  saveRDS(df, paste0(to, "roc.rds"))
 }

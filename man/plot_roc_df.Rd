@@ -4,7 +4,7 @@
 \alias{plot_roc_df}
 \title{Function \code{plot_roc_df}}
 \usage{
-plot_roc_df(df, to, cutoff = 0.1, analysis = analyses(), reps = 1:10)
+plot_roc_df(df, to, cutoff = 1, analysis = analyses(), reps = 1:10)
 }
 \arguments{
 \item{df}{output of ggplot2_df}

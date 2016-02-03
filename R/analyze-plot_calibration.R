@@ -15,4 +15,5 @@ plot_calibration = function(from, to, analysis = analyses(), reps = 1:10){
   reps = unique(df$rep)
   plot_calibration_df(df = df, to = to, analysis = analysis, reps = reps)
   if(length(reps) > 1) for(r in reps) plot_calibration_df(df = df, to = to, analysis = analysis, reps = r)
+  saveRDS(df, paste0(to, "calibration.rds"))
 }
