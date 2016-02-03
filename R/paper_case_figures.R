@@ -6,8 +6,7 @@ NULL
 #' @export
 paper_case_figures = function(){
 
-# library(fbseqStudies); library(reshape2); library(plyr); library(ggthemes)
-# setwd("~/home/work/projects/thesis_data/results")
+# library(fbseqStudies); library(reshape2); library(plyr); library(ggthemes); setwd("~/home/work/projects/thesis_data/results")
 
 # control parms
 dir = newdir("case_study_paper_figures")
@@ -170,16 +169,131 @@ for(N in c(16, 32)){
     ggsave(paste0(dir_comparecal, "fig_comparecal", N, ".", extn), pl, height = 8, width = 10, dpi = 1200)
 }
 
+# paschold data analysis
+dir_hyperhist = newdir(paste0(dir, "fig_hyperhist"))
+l = readRDS("real_mcmc/paschold_39656_16_1.rds")
+a = l$analyses[["fullybayes+normal"]]
+m = mcmc_samples(a$chains)
+
 # fig:hyperhist
+dir_hyperhist = newdir(paste0(dir, "fig_hyperhist"))
+m_hyper = m[,c("nu", "tau", paste0("theta_", 1:5), paste0("sigmaSquared_", 1:5))]
+cn = colnames(m_hyper)
+for(i in 1:5) cn = gsub(paste0("_", i), paste0("\\[", i, "\\]"), cn)
+cn = gsub("sigmaSquared", "sigma", cn)
+cn[grep("sigma", cn)] = paste0(cn[grep("sigma", cn)], "^2")
+colnames(m_hyper) = cn
+d = melt(m_hyper, id.vars = NULL)
+pl = ggplot(d) + 
+  geom_histogram(aes_string(x = "value"), color = "black", fill = "black") + 
+  facet_wrap(as.formula("~variable"), scales = "free_x", labeller = label_parsed) + 
+  mytheme_pub() +
+  theme(strip.text.x = element_text(size = 14), axis.text.x = element_text(angle = -80, hjust = 0)) + 
+  xlab("Parameter value") + 
+  ylab("Count")
+for(extn in extns)
+  ggsave(paste0(dir_hyperhist, "fig_hyperhist.", extn), pl, height = 8, width = 10, dpi = 1200)
 
 # fig:betahist
 
-# fig:gammahist
+dir_betahist = newdir(paste0(dir, "fig_betahist"))
+m_beta = m[,grep("beta", colnames(m))]
+cn = colnames(m_beta)
+cn = do.call(rbind, strsplit(cn, "_"))
+c2 = apply(cn, 1, function(x){
+  paste0(x[1], "[list(", x[3],"~", x[2], ")]")
+})
+colnames(m_beta) = c2
+d = melt(m_beta, id.vars = NULL)
+pl = ggplot(d) + 
+  geom_histogram(aes_string(x = "value"), color = "black", fill = "black") + 
+  facet_wrap(as.formula("~variable"), scales = "free_x", labeller = label_parsed) + 
+  mytheme_pub() +
+  theme(strip.text.x = element_text(size = 14), axis.text.x = element_text(angle = -80, hjust = 0)) + 
+  xlab("Parameter value") + 
+  ylab("Count")
+for(extn in extns)
+  ggsave(paste0(dir_betahist, "fig_betahist.", extn), pl, height = 8, width = 10, dpi = 1200)
 
-# fig:cred
+# fig:gammahist
+dir_gammahist = newdir(paste0(dir, "fig_gammahist"))
+m_gamma = m[,grep("gamma", colnames(m))]
+cn = colnames(m_gamma)
+cn = do.call(rbind, strsplit(cn, "_"))
+c2 = apply(cn, 1, function(x){
+  paste0(x[1], "[", x[2],"]")
+})
+colnames(m_gamma) = c2
+d = melt(m_gamma, id.vars = NULL)
+pl = ggplot(d) + 
+  geom_histogram(aes_string(x = "value"), color = "black", fill = "black") + 
+  facet_wrap(as.formula("~variable"), ncol = 2, scales = "free_x", labeller = label_parsed) + 
+  mytheme_pub() +
+  theme(strip.text.x = element_text(size = 14), axis.text.x = element_text(angle = -80, hjust = 0)) + 
+  xlab("Parameter value") + 
+  ylab("Count")
+for(extn in extns)
+  ggsave(paste0(dir_gammahist, "fig_gammahist.", extn), pl, height = 4, width = 5, dpi = 1200)
+
+# fig:pascholdcred
+dir_pascholdcred = newdir(paste0(dir, "fig_pascholdcred"))
+e = estimates(a$chains)
+e = e[grep("beta_", rownames(e)),]
+e$parameter = gsub("_[0-9]*$", "", rownames(e))
+s = do.call(rbind, strsplit(e$parameter, "_"))
+ns = apply(s, 1, function(x){
+  paste0(x[1], "[", x[2], "]")
+})
+e$parameter = ordered(ns, levels = paste0("beta[", 1:5, "]"))
+d = ddply(e, "parameter", function(x){
+  x = x[sample(dim(x)[1], 1e3),]
+  x = x[order(x$mean),]
+  x$index = 1:dim(x)[1]
+  x
+})
+pl = ggplot(d) + 
+  facet_wrap(as.formula("~parameter"), scales = "free", labeller = label_parsed) + 
+  geom_segment(aes_string(x = "index", xend = "index", y = "lower_ci_0.95", yend = "upper_ci_0.95"), 
+    color = "darkGray") + 
+  geom_point(aes_string(x = "index", y = "mean"), size = I(0.15)) + 
+  xlab("Index") +
+  ylab("Parameter value") +
+  mytheme_pub() + 
+  theme(axis.text.x = element_text(angle = -80, hjust = 0), strip.text.x = element_text(size = 14))
+for(extn in extns)
+  ggsave(paste0(dir_pascholdcred, "fig_pascholdcred.", extn), pl, height = 6, width = 8, dpi = 1200)
 
 # fig:probhist
+dir_probhist = newdir(paste0(dir, "fig_probhist"))
+p = as.data.frame(probs(a$chains))
+d = melt(p, id.vars = NULL)
+d$variable = relevel_heterosis_paschold(d$variable)
+pl = ggplot(d) + 
+  geom_histogram(aes_string(x = "value"), color = "black", fill = "black") + 
+  facet_wrap(as.formula("~variable"), scales = "free_x") + 
+  xlab("Probability") + 
+  ylab("Count") +
+  mytheme_pub()
+for(extn in extns)
+  ggsave(paste0(dir_probhist, "fig_probhist.", extn), pl, height = 6, width = 8, dpi = 1200)
 
 # tables of interesting genes
 
+
+# supplementary table of heterosis probabilities
+dir_suppheteroisisprobs = newdir(paste0(dir, "supp_suppheteroisisprobs"))
+p = as.data.frame(probs(a$chains))
+p$geneID = rownames(p)
+data(paschold)
+paschold = get("paschold")
+ct = paschold@counts %*% kronecker(diag(4), matrix(1, nrow = 4))/4
+ct = cbind(ct, paschold@counts)
+colnames(ct) = c(paste0(unique(gsub("_[0-9]$", "", colnames(paschold@counts))), "_mean_count"), colnames(paschold@counts))
+p = cbind(p, ct)
+d = melt(p, id.vars = c("geneID", colnames(ct)))
+d = d[,c(23, 22, 1:21)]
+colnames(d)[1:2] = c("heterosis_prob", "heterosis_type")
+d$heterosis_type = relevel_heterosis_paschold(d$heterosis_type)
+d = d[order(d$heterosis_prob, decreasing = T),]
+write.csv(d, paste0(dir_suppheteroisisprobs, "suppheterosisprobs.csv"), row.names = F)
 }
