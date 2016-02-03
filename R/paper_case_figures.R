@@ -313,6 +313,7 @@ B73xMo17 and Mo17xB73). Ensure that", file, "also has the
 header \"Gene\tMxB\tBxM\" and place the file in
 your current working directory. Then, rerun this function.
 "))
+return()
 } else {
   groups = read.table(file, header = T, sep = "\t")
 }
