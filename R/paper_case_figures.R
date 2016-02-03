@@ -17,7 +17,7 @@ l = as.data.frame(readRDS("coverage_analyze/ci/ci.rds"))
 l$rep = ordered(l$rep, levels = 1:10)
 
 # fig:hypercoverage
-dir_hypercoverage = newdir(paste0(dir, "fig_hypercoverage"))
+dir_hypercoverage = newdir(paste0(dir, "fig-hypercoverage"))
 level = 0.5
 l0 = l[!grepl("beta", l$parameter) & l$level == level,]
 l1 = ddply(l0, c("type", "simulation", "libraries", "analysis"), function(x){
@@ -32,10 +32,10 @@ pl = ggplot(l1) +
   ylab("credible interval") + 
   mytheme_pub() + theme(strip.text.x = element_text(size = 14))
 for(extn in extns)
-  ggsave(paste0(dir_hypercoverage, "fig_hypercoverage.", extn), pl, height = 4, width = 5, dpi = 1200)
+  ggsave(paste0(dir_hypercoverage, "fig-hypercoverage.", extn), pl, height = 4, width = 5, dpi = 1200)
 
 # fig:betarates
-dir_betarates = newdir(paste0(dir, "fig_betarates"))
+dir_betarates = newdir(paste0(dir, "fig-betarates"))
 level = 0.95
 l0 = l[grepl("beta", l$parameter) & l$level == level,]
 l1 = ddply(l0, c("type", "rep"), function(x){
@@ -48,10 +48,10 @@ pl = ggplot(l1) +
   xlab("simulated dataset") +
   mytheme_pub() + theme(strip.text.x = element_text(size = 14))
 for(extn in extns)
-  ggsave(paste0(dir_betarates, "fig_betarates.", extn), pl, height = 4, width = 5, dpi = 1200)
+  ggsave(paste0(dir_betarates, "fig-betarates.", extn), pl, height = 4, width = 5, dpi = 1200)
 
 # fig:hphcalibration
-dir_hphcalibration = newdir(paste0(dir, "fig_hphcalibration"))
+dir_hphcalibration = newdir(paste0(dir, "fig-hphcalibration"))
 df = ggplot2_df("~/home/work/projects/thesis_data/results/coverage_analyze/calibration")
 df = df[df$heterosis == "high-parent_hybrid1",]
 pl = ggplot(df) +
@@ -59,10 +59,10 @@ pl = ggplot(df) +
   geom_abline(slope = 1, intercept = 0, linetype = 2) +
   mytheme_pub() + theme(legend.position = "none")
 for(extn in extns)
-  ggsave(paste0(dir_hphcalibration, "fig_hphcalibration.", extn), pl, height = 4, width = 4, dpi = 1200)
+  ggsave(paste0(dir_hphcalibration, "fig-hphcalibration.", extn), pl, height = 4, width = 4, dpi = 1200)
 
 # fig:betacred
-dir_betacred = newdir(paste0(dir, "fig_betacred"))
+dir_betacred = newdir(paste0(dir, "fig-betacred"))
 level = 0.95
 l0 = l[grepl("beta", l$parameter) & l$level == level & l$rep == 1 & !l$cover,]
 l0 = l0[order(l0$truth),]
@@ -77,10 +77,10 @@ pl = ggplot(l0) +
   xlab("credible interval") + ylab("parameter value") + 
   mytheme_pub() + theme(strip.text.x = element_text(size = 14))
 for(extn in extns)
-  ggsave(paste0(dir_betacred, "fig_betacred.", extn), pl, height = 6, width = 7, dpi = 1200)
+  ggsave(paste0(dir_betacred, "fig-betacred.", extn), pl, height = 6, width = 7, dpi = 1200)
 
 # fig:betacoveragetrend
-dir_betacoveragetrend = newdir(paste0(dir, "fig_betacoveragetrend"))
+dir_betacoveragetrend = newdir(paste0(dir, "fig-betacoveragetrend"))
 level = 0.95
 l0 = l[grepl("beta", l$parameter) & l$level == level,]
 l1 = ddply(l0, c("rep", "type"), function(z){
@@ -98,11 +98,11 @@ pl = ggplot(l1) +
   ylab("coverage") +
   mytheme_pub() + theme(strip.text.x = element_text(size = 14))
 for(extn in extns)
-  ggsave(paste0(dir_betacoveragetrend, "fig_betacoveragetrend.", extn), pl, height = 6, width = 7, dpi = 1200)
+  ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, height = 6, width = 7, dpi = 1200)
 
 # fig:roc16 and fig:roc32
 for(N in c(16, 32)){
-  dir_roc = newdir(paste0(dir, "fig_roc", N))
+  dir_roc = newdir(paste0(dir, "fig-roc", N))
   d = readRDS("comparison_analyze/plot_roc/roc.rds")
   ans = c("Niemi", as.character(analyses()[grep("+normal", analyses())]))
   d = d[d$analysis %in% ans & d$libraries == N,]
@@ -120,11 +120,11 @@ for(N in c(16, 32)){
     mytheme_pub() +
     theme(axis.text.x = element_text(angle = -80, hjust = 0))
   for(extn in extns)
-    ggsave(paste0(dir_roc, "fig_roc", N, ".", extn), pl, height = 8, width = 10, dpi = 1200)
+    ggsave(paste0(dir_roc, "fig-roc", N, ".", extn), pl, height = 8, width = 10, dpi = 1200)
 }
 
 # fig:auc16 and fig:auc32
-dir_auc = newdir(paste0(dir, "fig_auc"))
+dir_auc = newdir(paste0(dir, "fig-auc"))
 d = readRDS("comparison_analyze/plot_auc/auc.rds")
 ans = c("Niemi", as.character(analyses()[grep("+normal", analyses())]))
 d = d[d$analysis %in% ans,]
@@ -143,11 +143,11 @@ pl = ggplot(d) +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
-  ggsave(paste0(dir_auc, "fig_auc.", extn), pl, height = 8, width = 10, dpi = 1200)
+  ggsave(paste0(dir_auc, "fig-auc.", extn), pl, height = 8, width = 10, dpi = 1200)
 
 # fig:comparecal
 for(N in c(16, 32)){
-  dir_comparecal = newdir(paste0(dir, "fig_comparecal", N))
+  dir_comparecal = newdir(paste0(dir, "fig-comparecal", N))
   d = readRDS("comparison_analyze/plot_calibration/calibration.rds")
   ans = c("Niemi", as.character(analyses()[grep("+normal", analyses())]))
   d = d[d$analysis %in% ans & d$libraries == N,]
@@ -166,17 +166,17 @@ for(N in c(16, 32)){
     mytheme_pub() +
     theme(axis.text.x = element_text(angle = -80, hjust = 0))
   for(extn in extns)
-    ggsave(paste0(dir_comparecal, "fig_comparecal", N, ".", extn), pl, height = 8, width = 10, dpi = 1200)
+    ggsave(paste0(dir_comparecal, "fig-comparecal", N, ".", extn), pl, height = 8, width = 10, dpi = 1200)
 }
 
 # paschold data analysis
-dir_hyperhist = newdir(paste0(dir, "fig_hyperhist"))
+dir_hyperhist = newdir(paste0(dir, "fig-hyperhist"))
 l = readRDS("real_mcmc/paschold_39656_16_1.rds")
 a = l$analyses[["fullybayes+normal"]]
 m = mcmc_samples(a$chains)
 
 # fig:hyperhist
-dir_hyperhist = newdir(paste0(dir, "fig_hyperhist"))
+dir_hyperhist = newdir(paste0(dir, "fig-hyperhist"))
 m_hyper = m[,c("nu", "tau", paste0("theta_", 1:5), paste0("sigmaSquared_", 1:5))]
 cn = colnames(m_hyper)
 for(i in 1:5) cn = gsub(paste0("_", i), paste0("\\[", i, "\\]"), cn)
@@ -192,11 +192,11 @@ pl = ggplot(d) +
   xlab("Parameter value") + 
   ylab("Count")
 for(extn in extns)
-  ggsave(paste0(dir_hyperhist, "fig_hyperhist.", extn), pl, height = 8, width = 10, dpi = 1200)
+  ggsave(paste0(dir_hyperhist, "fig-hyperhist.", extn), pl, height = 8, width = 10, dpi = 1200)
 
 # fig:betahist
 
-dir_betahist = newdir(paste0(dir, "fig_betahist"))
+dir_betahist = newdir(paste0(dir, "fig-betahist"))
 m_beta = m[,grep("beta", colnames(m))]
 cn = colnames(m_beta)
 cn = do.call(rbind, strsplit(cn, "_"))
@@ -213,10 +213,10 @@ pl = ggplot(d) +
   xlab("Parameter value") + 
   ylab("Count")
 for(extn in extns)
-  ggsave(paste0(dir_betahist, "fig_betahist.", extn), pl, height = 8, width = 10, dpi = 1200)
+  ggsave(paste0(dir_betahist, "fig-betahist.", extn), pl, height = 8, width = 10, dpi = 1200)
 
 # fig:gammahist
-dir_gammahist = newdir(paste0(dir, "fig_gammahist"))
+dir_gammahist = newdir(paste0(dir, "fig-gammahist"))
 m_gamma = m[,grep("gamma", colnames(m))]
 cn = colnames(m_gamma)
 cn = do.call(rbind, strsplit(cn, "_"))
@@ -233,10 +233,10 @@ pl = ggplot(d) +
   xlab("Parameter value") + 
   ylab("Count")
 for(extn in extns)
-  ggsave(paste0(dir_gammahist, "fig_gammahist.", extn), pl, height = 4, width = 5, dpi = 1200)
+  ggsave(paste0(dir_gammahist, "fig-gammahist.", extn), pl, height = 4, width = 5, dpi = 1200)
 
 # fig:pascholdcred
-dir_pascholdcred = newdir(paste0(dir, "fig_pascholdcred"))
+dir_pascholdcred = newdir(paste0(dir, "fig-pascholdcred"))
 e = estimates(a$chains)
 e = e[grep("beta_", rownames(e)),]
 e$parameter = gsub("_[0-9]*$", "", rownames(e))
@@ -261,10 +261,10 @@ pl = ggplot(d) +
   mytheme_pub() + 
   theme(axis.text.x = element_text(angle = -80, hjust = 0), strip.text.x = element_text(size = 14))
 for(extn in extns)
-  ggsave(paste0(dir_pascholdcred, "fig_pascholdcred.", extn), pl, height = 6, width = 8, dpi = 1200)
+  ggsave(paste0(dir_pascholdcred, "fig-pascholdcred.", extn), pl, height = 6, width = 8, dpi = 1200)
 
 # fig:probhist
-dir_probhist = newdir(paste0(dir, "fig_probhist"))
+dir_probhist = newdir(paste0(dir, "fig-probhist"))
 p = as.data.frame(probs(a$chains))
 d = melt(p, id.vars = NULL)
 d$variable = relevel_heterosis_paschold(d$variable)
@@ -275,13 +275,10 @@ pl = ggplot(d) +
   ylab("Count") +
   mytheme_pub()
 for(extn in extns)
-  ggsave(paste0(dir_probhist, "fig_probhist.", extn), pl, height = 6, width = 8, dpi = 1200)
-
-# tables of interesting genes
-
+  ggsave(paste0(dir_probhist, "fig-probhist.", extn), pl, height = 6, width = 8, dpi = 1200)
 
 # supplementary table of heterosis probabilities
-dir_suppheteroisisprobs = newdir(paste0(dir, "supp_suppheteroisisprobs"))
+dir_suppheteroisisprobs = newdir(paste0(dir, "supp-suppheteroisisprobs"))
 p = as.data.frame(probs(a$chains))
 p$geneID = rownames(p)
 data(paschold)
@@ -295,5 +292,121 @@ d = d[,c(23, 22, 1:21)]
 colnames(d)[1:2] = c("heterosis_prob", "heterosis_type")
 d$heterosis_type = relevel_heterosis_paschold(d$heterosis_type)
 d = d[order(d$heterosis_prob, decreasing = T),]
-write.csv(d, paste0(dir_suppheteroisisprobs, "suppheterosisprobs.csv"), row.names = F)
+write.csv(d, paste0(dir_suppheteroisisprobs, "supp-heterosisprobs.csv"), row.names = F)
+
+# compare with paschold results
+data(paschold)
+paschold = get("paschold")
+ct = paschold@counts
+file = "tableS3part.txt"
+url = "http://genome.cshlp.org/content/suppl/2012/09/17/gr.138461.112.DC1/TableS3.xlsx"
+if(!file.exists(file)){
+cat(paste("File", file, "not found.
+That file is needed to reproduce the rest of the analysis, specifically the 
+figures and tables that compare our results to those of the 2012 
+Paschold study (Genome Research 22:12). The file", file, "should be a 
+tab-delimited text file containing columns A through C rows 3 through 
+39658 of Paschold's Supplementary Table S3 
+(", url, "),
+which corresponds to Paschold's Table 1 (classes 5-8, columns 
+B73xMo17 and Mo17xB73). Ensure that", file, "also has the 
+header \"Gene\tMxB\tBxM\" and place the file in
+your current working directory. Then, rerun this function.
+"))
+} else {
+  groups = read.table(file, header = T, sep = "\t")
+}
+
+cn = c("high-parent_B73xMo17", "high-parent_Mo17xB73", "low-parent_B73xMo17", "low-parent_Mo17xB73")
+p = as.data.frame(probs(a$chains)[,cn])
+colnames(p) = c("hph_bm", "hph_mb", "lph_bm", "lph_mb")
+p$Gene = rownames(p)
+d = melt(p, id.vars = "Gene")
+
+g2 = data.frame(
+  hph_bm = groups$BxM %in% 5:6,
+  hph_mb = groups$MxB %in% 5:6,
+  lph_bm = groups$BxM %in% 7:8,
+  lph_mb = groups$MxB %in% 7:8,
+  Gene = rownames(p)
+)
+d2 = melt(g2, id.vars = "Gene")
+
+colnames(d) = c("Gene", "Heterosis", "Probability")
+d$Paschold = ifelse(d2$value, "discovery", "nondiscovery") 
+levels(d$Heterosis) = c(
+  "hph_bm" = "high B73xMo17", 
+  "hph_mb" = "high Mo17xB73", 
+  "lph_bm" = "low B73xMo17", 
+  "lph_mb" = "low Mo17xB73")
+
+# fig:comparehprobs
+dir_comparehprobs = newdir(paste0(dir, "fig-comparehprobs"))
+pl = ggplot(d) + 
+  geom_histogram(aes_string(x = "Probability"), color = "black", fill = "black") + 
+  facet_grid(Paschold~Heterosis, scales = "free_y") + 
+  ylab("Count") +
+  mytheme_pub() +
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_comparehprobs, "fig-comparehprobs.", extn), pl, height = 6, width = 8, dpi = 1200)
+
+# tables of interesting genes
+for(type in levels(d$Heterosis)){
+  iden = gsub(" ", "-", paste0("tab-", type, "-highprob-nondiscoveries"))
+  td = newdir(paste0(dir, iden))
+  x = d[d$Heterosis == type,]
+  no = x[x$Paschold == "nondiscovery",]
+  no = no[order(no$Probability, decreasing = T),]
+  nogenes = no$Gene[1:10]
+  noct = ct[nogenes,]
+  nom = as.data.frame(t(apply(noct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)})))
+  nom = cbind(rownames(nom), no$Probability[1:10], nom)
+  colnames(nom) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(noct))))
+  rownames(nom) = NULL
+  str = print(xtable(nom), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
+  write(str, file = paste0(td, iden, ".tex"))
+
+  iden = gsub(" ", "-", paste0("tab-", type, "-lowprob-nondiscoveries"))
+  td = newdir(paste0(dir, iden))
+  x = d[d$Heterosis == type,]
+  no = x[x$Paschold == "nondiscovery",]
+  no = no[order(no$Probability, decreasing = F),]
+  nogenes = no$Gene[1:10]
+  noct = ct[nogenes,]
+  nom = as.data.frame(t(apply(noct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)})))
+  nom = cbind(rownames(nom), no$Probability[1:10], nom)
+  colnames(nom) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(noct))))
+  rownames(nom) = NULL
+  str = print(xtable(nom), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
+  write(str, file = paste0(td, iden, ".tex"))
+
+  iden = gsub(" ", "-", paste0("tab-", type, "-lowprob-discoveries"))
+  td = newdir(paste0(dir, iden))
+  x = d[d$Heterosis == type,]
+  yes = x[x$Paschold == "discovery",]
+  yes = yes[order(yes$Probability, decreasing = F),]
+  yesgenes = yes$Gene[1:10]
+  yesct = ct[yesgenes,]
+  yesm = as.data.frame(t(apply(yesct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)})))
+  yesm = cbind(rownames(yesm), yes$Probability[1:10], yesm)
+  colnames(yesm) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(yesct))))
+  rownames(yesm) = NULL
+  str = print(xtable(yesm), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
+  write(str, file = paste0(td, iden, ".tex"))
+
+  iden = gsub(" ", "-", paste0("tab-", type, "-highprob-discoveries"))
+  td = newdir(paste0(dir, iden))
+  x = d[d$Heterosis == type,]
+  yes = x[x$Paschold == "discovery",]
+  yes = yes[order(yes$Probability, decreasing = T),]
+  yesgenes = yes$Gene[1:10]
+  yesct = ct[yesgenes,]
+  yesm = as.data.frame(t(apply(yesct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)})))
+  yesm = cbind(rownames(yesm), yes$Probability[1:10], yesm)
+  colnames(yesm) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(yesct))))
+  rownames(yesm) = NULL
+  str = print(xtable(yesm), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
+  write(str, file = paste0(td, iden, ".tex"))
+}
 }

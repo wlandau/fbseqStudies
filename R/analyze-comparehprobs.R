@@ -72,7 +72,7 @@ comparehprobs = function(from, from_s3, to){
     rownames(nom) = NULL
     str = print(xtable(nom), include.rownames=F, sanitize.text.function=function(x){x}, 
       hline.after = 0)
-    write(str, file = paste0(to, gsub(" ", "-", type), "_high-prob-nondiscoveries.tex"))
+    write(str, file = paste0(to, gsub(" ", "-", type), "_highprob-nondiscoveries.tex"))
 
     x = d[d$heterosis == type,]
     no = x[x$paschold == "nondiscovery",]
@@ -85,7 +85,7 @@ comparehprobs = function(from, from_s3, to){
     rownames(nom) = NULL
     str = print(xtable(nom), include.rownames=F, sanitize.text.function=function(x){x}, 
       hline.after = 0)
-    write(str, file = paste0(to, gsub(" ", "-", type), "_low-prob-nondiscoveries.tex"))
+    write(str, file = paste0(to, gsub(" ", "-", type), "_lowprob-nondiscoveries.tex"))
 
     x = d[d$heterosis == type,]
     yes = x[x$paschold == "discovery",]
@@ -98,7 +98,7 @@ comparehprobs = function(from, from_s3, to){
     rownames(yesm) = NULL
     str = print(xtable(yesm), include.rownames=F, sanitize.text.function=function(x){x}, 
       hline.after = 0)
-    write(str, file = paste0(to, gsub(" ", "-", type), "_low-prob-discoveries.tex"))
+    write(str, file = paste0(to, gsub(" ", "-", type), "_lowprob-discoveries.tex"))
 
     x = d[d$heterosis == type,]
     yes = x[x$paschold == "discovery",]
@@ -111,6 +111,6 @@ comparehprobs = function(from, from_s3, to){
     rownames(yesm) = NULL
     str = print(xtable(yesm), include.rownames=F, sanitize.text.function=function(x){x}, 
       hline.after = 0)
-    write(str, file = paste0(to, gsub(" ", "-", type), "_high-prob-discoveries.tex"))
+    write(str, file = paste0(to, gsub(" ", "-", type), "_highprob-discoveries.tex"))
   }
 }
