@@ -278,14 +278,15 @@ pl = ggplot() +
   stat_density(data = d, mapping = aes_string(x = "value", y = "..density.."), color = "darkGray", fill = "darkGray") + 
   geom_line(data = nrm, mapping = aes_string(x = "value", y = "norm"), linetype = 2) +
   geom_errorbarh(data = ci, mapping = aes_string(x = "center", y = "y", xmin="lower", xmax="upper", linetype = "Interval"), height = 0) +
-  geom_point(data = ci, mapping = aes_string(x = "lower", y = "y"), pch = 15, size = 0.18) +
-  geom_point(data = ci, mapping = aes_string(x = "upper", y = "y"), pch = 15, size = 0.18) +
+  geom_point(data = ci, mapping = aes_string(x = "lower", y = "y"), size = 0.5) +
+  geom_point(data = ci, mapping = aes_string(x = "upper", y = "y"), size = 0.5) +
   geom_point(data = ci, mapping = aes_string(x = "upper", y = "lb"), alpha = 0, size = 0) +
-  facet_wrap(as.formula("~variable"), ncol = 3, scales = "free", labeller = label_parsed) + 
+  facet_wrap(as.formula("~variable"), scales = "free", labeller = label_parsed) + 
   mytheme_pub() + 
-  theme(strip.text.x = element_text(size = 14), legend.position = "none") + #, axis.text.x = element_text(angle = -80, hjust = 0)) + 
+  theme(strip.text.x = element_text(size = 14), legend.position = c(0.875, 0.1)) + #, axis.text.x = element_text(angle = -80, hjust = 0)) + 
   xlab("Parameter value") + 
-  ylab("Density") # + labs(linetype = "95% credible interval")
+  ylab("Density") + 
+  labs(linetype = "95% credible interval")
 for(extn in extns)
   ggsave(paste0(dir_betahist, "fig-betahist.", extn), pl, height = 10, width = 10, dpi = 1200)
 
@@ -299,9 +300,6 @@ c2 = apply(cn, 1, function(x){
 })
 colnames(m_gamma) = c2
 d = melt(m_gamma, id.vars = NULL)
-
-
-
 
 d = ddply(d, "variable", function(x){
   x$lower = quantile(x$value, 0.025)
@@ -321,14 +319,14 @@ ci2$min = ci1$min
 ci2$max = ci1$max
 
 x1 = data.frame(variable = ci1$variable, lower = ci1$lower, upper = ci1$upper, center = ci1$median, Interval = "quantile", y = 1)
-x2 = data.frame(variable = ci2$variable, lower = ci2$lower_ci_0.95, upper = ci2$upper_ci_0.95, center = ci2$mean, Interval = "inverse-gamma approximation", y = 2)
+x2 = data.frame(variable = ci2$variable, lower = ci2$lower_ci_0.95, upper = ci2$upper_ci_0.95, center = ci2$mean, Interval = "inv-gamma approx", y = 2)
 ci = rbind(x1, x2)
 ci$mean = c(ci2$mean, ci2$mean)
 ci$sd = c(ci2$sd, ci2$sd)
-m = ci$mean
+mn = ci$mean
 s = ci$sd
-shape = m^2/s^2 + 2
-scale = m*(shape - 1)
+shape = mn^2/s^2 + 2
+scale = mn*(shape - 1)
 md = scale/(shape+1)
 ci$y = -ci$y/(23*md)
 ci$lb = ci$y - abs(ci$y*0.15)
@@ -347,14 +345,15 @@ pl = ggplot() +
   stat_density(data = d, mapping = aes_string(x = "value", y = "..density.."), color = "darkGray", fill = "darkGray") + 
   geom_line(data = ig, mapping = aes_string(x = "value", y = "ig"), linetype = 2) +
   geom_errorbarh(data = ci, mapping = aes_string(x = "center", y = "y", xmin="lower", xmax="upper", linetype = "Interval"), height = 0) +
-  geom_point(data = ci, mapping = aes_string(x = "lower", y = "y"), pch = 15, size = 0.18) +
-  geom_point(data = ci, mapping = aes_string(x = "upper", y = "y"), pch = 15, size = 0.18) +
+  geom_point(data = ci, mapping = aes_string(x = "lower", y = "y"), size = 0.5) +
+  geom_point(data = ci, mapping = aes_string(x = "upper", y = "y"), size = 0.5) +
   geom_point(data = ci, mapping = aes_string(x = "upper", y = "lb"), alpha = 0, size = 0) +
   facet_wrap(as.formula("~variable"), ncol = 2, scales = "free", labeller = label_parsed) + 
   mytheme_pub() + 
-  theme(strip.text.x = element_text(size = 14), legend.position = "none") + #, axis.text.x = element_text(angle = -80, hjust = 0)) + 
+  theme(strip.text.x = element_text(size = 14), legend.position = c(0.75, 0.25)) + #, axis.text.x = element_text(angle = -80, hjust = 0)) + 
   xlab("Parameter value") + 
-  ylab("Density") # + labs(linetype = "95% credible interval")
+  ylab("Density") + 
+  labs(linetype = "95% credible interval")
 for(extn in extns)
   ggsave(paste0(dir_gammahist, "fig-gammahist.", extn), pl, height = 4, width = 5, dpi = 1200)
 
