@@ -1,3 +1,4 @@
+#' @importFrom actuar dinvgamma
 #' @importFrom plyr adply ddply mapvalues
 #' @importFrom dplyr %>% group_by_ mutate rename summarize_
 #' @importFrom gridExtra grid.arrange

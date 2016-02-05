@@ -6,15 +6,17 @@ NULL
 #' @export
 paper_case_figures = function(){
 
-# library(fbseqStudies); library(reshape2); library(plyr); library(ggthemes); setwd("~/home/work/projects/thesis_data/results")
+# library(fbseqStudies); library(reshape2); library(plyr); library(pracma); library(ggthemes); library(actuar); setwd("~/home/work/projects/thesis_data/results")
 
 # control parms
 dir = newdir("case_study_paper_figures")
 extns = c("pdf", "ps", "eps")
+mycolors = c("black", "blue", "red", "green", "purple")
+analysislevels = c("eBayes (oracle)", "eBayes (naive)", "eBayes (posterior)", "Niemi", "fully Bayes")
 
 # credible interval info
 l = as.data.frame(readRDS("coverage_analyze/ci/ci.rds"))
-l$rep = ordered(l$rep, levels = 1:10)
+l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
 
 # fig:hypercoverage
 dir_hypercoverage = newdir(paste0(dir, "fig-hypercoverage"))
@@ -57,7 +59,7 @@ dir_modelcalibration = newdir(paste0(dir, "fig-modelcalibration"))
 df = ggplot2_df("~/home/work/projects/thesis_data/results/coverage_analyze/calibration")
 df$heterosis = relevel_heterosis(df$heterosis)
 pl = ggplot(df) +
-  geom_line(aes_string(x = "probability", y = "proportion", group = "file", linetype = "analysis"), color = "black") + 
+  geom_line(aes_string(x = "probability", y = "proportion", group = "file"), color = "black") + 
   geom_abline(slope = 1, intercept = 0, linetype = 2) + 
   facet_wrap(as.formula("~heterosis")) + xlab("Probability") + ylab("Proportion") +
   mytheme_pub() + theme(legend.position = "none") + 
@@ -116,15 +118,17 @@ for(N in c(16, 32)){
   d = d[d$analysis %in% ans & d$libraries == N,]
   d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
   d$analysis = myrelevel(d$analysis)
-  d$analysis = ordered(d$analysis, levels = c("fully Bayes", "eBayes (naive)", "eBayes (posterior)", "eBayes (oracle)", "Niemi"))
+  d$analysis = ordered(d$analysis, levels = analysislevels)
   d$heterosis = relevel_heterosis(d$heterosis)
 
   pl = ggplot(d) + 
-    geom_line(aes_string(x = "fpr", y = "tpr", group = "file", linetype = "analysis"), color = "black") +
+    geom_line(aes_string(x = "fpr", y = "tpr", group = "file", color = "analysis", linetype = "analysis")) +
     facet_grid(as.formula("simulation~heterosis")) +
     xlab("False positive rate") + 
     ylab("True positive rate") +
     labs(linetype = "Analysis") +
+    scale_color_manual(name = "Analysis", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
+    scale_linetype_manual(name = "Analysis", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
     mytheme_pub() +
     theme(axis.text.x = element_text(angle = -80, hjust = 0))
   for(extn in extns)
@@ -138,13 +142,12 @@ ans = c("Niemi", as.character(analyses()[grep("+normal", analyses())]))
 d = d[d$analysis %in% ans,]
 d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
 d$analysis = myrelevel(d$analysis)
-d$analysis = ordered(d$analysis, levels = c("eBayes (oracle)", "eBayes (naive)", "eBayes (posterior)", "fully Bayes", "Niemi"))
+d$analysis = ordered(d$analysis, levels = analysislevels)
 d$heterosis = relevel_heterosis(d$heterosis)
-
 pl = ggplot(d) + 
   geom_line(aes_string(x = "analysis", y = "auc_1", group = "libraries"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "auc_1", pch = "libraries"), color = "black") +
-  facet_grid(as.formula("simulation~heterosis"), scales = "free_y") +
+  facet_grid(as.formula("simulation~heterosis"), scales = "fixed") +
   xlab("Analysis") + 
   ylab("Area under ROC curve") +
   labs(pch = "N") +
@@ -161,15 +164,17 @@ for(N in c(16, 32)){
   d = d[d$analysis %in% ans & d$libraries == N,]
   d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
   d$analysis = myrelevel(d$analysis)
-  d$analysis = ordered(d$analysis, levels = c("fully Bayes", "eBayes (naive)", "eBayes (posterior)", "eBayes (oracle)", "Niemi"))
+  d$analysis = ordered(d$analysis, levels = analysislevels)
   d$heterosis = relevel_heterosis(d$heterosis)
 
   pl = ggplot(d) + 
     geom_abline(slope = 1, intercept = 0) +
-    geom_line(aes_string(x = "probability", y = "proportion", group = "file", linetype = "analysis"), color = "black") +
+    geom_line(aes_string(x = "probability", y = "proportion", group = "file", color = "analysis", linetype = "analysis")) +
     facet_grid(as.formula("simulation~heterosis")) +
     xlab("Probability") + 
     ylab("Proportion") +
+    scale_color_manual(name = "Analysis", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
+    scale_linetype_manual(name = "Analysis", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
     labs(linetype = "Analysis") +
     mytheme_pub() +
     theme(axis.text.x = element_text(angle = -80, hjust = 0))
@@ -177,10 +182,37 @@ for(N in c(16, 32)){
     ggsave(paste0(dir_comparecal, "fig-comparecal", N, ".", extn), pl, height = 8, width = 10, dpi = 1200)
 }
 
+# fig:comparecalerror
+dir_comparecalerror = newdir(paste0(dir, "fig-comparecalerror"))
+df = readRDS("comparison_analyze/plot_calibration/calibration.rds")
+df$error = abs(df$proportion - df$probability)
+d = ddply(df, c("file", "heterosis"), function(x){
+  x$meanerror = trapz(x = x$probability, y = x$error)
+  x[1,]
+})
+ans = c("Niemi", as.character(analyses()[grep("+normal", analyses())]))
+d = d[d$analysis %in% ans,]
+d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
+d$analysis = myrelevel(d$analysis)
+d$analysis = ordered(d$analysis, levels = analysislevels)
+d$heterosis = relevel_heterosis(d$heterosis)
+pl = ggplot(d) + 
+  geom_line(aes_string(x = "analysis", y = "meanerror", group = "libraries"), color = "black") +
+  geom_point(aes_string(x = "analysis", y = "meanerror", pch = "libraries"), color = "black") +
+  facet_grid(as.formula("simulation~heterosis"), scales = "fixed") +
+  xlab("Analysis") + 
+  ylab("Average absolute calibration error") +
+  labs(pch = "N") +
+  mytheme_pub() +
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_comparecalerror, "fig-comparecalerror.", extn), pl, height = 8, width = 10, dpi = 1200)
+
 # paschold data analysis
 l = readRDS("real_mcmc/paschold_39656_16_1.rds")
 a = l$analyses[["fullybayes+normal"]]
 m = mcmc_samples(a$chains)
+e = estimates(a$chains, level = 0.95)
 
 # fig:hyperhist
 dir_hyperhist = newdir(paste0(dir, "fig-hyperhist"))
@@ -202,7 +234,6 @@ for(extn in extns)
   ggsave(paste0(dir_hyperhist, "fig-hyperhist.", extn), pl, height = 8, width = 10, dpi = 1200)
 
 # fig:betahist
-
 dir_betahist = newdir(paste0(dir, "fig-betahist"))
 m_beta = m[,grep("beta", colnames(m))]
 cn = colnames(m_beta)
@@ -212,15 +243,51 @@ c2 = apply(cn, 1, function(x){
 })
 colnames(m_beta) = c2
 d = melt(m_beta, id.vars = NULL)
-pl = ggplot(d) + 
-  geom_histogram(aes_string(x = "value"), color = "black", fill = "black") + 
-  facet_wrap(as.formula("~variable"), scales = "free_x", labeller = label_parsed) + 
-  mytheme_pub() +
-  theme(strip.text.x = element_text(size = 14), axis.text.x = element_text(angle = -80, hjust = 0)) + 
+d = ddply(d, "variable", function(x){
+  x$lower = quantile(x$value, 0.025)
+  x$upper = quantile(x$value, 0.975)
+  x$median = quantile(x$value, 0.5)
+  x$max = max(x$value)
+  x$min = min(x$value)
+  x
+})
+rownames(cn) = c2
+
+ci1 = ddply(d, "variable", function(x){x[1,]})
+ci2 = e[apply(cn, 1, paste0, collapse="_"),]
+ci2$variable = ci1$variable
+rownames(ci2) = ci2$variable
+ci2$min = ci1$min
+ci2$max = ci1$max
+
+x1 = data.frame(variable = ci1$variable, lower = ci1$lower, upper = ci1$upper, center = ci1$median, Interval = "quantile", y = 1)
+x2 = data.frame(variable = ci2$variable, lower = ci2$lower_ci_0.95, upper = ci2$upper_ci_0.95, center = ci2$mean, Interval = "normal approximation", y = 2)
+ci = rbind(x1, x2)
+ci$mean = c(ci2$mean, ci2$mean)
+ci$sd = c(ci2$sd, ci2$sd)
+ci$y = -ci$y/(15*sqrt(2 *pi * ci$sd^2))
+ci$lb = ci$y - abs(ci$y*0.15)
+
+nrm = ddply(ci2, "variable", function(x){
+  value = seq(from = x$min[1], to = x$max[1], length.out = 100)
+  norm = dnorm(value, x$mean[1], x$sd[1])
+  data.frame(x[rep(1, 100),], value = value, norm = norm)
+})
+
+pl = ggplot() + 
+  stat_density(data = d, mapping = aes_string(x = "value", y = "..density.."), color = "darkGray", fill = "darkGray") + 
+  geom_line(data = nrm, mapping = aes_string(x = "value", y = "norm"), linetype = 2) +
+  geom_errorbarh(data = ci, mapping = aes_string(x = "center", y = "y", xmin="lower", xmax="upper", linetype = "Interval"), height = 0) +
+  geom_point(data = ci, mapping = aes_string(x = "lower", y = "y"), pch = 15, size = 0.18) +
+  geom_point(data = ci, mapping = aes_string(x = "upper", y = "y"), pch = 15, size = 0.18) +
+  geom_point(data = ci, mapping = aes_string(x = "upper", y = "lb"), alpha = 0, size = 0) +
+  facet_wrap(as.formula("~variable"), ncol = 3, scales = "free", labeller = label_parsed) + 
+  mytheme_pub() + 
+  theme(strip.text.x = element_text(size = 14), legend.position = "none") + #, axis.text.x = element_text(angle = -80, hjust = 0)) + 
   xlab("Parameter value") + 
-  ylab("Count")
+  ylab("Density") # + labs(linetype = "95% credible interval")
 for(extn in extns)
-  ggsave(paste0(dir_betahist, "fig-betahist.", extn), pl, height = 8, width = 10, dpi = 1200)
+  ggsave(paste0(dir_betahist, "fig-betahist.", extn), pl, height = 10, width = 10, dpi = 1200)
 
 # fig:gammahist
 dir_gammahist = newdir(paste0(dir, "fig-gammahist"))
@@ -232,13 +299,62 @@ c2 = apply(cn, 1, function(x){
 })
 colnames(m_gamma) = c2
 d = melt(m_gamma, id.vars = NULL)
-pl = ggplot(d) + 
-  geom_histogram(aes_string(x = "value"), color = "black", fill = "black") + 
-  facet_wrap(as.formula("~variable"), ncol = 2, scales = "free_x", labeller = label_parsed) + 
-  mytheme_pub() +
-  theme(strip.text.x = element_text(size = 14), axis.text.x = element_text(angle = -80, hjust = 0)) + 
+
+
+
+
+d = ddply(d, "variable", function(x){
+  x$lower = quantile(x$value, 0.025)
+  x$upper = quantile(x$value, 0.975)
+  x$median = quantile(x$value, 0.5)
+  x$max = max(x$value)
+  x$min = min(x$value)
+  x
+})
+rownames(cn) = c2
+
+ci1 = ddply(d, "variable", function(x){x[1,]})
+ci2 = e[apply(cn, 1, paste0, collapse="_"),]
+ci2$variable = ci1$variable
+rownames(ci2) = ci2$variable
+ci2$min = ci1$min
+ci2$max = ci1$max
+
+x1 = data.frame(variable = ci1$variable, lower = ci1$lower, upper = ci1$upper, center = ci1$median, Interval = "quantile", y = 1)
+x2 = data.frame(variable = ci2$variable, lower = ci2$lower_ci_0.95, upper = ci2$upper_ci_0.95, center = ci2$mean, Interval = "inverse-gamma approximation", y = 2)
+ci = rbind(x1, x2)
+ci$mean = c(ci2$mean, ci2$mean)
+ci$sd = c(ci2$sd, ci2$sd)
+m = ci$mean
+s = ci$sd
+shape = m^2/s^2 + 2
+scale = m*(shape - 1)
+md = scale/(shape+1)
+ci$y = -ci$y/(23*md)
+ci$lb = ci$y - abs(ci$y*0.15)
+
+ig = ddply(ci2, "variable", function(x){
+  value = seq(from = x$min[1], to = x$max[1], length.out = 100)
+  m = x$mean[1]
+  s = x$sd[1]
+  shape = m^2/s^2 + 2
+  scale = m*(shape - 1)
+  ig = dinvgamma(value, shape = shape, scale = scale)
+  data.frame(x[rep(1, 100),], value = value, ig)
+})
+
+pl = ggplot() + 
+  stat_density(data = d, mapping = aes_string(x = "value", y = "..density.."), color = "darkGray", fill = "darkGray") + 
+  geom_line(data = ig, mapping = aes_string(x = "value", y = "ig"), linetype = 2) +
+  geom_errorbarh(data = ci, mapping = aes_string(x = "center", y = "y", xmin="lower", xmax="upper", linetype = "Interval"), height = 0) +
+  geom_point(data = ci, mapping = aes_string(x = "lower", y = "y"), pch = 15, size = 0.18) +
+  geom_point(data = ci, mapping = aes_string(x = "upper", y = "y"), pch = 15, size = 0.18) +
+  geom_point(data = ci, mapping = aes_string(x = "upper", y = "lb"), alpha = 0, size = 0) +
+  facet_wrap(as.formula("~variable"), ncol = 2, scales = "free", labeller = label_parsed) + 
+  mytheme_pub() + 
+  theme(strip.text.x = element_text(size = 14), legend.position = "none") + #, axis.text.x = element_text(angle = -80, hjust = 0)) + 
   xlab("Parameter value") + 
-  ylab("Count")
+  ylab("Density") # + labs(linetype = "95% credible interval")
 for(extn in extns)
   ggsave(paste0(dir_gammahist, "fig-gammahist.", extn), pl, height = 4, width = 5, dpi = 1200)
 
@@ -360,16 +476,17 @@ for(extn in extns)
   ggsave(paste0(dir_comparehprobs, "fig-comparehprobs.", extn), pl, height = 6, width = 8, dpi = 1200)
 
 # tables of interesting genes
+ntopgenes = 15
 for(type in levels(d$Heterosis)){
   iden = gsub(" ", "-", paste0("tab-", type, "-highprob-nondiscoveries"))
   td = newdir(paste0(dir, iden))
   x = d[d$Heterosis == type,]
   no = x[x$Paschold == "nondiscovery",]
   no = no[order(no$Probability, decreasing = T),]
-  nogenes = no$Gene[1:10]
+  nogenes = no$Gene[1:ntopgenes]
   noct = ct[nogenes,]
   nom = as.data.frame(t(apply(noct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)})))
-  nom = cbind(rownames(nom), no$Probability[1:10], nom)
+  nom = cbind(rownames(nom), no$Probability[1:ntopgenes], nom)
   colnames(nom) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(noct))))
   rownames(nom) = NULL
   str = print(xtable(nom), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
@@ -380,10 +497,10 @@ for(type in levels(d$Heterosis)){
   x = d[d$Heterosis == type,]
   no = x[x$Paschold == "nondiscovery",]
   no = no[order(no$Probability, decreasing = F),]
-  nogenes = no$Gene[1:10]
+  nogenes = no$Gene[1:ntopgenes]
   noct = ct[nogenes,]
   nom = as.data.frame(t(apply(noct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)})))
-  nom = cbind(rownames(nom), no$Probability[1:10], nom)
+  nom = cbind(rownames(nom), no$Probability[1:ntopgenes], nom)
   colnames(nom) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(noct))))
   rownames(nom) = NULL
   str = print(xtable(nom), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
@@ -394,10 +511,10 @@ for(type in levels(d$Heterosis)){
   x = d[d$Heterosis == type,]
   yes = x[x$Paschold == "discovery",]
   yes = yes[order(yes$Probability, decreasing = F),]
-  yesgenes = yes$Gene[1:10]
+  yesgenes = yes$Gene[1:ntopgenes]
   yesct = ct[yesgenes,]
   yesm = as.data.frame(t(apply(yesct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)})))
-  yesm = cbind(rownames(yesm), yes$Probability[1:10], yesm)
+  yesm = cbind(rownames(yesm), yes$Probability[1:ntopgenes], yesm)
   colnames(yesm) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(yesct))))
   rownames(yesm) = NULL
   str = print(xtable(yesm), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
@@ -408,10 +525,10 @@ for(type in levels(d$Heterosis)){
   x = d[d$Heterosis == type,]
   yes = x[x$Paschold == "discovery",]
   yes = yes[order(yes$Probability, decreasing = T),]
-  yesgenes = yes$Gene[1:10]
+  yesgenes = yes$Gene[1:ntopgenes]
   yesct = ct[yesgenes,]
   yesm = as.data.frame(t(apply(yesct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)})))
-  yesm = cbind(rownames(yesm), yes$Probability[1:10], yesm)
+  yesm = cbind(rownames(yesm), yes$Probability[1:ntopgenes], yesm)
   colnames(yesm) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(yesct))))
   rownames(yesm) = NULL
   str = print(xtable(yesm), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)

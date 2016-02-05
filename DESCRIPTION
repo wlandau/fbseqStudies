@@ -9,6 +9,7 @@ Depends:
     fbseq,
     ggplot2
 Imports:
+    actuar,
     coda,
     doMC,
     doParallel,
