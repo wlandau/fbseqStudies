@@ -9,14 +9,18 @@ plot_runtime = function(from, to){
   long = readRDS(paste0(from, "runtime.rds"))
   d = long[,-(1:4)]
   dub = sapply(d, is.double)
-  d[,dub] = round(d[,dub], 3)
+  dub[c("min_ess", "median_ess")] = F
+  d[,dub] = round(d[,dub], 2)
+  d$min_ess = as.integer(round(d$min_ess))
+  d$median_ess = as.integer(round(d$median_ess))
   d = d[order(d$G),]
   d$which_min_ess = as.character(d$which_min_ess)
   for(i in 1:5)
     d$which_min_ess = gsub(paste0("sigmaSquared_", i), paste0("sigma_", i, "^2"), d$which_min_ess)
   d$which_min_ess = paste0("$\\", d$which_min_ess, "$")
-  colnames(d) = c("G", "N", "runtime", "min ess", "min ess param", "median ess", "ratio A", "ratio B")
-  h = c(0, 1:4*4)
+  d = d[,c(1, 2, 3, 6, 8, 4, 7, 5)]
+  colnames(d) = gsub("_", " ", colnames(d))
+  h = c(0, 1:3*4)
   h = h[h <= nrow(d)]
   str = print(xtable(d), include.rownames=F, sanitize.text.function=function(x){x}, 
     hline.after = h)
