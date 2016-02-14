@@ -110,7 +110,7 @@ pl = ggplot(l1) +
 for(extn in extns[!grepl("ps", extns)])
   ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, height = 6, width = 7, dpi = 1200)
 for(extn in extns[grepl("ps", extns)])
-  ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl,device=cairo_ps,
+  ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, device=cairo_ps,
  height = 6, width = 7, dpi = 1200)
 
 # fig:roc16 and fig:roc32
