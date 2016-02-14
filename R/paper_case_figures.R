@@ -94,21 +94,24 @@ l0 = l[grepl("beta", l$parameter) & l$level == level,]
 l0$type = gsub("\\[", "[list(g", l0$type)
 l0$type = gsub("]", ")]", l0$type)
 l1 = ddply(l0, c("rep", "type"), function(z){
-  k = ksmooth(x = z$truth, y = z$cover, bandwidth = 0.1)
+  k = ksmooth(x = z$truth, y = z$cover, bandwidth = 4*sd(z$truth))
   fn = stepfun(x = k$x, y = c(0, k$y))
   xs = seq(from = min(k$x), to = max(k$x), length.out = 4e2)
   ys = fn(xs)
   data.frame(truth = xs, cover = ys, type = z$type[1], rep = z$rep[[1]])
 }, .progress = "text")
 pl = ggplot(l1) + 
-  geom_line(aes_string(x = "truth", y = "cover", group = "rep")) + 
-  geom_abline(slope = 0, intercept = level) +
+  geom_line(aes_string(x = "truth", y = "cover", group = "rep"), alpha = 0.5) + 
+  geom_abline(slope = 0, intercept = level, linetype = "dotted") +
   facet_wrap(as.formula("~type"), scales = "free_x", labeller = label_parsed) +
   xlab("parameter value") +
   ylab("coverage") +
   mytheme_pub() + theme(strip.text.x = element_text(size = 14))
-for(extn in extns)
+for(extn in extns[!grepl("ps", extns)])
   ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, height = 6, width = 7, dpi = 1200)
+for(extn in extns[grepl("ps", extns)])
+  ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl,device=cairo_ps,
+ height = 6, width = 7, dpi = 1200)
 
 # fig:roc16 and fig:roc32
 for(N in c(16, 32)){
