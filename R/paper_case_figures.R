@@ -104,8 +104,8 @@ pl = ggplot(l1) +
   geom_line(aes_string(x = "truth", y = "cover", group = "rep"), alpha = 0.5) + 
   geom_abline(slope = 0, intercept = level, linetype = "dotted") +
   facet_wrap(as.formula("~type"), scales = "free_x", labeller = label_parsed) +
-  xlab("parameter value") +
-  ylab("coverage") +
+  xlab("true parameter value") +
+  ylab("smoothed coverage rate") +
   mytheme_pub() + theme(strip.text.x = element_text(size = 14))
 for(extn in extns[!grepl("ps", extns)])
   ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, height = 6, width = 7, dpi = 1200)
