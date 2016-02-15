@@ -6,9 +6,11 @@ NULL
 #' @export
 #' @return path to simulated objects
 #' @param path to directory to save simulations and results
-coverage_mcmc = function(path = newdir()){
+#' @param zeronormfactors TRUE/FALSE value: option to set normalization constants h to 0 
+coverage_mcmc = function(path = newdir(), zeronormfactors = T){
   path = newdir(path)
   coverage_init(path)
-  fit(path, benchmarks = NULL, fbseq_methods = "fullybayes", zeronormfactors = T)
+  fit(path, benchmarks = NULL, fbseq_methods = "fullybayes", zeronormfactors = zeronormfactors, 
+    priors = c("normal", special_beta_priors()[special_beta_priors() != "horseshoe"]))
   path
 }

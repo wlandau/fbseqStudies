@@ -4,10 +4,12 @@
 \alias{coverage_mcmc}
 \title{Function \code{coverage_mcmc}}
 \usage{
-coverage_mcmc(path = newdir())
+coverage_mcmc(path = newdir(), zeronormfactors = T)
 }
 \arguments{
 \item{path}{to directory to save simulations and results}
+
+\item{zeronormfactors}{TRUE/FALSE value: option to set normalization constants h to 0}
 }
 \value{
 path to simulated objects
