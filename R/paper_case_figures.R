@@ -17,6 +17,7 @@ analysislevels = c("eBayes (oracle)", "eBayes (naive)", "eBayes (posterior)", "N
 # credible interval info
 l = as.data.frame(readRDS("coverage_analyze/ci/ci.rds"))
 l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
+l = l[l$analysis == "fullybayes+normal",]
 
 # fig:hypercoverage
 dir_hypercoverage = newdir(paste0(dir, "fig-hypercoverage"))
