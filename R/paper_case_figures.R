@@ -160,7 +160,7 @@ pl = ggplot(d) +
 for(extn in extns)
   ggsave(paste0(dir_auc, "fig-auc.", extn), pl, height = 8, width = 10, dpi = 1200)
 
-# fig:comparecal
+# fig:comparecal16 and fig:comparecal32
 for(N in c(16, 32)){
   dir_comparecal = newdir(paste0(dir, "fig-comparecal", N))
   d = readRDS("comparison_analyze/plot_calibration/calibration.rds")
@@ -168,11 +168,11 @@ for(N in c(16, 32)){
   d = d[d$analysis %in% ans & d$libraries == N,]
   d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
   d$analysis = myrelevel(d$analysis)
-  d$analysis = ordered(d$analysis, levels = analysislevels)
+  d$analysis = ordered(d$analysis, levels = rev(analysislevels))
   d$heterosis = relevel_heterosis(d$heterosis)
 
   pl = ggplot(d) + 
-    geom_abline(slope = 1, intercept = 0) +
+    geom_abline(slope = 1, intercept = 0, color = "darkGray") +
     geom_line(aes_string(x = "probability", y = "proportion", group = "file", color = "analysis", linetype = "analysis")) +
     facet_grid(as.formula("simulation~heterosis")) +
     xlab("Probability") + 
