@@ -57,7 +57,8 @@ for(extn in extns)
 
 # fig:modelcalibration
 dir_modelcalibration = newdir(paste0(dir, "fig-modelcalibration"))
-df = ggplot2_df("~/home/work/projects/thesis_data/results/coverage_analyze/calibration")
+df = ggplot2_df("coverage_analyze/calibration")
+df = df[df$analysis == "fullybayes+normal",]
 df$heterosis = relevel_heterosis(df$heterosis)
 pl = ggplot(df) +
   geom_line(aes_string(x = "probability", y = "proportion", group = "file"), color = "black") + 
