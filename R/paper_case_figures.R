@@ -425,25 +425,8 @@ write.csv(d, paste0(dir_suppheteroisisprobs, "supp-heterosisprobs.csv"), row.nam
 data(paschold)
 paschold = get("paschold")
 ct = paschold@counts
-file = "tableS3part.txt"
-url = "http://genome.cshlp.org/content/suppl/2012/09/17/gr.138461.112.DC1/TableS3.xlsx"
-if(!file.exists(file)){
-cat(paste("File", file, "not found.
-That file is needed to reproduce the rest of the analysis, specifically the 
-figures and tables that compare our results to those of the 2012 
-Paschold study (Genome Research 22:12). The file", file, "should be a 
-tab-delimited text file containing columns A through C rows 3 through 
-39658 of Paschold's Supplementary Table S3 
-(", url, "),
-which corresponds to Paschold's Table 1 (classes 5-8, columns 
-B73xMo17 and Mo17xB73). Ensure that", file, "also has the 
-header \"Gene\tMxB\tBxM\" and place the file in
-your current working directory. Then, rerun this function.
-"))
-return()
-} else {
-  groups = read.table(file, header = T, sep = "\t")
-}
+data(tableS3table1)
+groups = get("tableS3table1")
 
 cn = c("high-parent_B73xMo17", "high-parent_Mo17xB73", "low-parent_B73xMo17", "low-parent_Mo17xB73")
 p = as.data.frame(probs(a$chains)[,cn])

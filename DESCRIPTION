@@ -53,6 +53,7 @@ Collate:
     'analyze-roc.R'
     'analyze-runtime.R'
     'analyze-table_ci.R'
+    'data.R'
     'fit_Niemi.R'
     'fit_fbseq.R'
     'fit_edgeR.R'
