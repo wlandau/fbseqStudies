@@ -1,0 +1,7 @@
+#' @name tableS3table1
+#' @title tableS3table1
+#' @description a data frame object. Contains the "Table 1" section of Supplementary Table S3
+#' of the Paschold et al. (2012) study (http://www.ncbi.nlm.nih.gov/pubmed/23086286).
+#' @docType data
+#' @author Paschold et al. (http://www.ncbi.nlm.nih.gov/pubmed/23086286)
+NULL
