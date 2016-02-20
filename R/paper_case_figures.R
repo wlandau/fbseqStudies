@@ -229,12 +229,12 @@ cn[grep("sigma", cn)] = paste0(cn[grep("sigma", cn)], "^2")
 colnames(m_hyper) = cn
 d = melt(m_hyper, id.vars = NULL)
 pl = ggplot(d) + 
-  geom_histogram(aes_string(x = "value"), color = "black", fill = "black") + 
-  facet_wrap(as.formula("~variable"), scales = "free_x", labeller = label_parsed) + 
+  stat_density(aes_string(x = "value", y = "..density.."), color = "black", fill = "black") + 
+  facet_wrap(as.formula("~variable"), scales = "free", labeller = label_parsed) + 
   mytheme_pub() +
   theme(strip.text.x = element_text(size = 14), axis.text.x = element_text(angle = -80, hjust = 0)) + 
-  xlab("Parameter value") + 
-  ylab("Count")
+  xlab("parameter value") + 
+  ylab("density")
 for(extn in extns)
   ggsave(paste0(dir_hyperhist, "fig-hyperhist.", extn), pl, height = 8, width = 10, dpi = 1200)
 
