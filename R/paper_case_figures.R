@@ -13,6 +13,7 @@ dir = newdir("case_study_paper_figures")
 extns = c("pdf", "ps", "eps")
 mycolors = c("black", "blue", "red", "green", "purple")
 analysislevels = c("eBayes (oracle)", "eBayes (naive)", "eBayes (posterior)", "Niemi", "fully Bayes")
+gray = "#707070"
 
 # credible interval info
 l = as.data.frame(readRDS("coverage_analyze/ci/ci.rds"))
@@ -81,7 +82,7 @@ l0 = ddply(l0, "type", function(x){
   x
 })
 pl = ggplot(l0) +
-  geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = "darkGray") +
+  geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = gray) +
   geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
   facet_wrap(as.formula("~type"), scales = "free", labeller = label_parsed) +
   xlab("credible interval") + ylab("parameter value") + 
@@ -131,9 +132,8 @@ for(N in c(16, 32)){
     facet_grid(as.formula("simulation~heterosis")) +
     xlab("false positive rate") + 
     ylab("true positive rate") +
-    labs(linetype = "analysis") +
-    scale_color_manual(name = "Analysis", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
-    scale_linetype_manual(name = "Analysis", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
+    scale_color_manual(name = "analysis", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
+    scale_linetype_manual(name = "analysis", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
     mytheme_pub() +
     theme(axis.text.x = element_text(angle = -80, hjust = 0))
   for(extn in extns)
@@ -173,14 +173,13 @@ for(N in c(16, 32)){
   d$heterosis = relevel_heterosis(d$heterosis)
 
   pl = ggplot(d) + 
-    geom_abline(slope = 1, intercept = 0, color = "darkGray") +
+    geom_abline(slope = 1, intercept = 0, color = gray) +
     geom_line(aes_string(x = "probability", y = "proportion", group = "file", color = "analysis", linetype = "analysis")) +
     facet_grid(as.formula("simulation~heterosis")) +
     xlab("probability") + 
     ylab("proportion") +
-    scale_color_manual(name = "Analysis", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
-    scale_linetype_manual(name = "Analysis", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
-    labs(linetype = "analysis") +
+    scale_color_manual(name = "analysis", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
+    scale_linetype_manual(name = "analysis", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
     mytheme_pub() +
     theme(axis.text.x = element_text(angle = -80, hjust = 0))
   for(extn in extns)
@@ -229,7 +228,7 @@ cn[grep("sigma", cn)] = paste0(cn[grep("sigma", cn)], "^2")
 colnames(m_hyper) = cn
 d = melt(m_hyper, id.vars = NULL)
 pl = ggplot(d) + 
-  stat_density(aes_string(x = "value", y = "..density.."), color = "darkGray", fill = "darkGray") + 
+  stat_density(aes_string(x = "value", y = "..density.."), color = gray, fill = gray) + 
   facet_wrap(as.formula("~variable"), scales = "free", labeller = label_parsed) + 
   mytheme_pub() +
   theme(strip.text.x = element_text(size = 14), axis.text.x = element_text(angle = -80, hjust = 0)) + 
@@ -280,7 +279,7 @@ nrm = ddply(ci2, "variable", function(x){
 })
 
 pl = ggplot() + 
-  stat_density(data = d, mapping = aes_string(x = "value", y = "..density.."), color = "darkGray", fill = "darkGray") + 
+  stat_density(data = d, mapping = aes_string(x = "value", y = "..density.."), color = gray, fill = gray) + 
   geom_line(data = nrm, mapping = aes_string(x = "value", y = "norm"), linetype = 2) +
   geom_errorbarh(data = ci, mapping = aes_string(x = "center", y = "y", xmin="lower", xmax="upper", linetype = "Interval"), height = 0) +
   geom_point(data = ci, mapping = aes_string(x = "lower", y = "y"), size = 0.5) +
@@ -347,7 +346,7 @@ ig = ddply(ci2, "variable", function(x){
 })
 
 pl = ggplot() + 
-  stat_density(data = d, mapping = aes_string(x = "value", y = "..density.."), color = "darkGray", fill = "darkGray") + 
+  stat_density(data = d, mapping = aes_string(x = "value", y = "..density.."), color = gray, fill = gray) + 
   geom_line(data = ig, mapping = aes_string(x = "value", y = "ig"), linetype = 2) +
   geom_errorbarh(data = ci, mapping = aes_string(x = "center", y = "y", xmin="lower", xmax="upper", linetype = "Interval"), height = 0) +
   geom_point(data = ci, mapping = aes_string(x = "lower", y = "y"), size = 0.5) +
@@ -374,7 +373,7 @@ ns = apply(s, 1, function(x){
 e$parameter = ordered(ns, levels = paste0("beta[list(g", 1:5, ")]"))
 pl = ggplot(e) + 
   facet_wrap(as.formula("~parameter"), scales = "free", labeller = label_parsed) + 
-  stat_density(aes_string(x = "mean", y = "..density.."), color = "darkGray", fill = "darkGray") + 
+  stat_density(aes_string(x = "mean", y = "..density.."), color = gray, fill = gray) + 
   xlab("estimated posterior mean") +
   ylab("density") +
   mytheme_pub() + 
@@ -393,7 +392,7 @@ d = ddply(e, "parameter", function(x){
 pl = ggplot(d) + 
   facet_wrap(as.formula("~parameter"), scales = "free", labeller = label_parsed) + 
   geom_segment(aes_string(x = "index", xend = "index", y = "lower_ci_0.95", yend = "upper_ci_0.95"), 
-    color = "darkGray") + 
+    color = gray) + 
   geom_point(aes_string(x = "index", y = "mean"), size = I(0.15)) + 
   xlab("index") +
   ylab("parameter value") +
@@ -408,7 +407,7 @@ p = as.data.frame(probs(a$chains))
 d = melt(p, id.vars = NULL)
 d$variable = relevel_heterosis_paschold(d$variable)
 pl = ggplot(d) + 
-  geom_histogram(aes_string(x = "value", y = "..density.."), color = "darkGray", fill = "darkGray") + 
+  geom_histogram(aes_string(x = "value", y = "..density.."), color = gray, fill = gray) + 
   facet_wrap(as.formula("~variable"), scales = "free_x") + 
   xlab("estimated posterior probability") + 
   ylab("density") +
@@ -466,7 +465,7 @@ levels(d$Heterosis) = c(
 # fig:comparehprobs
 dir_comparehprobs = newdir(paste0(dir, "fig-comparehprobs"))
 pl = ggplot(d) + 
-  geom_histogram(aes_string(x = "Probability", y = "..density.."), color = "darkGray", fill = "darkGray") + 
+  geom_histogram(aes_string(x = "Probability", y = "..density.."), color = gray, fill = gray) + 
   facet_grid(Paschold~Heterosis, scales = "free_y") + 
   xlab("estimated posterior probability") +
   ylab("density") +
