@@ -63,7 +63,7 @@ df$heterosis = relevel_heterosis(df$heterosis)
 pl = ggplot(df) +
   geom_line(aes_string(x = "probability", y = "proportion", group = "file"), color = "black") + 
   geom_abline(slope = 1, intercept = 0, linetype = 2) + 
-  facet_wrap(as.formula("~heterosis")) + xlab("Probability") + ylab("Proportion") +
+  facet_wrap(as.formula("~heterosis")) + xlab("probability") + ylab("proportion") +
   mytheme_pub() + theme(legend.position = "none") + 
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
@@ -84,7 +84,7 @@ pl = ggplot(l0) +
   geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = "darkGray") +
   geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
   facet_wrap(as.formula("~type"), scales = "free", labeller = label_parsed) +
-  xlab("Credible interval") + ylab("Parameter value") + 
+  xlab("credible interval") + ylab("parameter value") + 
   mytheme_pub() + theme(strip.text.x = element_text(size = 14))
 for(extn in extns)
   ggsave(paste0(dir_betacred, "fig-betacred.", extn), pl, height = 6, width = 7, dpi = 1200)
@@ -129,9 +129,9 @@ for(N in c(16, 32)){
   pl = ggplot(d) + 
     geom_line(aes_string(x = "fpr", y = "tpr", group = "file", color = "analysis", linetype = "analysis")) +
     facet_grid(as.formula("simulation~heterosis")) +
-    xlab("False positive rate") + 
-    ylab("True positive rate") +
-    labs(linetype = "Analysis") +
+    xlab("false positive rate") + 
+    ylab("true positive rate") +
+    labs(linetype = "analysis") +
     scale_color_manual(name = "Analysis", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
     scale_linetype_manual(name = "Analysis", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
     mytheme_pub() +
@@ -176,11 +176,11 @@ for(N in c(16, 32)){
     geom_abline(slope = 1, intercept = 0, color = "darkGray") +
     geom_line(aes_string(x = "probability", y = "proportion", group = "file", color = "analysis", linetype = "analysis")) +
     facet_grid(as.formula("simulation~heterosis")) +
-    xlab("Probability") + 
-    ylab("Proportion") +
+    xlab("probability") + 
+    ylab("proportion") +
     scale_color_manual(name = "Analysis", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
     scale_linetype_manual(name = "Analysis", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
-    labs(linetype = "Analysis") +
+    labs(linetype = "analysis") +
     mytheme_pub() +
     theme(axis.text.x = element_text(angle = -80, hjust = 0))
   for(extn in extns)
@@ -205,8 +205,8 @@ pl = ggplot(d) +
   geom_line(aes_string(x = "analysis", y = "meanerror", group = "libraries"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "meanerror", pch = "libraries"), color = "black") +
   facet_grid(as.formula("simulation~heterosis"), scales = "fixed") +
-  xlab("Analysis") + 
-  ylab("Average absolute calibration error") +
+  xlab("analysis") + 
+  ylab("average absolute calibration error") +
   labs(pch = "N") +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
