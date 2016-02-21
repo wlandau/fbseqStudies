@@ -229,7 +229,7 @@ cn[grep("sigma", cn)] = paste0(cn[grep("sigma", cn)], "^2")
 colnames(m_hyper) = cn
 d = melt(m_hyper, id.vars = NULL)
 pl = ggplot(d) + 
-  stat_density(aes_string(x = "value", y = "..density.."), color = "black", fill = "black") + 
+  stat_density(aes_string(x = "value", y = "..density.."), color = "darkGray", fill = "darkGray") + 
   facet_wrap(as.formula("~variable"), scales = "free", labeller = label_parsed) + 
   mytheme_pub() +
   theme(strip.text.x = element_text(size = 14), axis.text.x = element_text(angle = -80, hjust = 0)) + 
@@ -289,8 +289,8 @@ pl = ggplot() +
   facet_wrap(as.formula("~variable"), scales = "free", labeller = label_parsed) + 
   mytheme_pub() + 
   theme(strip.text.x = element_text(size = 14), legend.position = c(0.875, 0.1)) + #, axis.text.x = element_text(angle = -80, hjust = 0)) + 
-  xlab("Parameter value") + 
-  ylab("Density") + 
+  xlab("parameter value") + 
+  ylab("density") + 
   labs(linetype = "95% credible interval")
 for(extn in extns)
   ggsave(paste0(dir_betahist, "fig-betahist.", extn), pl, height = 10, width = 10, dpi = 1200)
@@ -356,14 +356,14 @@ pl = ggplot() +
   facet_wrap(as.formula("~variable"), ncol = 2, scales = "free", labeller = label_parsed) + 
   mytheme_pub() + 
   theme(strip.text.x = element_text(size = 14), legend.position = c(0.75, 0.25)) + #, axis.text.x = element_text(angle = -80, hjust = 0)) + 
-  xlab("Parameter value") + 
-  ylab("Density") + 
+  xlab("parameter value") + 
+  ylab("density") + 
   labs(linetype = "95% credible interval")
 for(extn in extns)
   ggsave(paste0(dir_gammahist, "fig-gammahist.", extn), pl, height = 4, width = 5, dpi = 1200)
 
-# fig:pascholdcred
-dir_pascholdcred = newdir(paste0(dir, "fig-pascholdcred"))
+# fig:betapostmeanhist
+dir_betapostmeanhist = newdir(paste0(dir, "fig-betapostmeanhist"))
 e = estimates(a$chains)
 e = e[grep("beta_", rownames(e)),]
 e$parameter = gsub("_[0-9]*$", "", rownames(e))
@@ -372,6 +372,18 @@ ns = apply(s, 1, function(x){
   paste0(x[1], "[list(g", x[2], ")]")
 })
 e$parameter = ordered(ns, levels = paste0("beta[list(g", 1:5, ")]"))
+pl = ggplot(e) + 
+  facet_wrap(as.formula("~parameter"), scales = "free", labeller = label_parsed) + 
+  stat_density(aes_string(x = "mean", y = "..density.."), color = "darkGray", fill = "darkGray") + 
+  xlab("estimated posterior mean") +
+  ylab("density") +
+  mytheme_pub() + 
+  theme(axis.text.x = element_text(angle = -80, hjust = 0), strip.text.x = element_text(size = 14))
+for(extn in extns)
+  ggsave(paste0(dir_betapostmeanhist, "fig-betapostmeanhist.", extn), pl, height = 6, width = 8, dpi = 1200)
+
+# fig:pascholdcred
+dir_pascholdcred = newdir(paste0(dir, "fig-pascholdcred"))
 d = ddply(e, "parameter", function(x){
   x = x[sample(dim(x)[1], 1e3),]
   x = x[order(x$mean),]
@@ -383,8 +395,8 @@ pl = ggplot(d) +
   geom_segment(aes_string(x = "index", xend = "index", y = "lower_ci_0.95", yend = "upper_ci_0.95"), 
     color = "darkGray") + 
   geom_point(aes_string(x = "index", y = "mean"), size = I(0.15)) + 
-  xlab("Index") +
-  ylab("Parameter value") +
+  xlab("index") +
+  ylab("parameter value") +
   mytheme_pub() + 
   theme(axis.text.x = element_text(angle = -80, hjust = 0), strip.text.x = element_text(size = 14))
 for(extn in extns)
@@ -396,10 +408,10 @@ p = as.data.frame(probs(a$chains))
 d = melt(p, id.vars = NULL)
 d$variable = relevel_heterosis_paschold(d$variable)
 pl = ggplot(d) + 
-  geom_histogram(aes_string(x = "value"), color = "black", fill = "black") + 
+  geom_histogram(aes_string(x = "value", y = "..density.."), color = "darkGray", fill = "darkGray") + 
   facet_wrap(as.formula("~variable"), scales = "free_x") + 
-  xlab("Probability") + 
-  ylab("Count") +
+  xlab("estimated posterior probability") + 
+  ylab("density") +
   mytheme_pub()
 for(extn in extns)
   ggsave(paste0(dir_probhist, "fig-probhist.", extn), pl, height = 6, width = 8, dpi = 1200)
@@ -454,9 +466,10 @@ levels(d$Heterosis) = c(
 # fig:comparehprobs
 dir_comparehprobs = newdir(paste0(dir, "fig-comparehprobs"))
 pl = ggplot(d) + 
-  geom_histogram(aes_string(x = "Probability"), color = "black", fill = "black") + 
+  geom_histogram(aes_string(x = "Probability", y = "..density.."), color = "darkGray", fill = "darkGray") + 
   facet_grid(Paschold~Heterosis, scales = "free_y") + 
-  ylab("Count") +
+  xlab("estimated posterior probability") +
+  ylab("density") +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
