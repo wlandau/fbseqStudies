@@ -133,36 +133,44 @@ R CMD INSTALL ...</code></pre>
 <table>
 <tbody>
 <tr class="odd">
+<td align="left"><code>progress()</code></td>
+<td align="left">In the above 3 <code>paper_</code> functions, the rate limiting step is to produce directories called <code>real_mcmc</code>, <code>coverage_mcmc</code>, etc., each with <code>.rds</code> files inside. Each <code>.rds</code> file contains a single (simulated or real) RNA-seq dataset and all the analyses of that dataset. To check the progress of the analyses, run <code>progress(&quot;coverage_mcmc&quot;)</code>, for example. Running <code>progress(&quot;coverage_mcmc&quot;)</code> lists all the methods used to analyze each dataset in the <code>coverage_mcmc</code> directory produced by <code>coverage_mcmc()</code> in <code>paper_case()</code>.</td>
+</tr>
+<tr class="even">
 <td align="left"><code>real_mcmc()</code></td>
 <td align="left">Run different versions of the model on the <span class="citation">Paschold et al. (2012)</span> dataset.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>computation_mcmc()</code></td>
 <td align="left">Duplicate sections of the <span class="citation">Paschold et al. (2012)</span> dataset to create datasets of varying size. Fit the default model to see how runtime scales with the number of genes and the number of libraries.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><code>coverage_mcmc()</code></td>
 <td align="left">Simulate different datasets from the model to assess the ability to recapture parameters of interest in credible intervals calculated from the estimated full joint posterior distribution.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>comparison_mcmc()</code></td>
 <td align="left">Simulate datasets from multiple scenarios and fit multiple versions of the model to assess gene detection power and the calibration of posterior probabilites.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><code>real_analyze()</code></td>
 <td align="left">Extract figures, tables, and other results from the output of <code>real_mcmc()</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>computation_analyze()</code></td>
 <td align="left">Similar, but for <code>computation_mcmc()</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><code>coverage_analyze()</code></td>
 <td align="left">Similar, but for <code>coverage_mcmc()</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>comparison_analyze()</code></td>
 <td align="left">Similar, but for <code>comparison_mcmc()</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>paper_case_figures()</code></td>
+<td align="left">Once the <code>_mcmc()</code> and <code>_analyze()</code> functions are run in the current working directory, run this function to reproduce all the figures and tables of the computation paper (inside <code>paper_computation()</code>).</td>
 </tr>
 </tbody>
 </table>
