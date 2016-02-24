@@ -475,7 +475,7 @@ for(extn in extns)
   ggsave(paste0(dir_comparehprobs, "fig-comparehprobs.", extn), pl, height = 6, width = 8, dpi = 1200)
 
 # tables of interesting genes
-ntopgenes = 15
+ntopgenes = 10
 for(type in levels(d$Heterosis)){
   iden = gsub(" ", "-", paste0("tab-", type, "-highprob-nondiscoveries"))
   td = newdir(paste0(dir, iden))
