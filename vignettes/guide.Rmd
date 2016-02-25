@@ -66,6 +66,8 @@ Each function below reproduces the results of a paper.
 | `paper_case()`  | publication pending |
 | `paper_priors()`  | publication pending |
 
+To run all 3 above functions in sequence, call the function `Landau_dissertation()`, which reproduces all the computation, figures, tables, etc. of the Statistics PhD dissertation of Will Landau (http://will-landau.com, will.landau@gmail.com).
+
 For further control, choose among the following.
 
 |------------------------------------|--------------------------------------------------| 
@@ -78,7 +80,7 @@ For further control, choose among the following.
 | `computation_analyze()` | Similar, but for `computation_mcmc()` | 
 | `coverage_analyze()` | Similar, but for `coverage_mcmc()` | 
 | `comparison_analyze()`  | Similar, but for `comparison_mcmc()`  | 
-|`paper_case_figures()` | Once the `_mcmc()` and `_analyze()` functions are run in the current working directory, run this function to reproduce all the figures and tables of the computation paper (inside `paper_computation()`).
+|`paper_case_figures()` | Once the `_mcmc()` and `_analyze()` functions are run in the current working directory, run this function to reproduce all the figures and tables of the computation paper (inside `paper_computation()`). |
 
 # References
 
