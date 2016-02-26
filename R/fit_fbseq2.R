@@ -1,5 +1,5 @@
-#' @title Function \code{fit_fbseq}
-#' @description fits with fbseq
+#' @title Function \code{fit_fbseq2}
+#' @description fits with fbseq, but with a normal prior on the intercept term (for priors_mcmc)
 #' @export
 #' @return information for a fitted model
 #' @param sim a list, the current simulation object
@@ -9,12 +9,12 @@
 #' @param debug debug mode, TRUE/FALSE
 #' @param configs \code{Configs} object for \code{fbseq}
 #' @param zeronormfactors TRUE/FALSE. If TRUE, starts@@h is set to 0.
-fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, configs = Configs(), zeronormfactors = F){
+fit_fbseq2 = function(sim, method = "fullybayes", prior = "normal", debug = F, configs = Configs(), zeronormfactors = F){
   logs = mysink()
   t = my.proc.time()
 
   s = sim$scenario
-  configs@priors = prior
+  configs@priors = c("normal", prior)
   if(any(prior %in% special_beta_priors())){
     configs@parameter_sets_return = c(configs@parameter_sets_return, "xi")
     configs@parameter_sets_update = c(configs@parameter_sets_update, "xi")

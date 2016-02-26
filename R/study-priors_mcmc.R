@@ -10,7 +10,7 @@ NULL
 priors_mcmc = function(path = newdir(), zeronormfactors = T){
   path = newdir(path)
   priors_init(path)
-  fit(path, benchmarks = NULL, fbseq_methods = "fullybayes", zeronormfactors = zeronormfactors, 
-    priors = c("normal", special_beta_priors()[special_beta_priors() != "horseshoe"]))
+  fit2(path, benchmarks = NULL, fbseq_methods = "fullybayes", zeronormfactors = zeronormfactors, 
+    priors = c("Laplace", "normal", "t"))
   path
 }
