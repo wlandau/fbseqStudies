@@ -33,6 +33,8 @@ Suggests:
 VignetteBuilder: knitr
 License: GPL (>= 3)
 Collate:
+    'study-priors_init.R'
+    'study-priors_mcmc.R'
     'study-real_init.R'
     'study-real_mcmc.R'
     'study-comparison_init.R'
@@ -80,9 +82,11 @@ Collate:
     'simulation_duplicated.R'
     'simulation.R'
     'simulation_Niemi.R'
+    'simulation_priors.R'
     'study-comparison_analyze.R'
     'study-computation_analyze.R'
     'study-coverage_analyze.R'
+    'study-priors_analyze.R'
     'study-real_analyze.R'
     'util-analyses.R'
     'util-dir.R'

@@ -7,6 +7,6 @@
 paper_priors()
 }
 \description{
-Workflow for the priors comparison study paper
+Workflow for the priors paper
 }
 
