@@ -6,7 +6,7 @@ NULL
 #' @export
 paper_case_figures = function(){
 
-# library(fbseqStudies); library(reshape2); library(plyr); library(pracma); library(ggthemes); library(actuar); setwd("~/home/work/projects/thesis_data/results")
+# library(fbseqStudies); library(xtable); library(reshape2); library(plyr); library(pracma); library(ggthemes); library(actuar); setwd("~/home/work/projects/thesis_data/results")
 
 # control parms
 dir = newdir("case_study_paper_figures")
@@ -476,6 +476,7 @@ for(extn in extns)
 
 # tables of interesting genes
 ntopgenes = 10
+lgn = "llr|r|r|r|r"
 for(type in levels(d$Heterosis)){
   iden = gsub(" ", "-", paste0("tab-", type, "-highprob-nondiscoveries"))
   td = newdir(paste0(dir, iden))
@@ -484,12 +485,21 @@ for(type in levels(d$Heterosis)){
   no = no[order(no$Probability, decreasing = T),]
   nogenes = no$Gene[1:ntopgenes]
   noct = ct[nogenes,]
-  nom = as.data.frame(t(apply(noct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)})))
-  nom = cbind(rownames(nom), no$Probability[1:ntopgenes], nom)
+  nom = round(as.data.frame(t(apply(noct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)}))))
+
+  sds = round(t(apply(noct, 1, function(x){tapply(x, rep(1:4, each = 4), function(i){sd(i)})})), 0)
+  v = as.character(as.vector(sds))
+  ml = max(nchar(v))
+  for(i in 1:length(v)) v[i] = paste0(" \\phantom{", paste0(rep("0",ml - nchar(v[i])), collapse = ""), "}(", v[i], ")")
+  sds = as.data.frame(matrix(v, ncol = 4))
+  nom = as.data.frame(matrix(paste0(as.matrix(nom), as.matrix(sds)), ncol = ncol(sds)))
+
+  nom = cbind(nogenes, no$Probability[1:ntopgenes], nom)
   colnames(nom) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(noct))))
   rownames(nom) = NULL
-  str = print(xtable(nom), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
+  str = print(xtable(nom, align = lgn), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
   write(str, file = paste0(td, iden, ".tex"))
+
 
   iden = gsub(" ", "-", paste0("tab-", type, "-lowprob-nondiscoveries"))
   td = newdir(paste0(dir, iden))
@@ -498,12 +508,21 @@ for(type in levels(d$Heterosis)){
   no = no[order(no$Probability, decreasing = F),]
   nogenes = no$Gene[1:ntopgenes]
   noct = ct[nogenes,]
-  nom = as.data.frame(t(apply(noct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)})))
-  nom = cbind(rownames(nom), no$Probability[1:ntopgenes], nom)
+  nom = round(as.data.frame(t(apply(noct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)}))))
+
+  sds = round(t(apply(noct, 1, function(x){tapply(x, rep(1:4, each = 4), function(i){sd(i)})})), 0)
+  v = as.character(as.vector(sds))
+  ml = max(nchar(v))
+  for(i in 1:length(v)) v[i] = paste0(" \\phantom{", paste0(rep("0",ml - nchar(v[i])), collapse = ""), "}(", v[i], ")")
+  sds = as.data.frame(matrix(v, ncol = 4))
+  nom = as.data.frame(matrix(paste0(as.matrix(nom), as.matrix(sds)), ncol = ncol(sds)))
+
+  nom = cbind(nogenes, no$Probability[1:ntopgenes], nom)
   colnames(nom) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(noct))))
   rownames(nom) = NULL
-  str = print(xtable(nom), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
+  str = print(xtable(nom, align = lgn), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
   write(str, file = paste0(td, iden, ".tex"))
+
 
   iden = gsub(" ", "-", paste0("tab-", type, "-lowprob-discoveries"))
   td = newdir(paste0(dir, iden))
@@ -512,12 +531,21 @@ for(type in levels(d$Heterosis)){
   yes = yes[order(yes$Probability, decreasing = F),]
   yesgenes = yes$Gene[1:ntopgenes]
   yesct = ct[yesgenes,]
-  yesm = as.data.frame(t(apply(yesct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)})))
-  yesm = cbind(rownames(yesm), yes$Probability[1:ntopgenes], yesm)
+  yesm = round(as.data.frame(t(apply(yesct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)}))))
+
+  sds = round(t(apply(yesct, 1, function(x){tapply(x, rep(1:4, each = 4), function(i){sd(i)})})), 0)
+  v = as.character(as.vector(sds))
+  ml = max(nchar(v))
+  for(i in 1:length(v)) v[i] = paste0(" \\phantom{", paste0(rep("0",ml - nchar(v[i])), collapse = ""), "}(", v[i], ")")
+  sds = as.data.frame(matrix(v, ncol = 4))
+  yesm = as.data.frame(matrix(paste0(as.matrix(yesm), as.matrix(sds)), ncol = ncol(sds)))
+
+  yesm = cbind(yesgenes, yes$Probability[1:ntopgenes], yesm)
   colnames(yesm) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(yesct))))
   rownames(yesm) = NULL
-  str = print(xtable(yesm), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
+  str = print(xtable(yesm, align = lgn), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
   write(str, file = paste0(td, iden, ".tex"))
+
 
   iden = gsub(" ", "-", paste0("tab-", type, "-highprob-discoveries"))
   td = newdir(paste0(dir, iden))
@@ -526,11 +554,19 @@ for(type in levels(d$Heterosis)){
   yes = yes[order(yes$Probability, decreasing = T),]
   yesgenes = yes$Gene[1:ntopgenes]
   yesct = ct[yesgenes,]
-  yesm = as.data.frame(t(apply(yesct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)})))
-  yesm = cbind(rownames(yesm), yes$Probability[1:ntopgenes], yesm)
+  yesm = round(as.data.frame(t(apply(yesct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)}))))
+
+  sds = round(t(apply(yesct, 1, function(x){tapply(x, rep(1:4, each = 4), function(i){sd(i)})})), 0)
+  v = as.character(as.vector(sds))
+  ml = max(nchar(v))
+  for(i in 1:length(v)) v[i] = paste0(" \\phantom{", paste0(rep("0",ml - nchar(v[i])), collapse = ""), "}(", v[i], ")")
+  sds = as.data.frame(matrix(v, ncol = 4))
+  yesm = as.data.frame(matrix(paste0(as.matrix(yesm), as.matrix(sds)), ncol = ncol(sds)))
+
+  yesm = cbind(yesgenes, yes$Probability[1:ntopgenes], yesm)
   colnames(yesm) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(yesct))))
   rownames(yesm) = NULL
-  str = print(xtable(yesm), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
+  str = print(xtable(yesm, align = lgn), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
   write(str, file = paste0(td, iden, ".tex"))
 }
 }
