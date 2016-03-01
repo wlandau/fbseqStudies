@@ -33,7 +33,7 @@ simulation_priors = function(genes = 1e4, libraries = 16, prior = "normal"){
     }
     beta[,2] = x
     truth = Starts(nu = 3, tau = 0.01, sigmaSquared = c(1, SD^2), theta = c(3, 0), 
-      beta = as.numeric(beta), h = rep(0, libraries), xi = xi)
+      beta = as.numeric(beta), h = rep(0, libraries), xi = c(rep(1, genes), xi))
     truth@gamma = 1/rgamma(genes, shape = truth@nu/2, rate = truth@nu*truth@tau/2)
     gammat = matrix(rep(truth@gamma, times = libraries), ncol = libraries)
     epsilon = matrix(rnorm(libraries*genes, 0, sqrt(gammat)), ncol = libraries)
