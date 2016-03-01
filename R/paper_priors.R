@@ -17,5 +17,5 @@ paper_priors = function(){
   comparison_analyze(path, "comparison_analyze")
   priors_init("priors_mcmc")
   priors_mcmc("priors_mcmc")
-  priors_analyze("priors_mcmc")
+  priors_analyze("priors_mcmc", "priors_analyze")
 }
