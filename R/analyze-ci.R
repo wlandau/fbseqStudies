@@ -18,15 +18,15 @@ ci = function(from, to, levels = c(0.5, 0.95)){
       truth = lower = upper = NULL
       est = estimates(a$chains, level = level)
       pattern = "beta"
-      if(l$simulation == "model" & grepl("fullybayes", a$analysis)) pattern = paste0(pattern, "|nu|tau|sigma|theta")
+      t0 = l$scenario@supplement$truth
+      if((class(t0) == "Starts") & grepl("fullybayes", a$analysis)) pattern = paste0(pattern, "|nu|tau|sigma|theta")
       est = est[grep(pattern, rownames(est)),]
       ns = rownames(est)
-      t0 = l$scenario@supplement$truth
-   
+
       lower = est[, grep("lower", colnames(est))]
       upper = est[, grep("upper", colnames(est))]
    
-      if(l$simulation == "model"){
+      if(class(t0) == "Starts"){
         truth = flatten(t0)[ns]
         hp =  "nu|tau|sigma|theta"
         p = grep(hp, names(truth))
