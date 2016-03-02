@@ -6,7 +6,7 @@
 priors_init = function(path = newdir()){
   path = newdir(path)
   genes = 1e4
-  libraries = 16
+  libraries = c(8, 16)
   reps = 10
   for(g in genes) for(n in libraries) for(r in 1:reps) for(prior in c("normal", "Laplace", "t"))
     if(!file.exists(f <- paste0(path, "priors", prior, "_", g, "_", n, "_", r, ".rds"))) 
