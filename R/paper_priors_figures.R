@@ -1,0 +1,348 @@
+#' @include util-myrelevel.R util-relevel_heterosis.R util-mytheme.R
+NULL
+
+#' @title Function \code{paper_priors_figures}
+#' @description Reproduce the figures and tables of the case study paper
+#' @export
+paper_priors_figures = function(){
+
+# library(fbseqStudies); library(xtable); library(reshape2); library(plyr); library(pracma); library(ggthemes); library(actuar); setwd("~/home/work/projects/thesis_data/results")
+
+# control parms
+dir = newdir("priors_study_paper_figures")
+extns = c("pdf", "ps", "eps")
+mycolors = c("black", "blue", "red")
+analysislevels = c("normal", "Laplace", "t")
+gray = "#707070"
+
+# credible interval info
+l = as.data.frame(readRDS("coverage_analyze/ci/ci.rds"))
+l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
+l = l[grep("fullybayes", l$analysis),]
+
+# fig:betarates
+dir_betarates = newdir(paste0(dir, "fig-betarates"))
+level = 0.95
+l0 = l[grepl("beta", l$parameter) & l$level == level,]
+l0$type = gsub("\\[", "[list(g", l0$type)
+l0$type = gsub("]", ")]", l0$type)
+l1 = ddply(l0, c("type", "rep", "analysis"), function(x){
+  data.frame(analysis = x$analysis[1], type = x$type[1], rep = x$rep[1], coverage = mean(x$cover))
+})
+l1$analysis = ordered(gsub("fullybayes\\+", "", as.character(l1$analysis)), levels = c("normal", "Laplace", "t"))
+pl = ggplot(l1) +
+  geom_point(aes_string(x = "rep", y = "coverage"), size = 0.75) + 
+  geom_hline(yintercept = level) + 
+  facet_grid(as.formula("type~analysis"), labeller = label_parsed) +
+  xlab("simulated dataset") +
+  mytheme_pub() + theme(strip.text = element_text(size = 14))
+for(extn in extns)
+  ggsave(paste0(dir_betarates, "fig-betarates.", extn), pl, height = 8, width = 6, dpi = 1200)
+
+# fig:modelcalibration
+dir_modelcalibration = newdir(paste0(dir, "fig-modelcalibration"))
+df = ggplot2_df("coverage_analyze/calibration")
+df$heterosis = relevel_heterosis(df$heterosis)
+df$analysis = ordered(gsub("fullybayes\\+", "", as.character(df$analysis)), levels = c("normal", "Laplace", "t"))
+pl = ggplot(df) +
+  geom_line(aes_string(x = "probability", y = "proportion", group = "file"), color = "black") + 
+  geom_abline(slope = 1, intercept = 0, linetype = 2) + 
+  facet_grid(as.formula("heterosis~analysis")) + xlab("probability") + ylab("proportion") +
+  mytheme_pub() + theme(legend.position = "none") + 
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_modelcalibration, "fig-modelcalibration.", extn), pl, height = 8, width = 6, dpi = 1200)
+
+# fig:betacred
+dir_betacred = newdir(paste0(dir, "fig-betacred"))
+level = 0.95
+l0 = l[grepl("beta", l$parameter) & l$level == level & l$rep == 1 & !l$cover,]
+l0$type = gsub("\\[", "[list(g", l0$type)
+l0$type = gsub("]", ")]", l0$type)
+l0 = l0[order(l0$truth),]
+l0 = ddply(l0, c("analysis", "type"), function(x){
+  x$interval = 1:dim(x)[1]
+  x
+})
+l0$analysis = ordered(gsub("fullybayes\\+", "", as.character(l0$analysis)), levels = c("normal", "Laplace", "t"))
+pl = ggplot(l0) +
+  geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = gray) +
+  geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
+  facet_grid(as.formula("type~analysis"), scales = "free", labeller = label_parsed) +
+  xlab("credible interval") + ylab("parameter value") + 
+  mytheme_pub() + theme(strip.text.x = element_text(size = 14))
+for(extn in extns)
+  ggsave(paste0(dir_betacred, "fig-betacred.", extn), pl, height = 8, width = 7, dpi = 1200)
+
+# fig:betacoveragetrend
+dir_betacoveragetrend = newdir(paste0(dir, "fig-betacoveragetrend"))
+level = 0.95
+l0 = l[grepl("beta", l$parameter) & l$level == level,]
+l0$type = gsub("\\[", "[list(g", l0$type)
+l0$type = gsub("]", ")]", l0$type)
+l1 = ddply(l0, c("analysis", "rep", "type"), function(z){
+  k = ksmooth(x = z$truth, y = z$cover, bandwidth = 4*sd(z$truth))
+  fn = stepfun(x = k$x, y = c(0, k$y))
+  xs = seq(from = min(k$x), to = max(k$x), length.out = 4e2)
+  ys = fn(xs)
+  data.frame(analysis = z$analysis[1], truth = xs, cover = ys, type = z$type[1], rep = z$rep[1])
+}, .progress = "text")
+l1$analysis = ordered(gsub("fullybayes\\+", "", as.character(l1$analysis)), levels = c("normal", "Laplace", "t"))
+pl = ggplot(l1) + 
+  geom_line(aes_string(x = "truth", y = "cover", group = "rep"), alpha = 0.5) + 
+  geom_abline(slope = 0, intercept = level, linetype = "dotted") +
+  facet_grid(as.formula("analysis~type"), scales = "free_x", labeller = label_parsed) +
+  xlab("true parameter value") +
+  ylab("smoothed coverage rate") +
+  mytheme_pub() + theme(strip.text = element_text(size = 14))
+for(extn in extns[!grepl("ps", extns)])
+  ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, height = 6, width = 8, dpi = 1200)
+for(extn in extns[grepl("ps", extns)])
+  ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, device=cairo_ps,
+ height = 6, width = 7, dpi = 1200)
+
+# fig:roc16 and fig:roc32
+for(N in c(16, 32)){
+  dir_roc = newdir(paste0(dir, "fig-roc", N))
+  d = readRDS("comparison_analyze/plot_roc/roc.rds")
+  ans = c("fullybayes+normal", "fullybayes+Laplace", "fullybayes+t")
+  d = d[d$analysis %in% ans & d$libraries == N,]
+  d$analysis = ordered(gsub("fullybayes\\+", "", as.character(d$analysis)), levels = c("normal", "Laplace", "t"))
+  d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
+  d$heterosis = relevel_heterosis(d$heterosis)
+
+  pl = ggplot(d) + 
+    geom_line(aes_string(x = "fpr", y = "tpr", group = "file", color = "analysis", linetype = "analysis")) +
+    facet_grid(as.formula("simulation~heterosis")) +
+    xlab("false positive rate") + 
+    ylab("true positive rate") +
+    scale_color_manual(name = "analysis", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
+    scale_linetype_manual(name = "analysis", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
+    mytheme_pub() +
+    theme(axis.text.x = element_text(angle = -80, hjust = 0))
+  for(extn in extns)
+    ggsave(paste0(dir_roc, "fig-roc", N, ".", extn), pl, height = 8, width = 10, dpi = 1200)
+}
+
+# fig:auc16 and fig:auc32
+dir_auc = newdir(paste0(dir, "fig-auc"))
+d = readRDS("comparison_analyze/plot_auc/auc.rds")
+ans = c("fullybayes+normal", "fullybayes+Laplace", "fullybayes+t")
+d = d[d$analysis %in% ans,]
+d$analysis = ordered(gsub("fullybayes\\+", "", as.character(d$analysis)), levels = c("normal", "Laplace", "t"))
+d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
+d$heterosis = relevel_heterosis(d$heterosis)
+pl = ggplot(d) + 
+  geom_line(aes_string(x = "analysis", y = "auc_1", group = "libraries"), color = "black") +
+  geom_point(aes_string(x = "analysis", y = "auc_1", pch = "libraries"), color = "black") +
+  facet_grid(as.formula("simulation~heterosis"), scales = "fixed") +
+  xlab("Analysis") + 
+  ylab("Area under ROC curve") +
+  labs(pch = "N") +
+  mytheme_pub() +
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_auc, "fig-auc.", extn), pl, height = 8, width = 10, dpi = 1200)
+
+# fig:comparecal16 and fig:comparecal32
+for(N in c(16, 32)){
+  dir_comparecal = newdir(paste0(dir, "fig-comparecal", N))
+  d = readRDS("comparison_analyze/plot_calibration/calibration.rds")
+  ans = c("fullybayes+normal", "fullybayes+Laplace", "fullybayes+t")
+  d = d[d$analysis %in% ans & d$libraries == N,]
+  d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
+  d$analysis = ordered(gsub("fullybayes\\+", "", as.character(d$analysis)), levels = c("normal", "Laplace", "t"))
+  d$heterosis = relevel_heterosis(d$heterosis)
+
+  pl = ggplot(d) + 
+    geom_abline(slope = 1, intercept = 0, color = gray) +
+    geom_line(aes_string(x = "probability", y = "proportion", group = "file", color = "analysis", linetype = "analysis")) +
+    facet_grid(as.formula("simulation~heterosis")) +
+    xlab("probability") + 
+    ylab("proportion") +
+    scale_color_manual(name = "analysis", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
+    scale_linetype_manual(name = "analysis", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
+    mytheme_pub() +
+    theme(axis.text.x = element_text(angle = -80, hjust = 0))
+  for(extn in extns)
+    ggsave(paste0(dir_comparecal, "fig-comparecal", N, ".", extn), pl, height = 8, width = 10, dpi = 1200)
+}
+
+# fig:comparecalerror
+dir_comparecalerror = newdir(paste0(dir, "fig-comparecalerror"))
+df = readRDS("comparison_analyze/plot_calibration/calibration.rds")
+df$error = abs(df$proportion - df$probability)
+d = ddply(df, c("file", "heterosis"), function(x){
+  x$meanerror = trapz(x = x$probability, y = x$error)
+  x[1,]
+})
+ans = c("fullybayes+normal", "fullybayes+Laplace", "fullybayes+t")
+d = d[d$analysis %in% ans,]
+d$analysis = ordered(gsub("fullybayes\\+", "", as.character(d$analysis)), levels = c("normal", "Laplace", "t"))
+d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
+d$heterosis = relevel_heterosis(d$heterosis)
+pl = ggplot(d) + 
+  geom_line(aes_string(x = "analysis", y = "meanerror", group = "libraries"), color = "black") +
+  geom_point(aes_string(x = "analysis", y = "meanerror", pch = "libraries"), color = "black") +
+  facet_grid(as.formula("simulation~heterosis"), scales = "fixed") +
+  xlab("analysis") + 
+  ylab("average absolute calibration error") +
+  labs(pch = "N") +
+  mytheme_pub() +
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_comparecalerror, "fig-comparecalerror.", extn), pl, height = 8, width = 10, dpi = 1200)
+
+# paschold data analysis
+l = readRDS("real_mcmc/paschold_39656_16_1.rds")
+as = list(normal = l$analyses[["fullybayes+normal"]],
+  Laplace = l$analyses[["fullybayes+Laplace"]],
+  t = l$analyses[["fullybayes+t"]])
+m = lapply(as, function(a) mcmc_samples(a$chains))
+e = lapply(as, function(a) estimates(a$chains, level = 0.95))
+
+# fig:hyperhist
+dir_hyperhist = newdir(paste0(dir, "fig-hyperhist"))
+d = NULL
+for(prior in c("normal", "Laplace", "t")){
+  m_hyper = m[[prior]][,c("nu", "tau", paste0("theta_", 1:5), paste0("sigmaSquared_", 1:5))]
+  cn = colnames(m_hyper)
+  for(i in 1:5) cn = gsub(paste0("_", i), paste0("\\[", i, "\\]"), cn)
+  cn = gsub("sigmaSquared", "sigma", cn)
+  cn[grep("sigma", cn)] = paste0(cn[grep("sigma", cn)], "^2")
+  colnames(m_hyper) = cn
+  d0 = melt(m_hyper, id.vars = NULL)
+  d0$analysis = prior
+  d = rbind(d, d0)
+}
+d$analysis = ordered(d$analysis, levels = c("normal", "Laplace", "t"))
+for(v in unique(d$variable)){ # c("nu|tau", "theta", "sigma")
+  pl = ggplot(d[d$variable == v,]) + 
+    stat_density(aes_string(x = "value", y = "..density.."), color = gray, fill = gray) + 
+    facet_grid(as.formula("analysis~variable"), scales = "free", labeller = label_parsed) + 
+    mytheme_pub() +
+    theme(strip.text.x = element_text(size = 14), axis.text.x = element_text(angle = -80, hjust = 0)) + 
+    xlab("parameter value") + 
+    ylab("density")
+  for(extn in extns)
+    ggsave(paste0(dir_hyperhist, "fig-hyperhist-", v, ".", extn), pl, height = 6, width = 4, dpi = 1200)
+}
+
+# fig:betahist
+l = readRDS("real_mcmc/paschold_39656_16_1.rds")
+for(prior in c("normal", "Laplace", "t")){
+
+a = l$analyses[[paste0("fullybayes+", prior)]]
+m = mcmc_samples(a$chains)
+e = estimates(a$chains, level = 0.95)
+
+dir_betahist = newdir(paste0(dir, "fig-betahist"))
+m_beta = m[,grep("beta", colnames(m))]
+cn = colnames(m_beta)
+cn = do.call(rbind, strsplit(cn, "_"))
+c2 = apply(cn, 1, function(x){
+  paste0(x[1], "[list(", x[3],"~~", x[2], ")]")
+})
+colnames(m_beta) = c2
+d = melt(m_beta, id.vars = NULL)
+d = ddply(d, "variable", function(x){
+  x$lower = quantile(x$value, 0.025)
+  x$upper = quantile(x$value, 0.975)
+  x$median = quantile(x$value, 0.5)
+  x$max = max(x$value)
+  x$min = min(x$value)
+  x
+})
+rownames(cn) = c2
+
+ci1 = ddply(d, "variable", function(x){x[1,]})
+ci2 = e[apply(cn, 1, paste0, collapse="_"),]
+ci2$variable = ci1$variable
+rownames(ci2) = ci2$variable
+ci2$min = ci1$min
+ci2$max = ci1$max
+
+x1 = data.frame(variable = ci1$variable, lower = ci1$lower, upper = ci1$upper, center = ci1$median, Interval = "quantile", y = 1)
+x2 = data.frame(variable = ci2$variable, lower = ci2$lower_ci_0.95, upper = ci2$upper_ci_0.95, center = ci2$mean, Interval = "normal approximation", y = 2)
+ci = rbind(x1, x2)
+ci$mean = c(ci2$mean, ci2$mean)
+ci$sd = c(ci2$sd, ci2$sd)
+ci$y = -ci$y/(15*sqrt(2 *pi * ci$sd^2))
+ci$lb = ci$y - abs(ci$y*0.15)
+
+nrm = ddply(ci2, "variable", function(x){
+  value = seq(from = x$min[1], to = x$max[1], length.out = 100)
+  norm = dnorm(value, x$mean[1], x$sd[1])
+  data.frame(x[rep(1, 100),], value = value, norm = norm)
+})
+
+pl = ggplot() + 
+  stat_density(data = d, mapping = aes_string(x = "value", y = "..density.."), color = gray, fill = gray) + 
+  geom_line(data = nrm, mapping = aes_string(x = "value", y = "norm"), linetype = 2) +
+  geom_errorbarh(data = ci, mapping = aes_string(x = "center", y = "y", xmin="lower", xmax="upper", linetype = "Interval"), height = 0) +
+  geom_point(data = ci, mapping = aes_string(x = "lower", y = "y"), size = 0.5) +
+  geom_point(data = ci, mapping = aes_string(x = "upper", y = "y"), size = 0.5) +
+  geom_point(data = ci, mapping = aes_string(x = "upper", y = "lb"), alpha = 0, size = 0) +
+  facet_wrap(as.formula("~variable"), scales = "free", labeller = label_parsed) + 
+  mytheme_pub() + 
+  theme(strip.text.x = element_text(size = 14), legend.position = c(0.875, 0.1)) + #, axis.text.x = element_text(angle = -80, hjust = 0)) + 
+  xlab("parameter value") + 
+  ylab("density") + 
+  labs(linetype = "95% credible interval")
+for(extn in extns)
+  ggsave(paste0(dir_betahist, "fig-betahist-", prior, ".", extn), pl, height = 10, width = 10, dpi = 1200)
+
+# fig:betapostmeanhist
+dir_betapostmeanhist = newdir(paste0(dir, "fig-betapostmeanhist"))
+e = estimates(a$chains)
+e = e[grep("beta_", rownames(e)),]
+e$parameter = gsub("_[0-9]*$", "", rownames(e))
+s = do.call(rbind, strsplit(e$parameter, "_"))
+ns = apply(s, 1, function(x){
+  paste0(x[1], "[list(g", x[2], ")]")
+})
+e$parameter = ordered(ns, levels = paste0("beta[list(g", 1:5, ")]"))
+pl = ggplot(e) + 
+  facet_wrap(as.formula("~parameter"), scales = "free", labeller = label_parsed) + 
+  stat_density(aes_string(x = "mean", y = "..density.."), color = gray, fill = gray) + 
+  xlab("estimated posterior mean") +
+  ylab("density") +
+  mytheme_pub() + 
+  theme(axis.text.x = element_text(angle = -80, hjust = 0), strip.text.x = element_text(size = 14))
+for(extn in extns)
+  ggsave(paste0(dir_betapostmeanhist, "fig-betapostmeanhist-", prior, ".", extn), pl, height = 6, width = 8, dpi = 1200)
+
+# fig:pascholdcred
+dir_pascholdcred = newdir(paste0(dir, "fig-pascholdcred"))
+d = ddply(e, "parameter", function(x){
+  x = x[sample(dim(x)[1], 1e3),]
+  x = x[order(x$mean),]
+  x$index = 1:dim(x)[1]
+  x
+})
+pl = ggplot(d) + 
+  facet_wrap(as.formula("~parameter"), scales = "free", labeller = label_parsed) + 
+  geom_segment(aes_string(x = "index", xend = "index", y = "lower_ci_0.95", yend = "upper_ci_0.95"), 
+    color = gray) + 
+  geom_point(aes_string(x = "index", y = "mean"), size = I(0.15)) + 
+  xlab("index") +
+  ylab("parameter value") +
+  mytheme_pub() + 
+  theme(axis.text.x = element_text(angle = -80, hjust = 0), strip.text.x = element_text(size = 14))
+for(extn in extns)
+  ggsave(paste0(dir_pascholdcred, "fig-pascholdcred-", prior, ".", extn), pl, height = 6, width = 8, dpi = 1200)
+
+# fig:probhist
+dir_probhist = newdir(paste0(dir, "fig-probhist"))
+p = as.data.frame(probs(a$chains))
+d = melt(p, id.vars = NULL)
+d$variable = relevel_heterosis_paschold(d$variable)
+pl = ggplot(d) + 
+  geom_histogram(aes_string(x = "value", y = "..density.."), color = gray, fill = gray) + 
+  facet_wrap(as.formula("~variable"), scales = "free_x") + 
+  xlab("estimated posterior probability") + 
+  ylab("density") +
+  mytheme_pub()
+for(extn in extns)
+  ggsave(paste0(dir_probhist, "fig-probhist-", prior, ".", extn), pl, height = 6, width = 8, dpi = 1200)
+}}
