@@ -16,6 +16,186 @@ analysislevels = c("normal", "Laplace", "t")
 gray = "#707070"
 
 # credible interval info
+l = as.data.frame(readRDS("priors_analyze/ci/ci.rds"))
+l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
+l = l[grep("fullybayes", l$analysis) & l$type == "beta[2]" & l$libraries == 8,]
+
+# fig:priorsbetarates
+dir_priorsbetarates = newdir(paste0(dir, "fig-priorsbetarates"))
+level = 0.95
+l0 = l[grepl("beta", l$parameter) & l$level == level,]
+l0$type = gsub("\\[", "[list(g", l0$type)
+l0$type = gsub("]", ")]", l0$type)
+l1 = ddply(l0, c("type", "rep", "analysis", "simulation"), function(x){
+  data.frame(simulation = x$simulation[1], analysis = x$analysis[1], type = x$type[1], rep = x$rep[1], coverage = mean(x$cover))
+})
+l1$simulation = gsub("priors", "", as.character(l1$simulation))
+l1$analysis = gsub("fullybayes\\+", "", as.character(l1$analysis))
+for(n in c("simulation", "analysis")) l1[[n]] = ordered(l1[[n]], levels = c("normal", "Laplace", "t"))
+l1$simulation = ordered(l1$simulation, labels = paste(levels(l1$simulation), "sim"))
+l1$analysis = ordered(l1$analysis,  labels = paste(levels(l1$analysis), "analysis"))
+pl = ggplot(l1) +
+  geom_point(aes_string(x = "rep", y = "coverage"), size = 0.75) + 
+  geom_hline(yintercept = level) + 
+  facet_grid(as.formula("simulation~analysis")) +
+  xlab("simulated dataset") +
+  mytheme_pub() + theme(strip.text = element_text(size = 14))
+for(extn in extns)
+  ggsave(paste0(dir_priorsbetarates, "fig-priorsbetarates.", extn), pl, height = 8, width = 6, dpi = 1200)
+
+# fig:priorsbetacred
+dir_priorsbetacred = newdir(paste0(dir, "fig-priorsbetacred"))
+level = 0.95
+l0 = l[grepl("beta", l$parameter) & l$level == level & l$rep == 1 & !l$cover,]
+l0$type = gsub("\\[", "[list(g", l0$type)
+l0$type = gsub("]", ")]", l0$type)
+l0 = l0[order(l0$truth),]
+l1 = ddply(l0, c("analysis", "simulation", "type"), function(x){
+  x$interval = 1:dim(x)[1]
+  x
+})
+l1$simulation = gsub("priors", "", as.character(l1$simulation))
+l1$analysis = gsub("fullybayes\\+", "", as.character(l1$analysis))
+for(n in c("simulation", "analysis")) l1[[n]] = ordered(l1[[n]], levels = c("normal", "Laplace", "t"))
+l1$simulation = ordered(l1$simulation, labels = paste(levels(l1$simulation), "sim"))
+l1$analysis = ordered(l1$analysis,  labels = paste(levels(l1$analysis), "analysis"))
+pl = ggplot(l1) +
+  geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = gray) +
+  geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
+  facet_grid(as.formula("simulation~analysis"), scales = "free") +
+  xlab("credible interval") + ylab("parameter value") + 
+  mytheme_pub() + theme(strip.text.x = element_text(size = 14))
+for(extn in extns)
+  ggsave(paste0(dir_priorsbetacred, "fig-priorsbetacred.", extn), pl, height = 8, width = 7, dpi = 1200)
+
+# fig:priorsbetacoveragetrend
+dir_priorsbetacoveragetrend = newdir(paste0(dir, "fig-priorsbetacoveragetrend"))
+level = 0.95
+l0 = l[grepl("beta", l$parameter) & l$level == level,]
+l0$type = gsub("\\[", "[list(g", l0$type)
+l0$type = gsub("]", ")]", l0$type)
+l1 = ddply(l0, c("simulation", "analysis", "rep", "type"), function(z){
+  k = ksmooth(x = z$truth, y = z$cover, bandwidth = 4*sd(z$truth))
+  fn = stepfun(x = k$x, y = c(0, k$y))
+  xs = seq(from = min(k$x), to = max(k$x), length.out = 4e2)
+  ys = fn(xs)
+  data.frame(simulation = z$simulation[1], analysis = z$analysis[1], truth = xs, cover = ys, type = z$type[1], rep = z$rep[1])
+}, .progress = "text")
+l1$simulation = gsub("priors", "", as.character(l1$simulation))
+l1$analysis = gsub("fullybayes\\+", "", as.character(l1$analysis))
+for(n in c("simulation", "analysis")) l1[[n]] = ordered(l1[[n]], levels = c("normal", "Laplace", "t"))
+l1$simulation = ordered(l1$simulation, labels = paste(levels(l1$simulation), "sim"))
+l1$analysis = ordered(l1$analysis,  labels = paste(levels(l1$analysis), "analysis"))
+pl = ggplot(l1) + 
+  geom_line(aes_string(x = "truth", y = "cover", group = "rep"), alpha = 0.5) + 
+  geom_abline(slope = 0, intercept = level, linetype = "dotted") +
+  facet_grid(as.formula("simulation~analysis"), scales = "free") +
+  xlim(c(-2, 2)) +
+  xlab("true parameter value") +
+  ylab("smoothed coverage rate") +
+  mytheme_pub() + theme(strip.text = element_text(size = 14))
+for(extn in extns[!grepl("ps", extns)])
+  ggsave(paste0(dir_priorsbetacoveragetrend, "fig-priorsbetacoveragetrend.", extn), pl, height = 6, width = 8, dpi = 1200)
+for(extn in extns[grepl("ps", extns)])
+  ggsave(paste0(dir_priorsbetacoveragetrend, "fig-priorsbetacoveragetrend.", extn), pl, device=cairo_ps,
+ height = 6, width = 7, dpi = 1200)
+
+# fig:priorsmodelcalibration
+dir_priorsmodelcalibration = newdir(paste0(dir, "fig-priorsmodelcalibration"))
+df = ggplot2_df("priors_analyze/calibration")
+df = df[df$heterosis == "high" & df$libraries == 8,]
+df$simulation = gsub("priors", "", as.character(df$simulation))
+df$analysis = gsub("fullybayes\\+", "", as.character(df$analysis))
+for(n in c("simulation", "analysis")) df[[n]] = ordered(df[[n]], levels = c("normal", "Laplace", "t"))
+df$simulation = ordered(df$simulation, labels = paste(levels(df$simulation), "sim"))
+df$analysis = ordered(df$analysis,  labels = paste(levels(df$analysis), "analysis"))
+pl = ggplot(df) +
+  geom_line(aes_string(x = "probability", y = "proportion", group = "file"), color = "black") + 
+  geom_abline(slope = 1, intercept = 0, linetype = 2) + 
+  facet_grid(as.formula("simulation~analysis")) + xlab("probability") + ylab("proportion") +
+  mytheme_pub() + theme(legend.position = "none") + 
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_priorsmodelcalibration, "fig-priorsmodelcalibration.", extn), pl, height = 8, width = 6, dpi = 1200)
+
+# fig:priorscomparecalerror
+dir_priorscomparecalerror = newdir(paste0(dir, "fig-priorscomparecalerror"))
+df = readRDS("priors_analyze/plot_calibration/calibration.rds")
+df$error = abs(df$proportion - df$probability)
+d = ddply(df, c("file", "heterosis"), function(x){
+  x$meanerror = trapz(x = x$probability, y = x$error)
+  x[1,]
+})
+d = d[d$heterosis == "high" & d$libraries == 8,]
+d$simulation = gsub("priors", "", as.character(d$simulation))
+d$analysis = gsub("fullybayes\\+", "", as.character(d$analysis))
+for(n in c("simulation", "analysis")) d[[n]] = ordered(d[[n]], levels = c("normal", "Laplace", "t"))
+d$simulation = ordered(d$simulation, labels = paste(levels(d$simulation), "sim"))
+d$analysis = ordered(d$analysis,  labels = paste(levels(d$analysis), "analysis"))
+pl = ggplot(d) + 
+  geom_line(aes_string(x = "analysis", y = "meanerror", group = "analysis"), color = "black") +
+  geom_point(aes_string(x = "analysis", y = "meanerror"), color = "black") +
+  facet_grid(as.formula("~simulation"), scales = "fixed") +
+  xlab("analysis") + 
+  ylab("average absolute calibration error") +
+  labs(pch = "N") +
+  mytheme_pub() +
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_priorscomparecalerror, "fig-priorscomparecalerror.", extn), pl, height = 8, width = 10, dpi = 1200)
+
+# fig:priorsroc
+dir_priorsroc = newdir(paste0(dir, "fig-priorsroc"))
+d = readRDS("priors_analyze/plot_roc/roc.rds")
+d = d[d$heterosis == "high" & d$libraries == 8,]
+d$simulation = gsub("priors", "", as.character(d$simulation))
+d$analysis = gsub("fullybayes\\+", "", as.character(d$analysis))
+for(n in c("simulation", "analysis")) d[[n]] = ordered(d[[n]], levels = c("normal", "Laplace", "t"))
+d$simulation = ordered(d$simulation, labels = paste(levels(d$simulation), "sim"))
+d$analysis = ordered(d$analysis,  labels = paste(levels(d$analysis), "analysis"))
+
+pl = ggplot(d) + 
+  geom_line(aes_string(x = "fpr", y = "tpr", group = "file")) +
+  facet_grid(as.formula("simulation~analysis")) +
+  xlab("false positive rate") + 
+  ylab("true positive rate") +
+  scale_color_manual(name = "analysis", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
+  scale_linetype_manual(name = "analysis", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
+  mytheme_pub() +
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_priorsroc, "fig-priorsroc.", extn), pl, height = 6, width = 6, dpi = 1200)
+
+# fig:priorsauc
+dir_priorsauc = newdir(paste0(dir, "fig-priorsauc"))
+d = readRDS("priors_analyze/plot_auc/auc.rds")
+d = d[d$heterosis == "high" & d$libraries == 8,]
+d$simulation = gsub("priors", "", as.character(d$simulation))
+d$analysis = gsub("fullybayes\\+", "", as.character(d$analysis))
+for(n in c("simulation", "analysis")) d[[n]] = ordered(d[[n]], levels = c("normal", "Laplace", "t"))
+d$simulation = ordered(d$simulation, labels = paste(levels(d$simulation), "sim"))
+d$analysis = ordered(d$analysis,  labels = paste(levels(d$analysis), "analysis"))
+pl = ggplot(d) + 
+  geom_line(aes_string(x = "analysis", y = "auc_1", group = "analysis"), color = "black") +
+  geom_point(aes_string(x = "analysis", y = "auc_1"), color = "black") +
+  facet_grid(as.formula("~simulation"), scales = "fixed") +
+  xlab("Analysis") + 
+  ylab("Area under ROC curve") +
+  labs(pch = "N") +
+  mytheme_pub() +
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_priorsauc, "fig-priorsauc.", extn), pl, height = 8, width = 10, dpi = 1200)
+
+
+
+
+
+
+
+
+
+# credible interval info
 l = as.data.frame(readRDS("coverage_analyze/ci/ci.rds"))
 l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
 l = l[grep("fullybayes", l$analysis),]
@@ -124,7 +304,7 @@ for(N in c(16, 32)){
     ggsave(paste0(dir_roc, "fig-roc", N, ".", extn), pl, height = 8, width = 10, dpi = 1200)
 }
 
-# fig:auc16 and fig:auc32
+# fig:auc
 dir_auc = newdir(paste0(dir, "fig-auc"))
 d = readRDS("comparison_analyze/plot_auc/auc.rds")
 ans = c("fullybayes+normal", "fullybayes+Laplace", "fullybayes+t")
