@@ -15,6 +15,73 @@ mycolors = c("black", "blue", "red")
 analysislevels = c("normal", "Laplace", "t")
 gray = "#707070"
 
+# fig-priorshyperhist
+dir_priorshyperhist = newdir(paste0(dir, "fig-priorshyperhist"))
+m_hyper = NULL
+for(f in list.files("priors_mcmc")) if(as.integer(meta(f)["libraries"]) == 8 & as.integer(meta(f)["rep"]) == 1){
+  print(f)
+  l = readRDS(paste0("priors_mcmc/", f))
+  for(a in l$analyses){
+    m = mcmc_samples(a$chains)
+    m = m[,grep("nu|tau|theta|sigma", colnames(m))]
+    m_long = melt(m, id.vars = NULL)
+    m_long$simulation = gsub("priors", "", l$simulation)
+    m_long$analysis = gsub("fullybayes\\+", "", a$analysis)
+    tr = l$scenario@supplement$truth
+    for(n in c("simulation", "analysis")) m_long[[n]] = ordered(m_long[[n]], levels = c("normal", "Laplace", "t"))
+    m_long = ddply(m_long, "variable", function(x){
+      s = unlist(strsplit(as.character(x$variable[1]), "_"))
+      if(length(s) > 1){
+        x$truth = slot(tr, s[1])[as.integer(s[2])]
+      } else {
+        x$truth = slot(tr, s[1])
+      }
+      x
+    })
+    m_hyper = rbind(m_hyper, m_long)
+  }
+}
+m_hyper$simulation = ordered(m_hyper$simulation, labels = paste(levels(m_hyper$simulation), "sim"))
+m_hyper$analysis = ordered(m_hyper$analysis,  labels = paste(levels(m_hyper$analysis), "analysis"))
+for(v in unique(m_hyper$variable)){
+  d = m_hyper[m_hyper$variable == v,]
+  pl = ggplot(d) +
+    stat_density(aes_string(x = "value", y = "..density.."), size = 0.75) + 
+    geom_vline(xintercept = d$truth[1]) + 
+    facet_grid(as.formula("simulation~analysis"), scales = "free") +
+    mytheme_pub() 
+  for(extn in extns)
+    ggsave(paste0(dir_priorshyperhist, "fig-priorshyperhist-", d$variable[1], ".", extn), pl, height = 8, width = 6, dpi = 1200)
+}
+
+# fig-priorshypercoverage
+dir_priorshypercoverage = newdir(paste0(dir, "fig-priorshypercoverage"))
+l = as.data.frame(readRDS("priors_analyze/ci/ci.rds"))
+l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
+l = l[grepl("fullybayes", l$analysis) & grepl("nu|tau|theta|sigma", l$type) & l$libraries == 8,]
+l$parameter = as.factor(as.character(l$parameter))
+l$type = as.factor(as.character(l$type))
+l$simulation = gsub("priors", "", as.character(l$simulation))
+l$analysis = gsub("fullybayes\\+", "", as.character(l$analysis))
+for(n in c("simulation", "analysis")) l[[n]] = ordered(l[[n]], levels = c("normal", "Laplace", "t"))
+l$simulation = ordered(l$simulation, labels = paste(levels(l$simulation), "sim"))
+l$analysis = ordered(l$analysis,  labels = paste(levels(l$analysis), "analysis"))
+level = 0.5
+l0 = l[l$level == level,]
+x = ddply(l0, "parameter", function(d){
+  pl = ggplot(d) + 
+    geom_segment(aes_string(x = "rep", xend = "rep", y = "lower", yend = "upper", linetype = "cover")) + 
+    facet_grid(as.formula("simulation~analysis"), scales = "free") + 
+    geom_abline(intercept = d$truth[1], slope = 0) + 
+    xlab("simulated dataset") +
+    ylab("credible interval") + 
+    mytheme_pub() + theme(legend.position = "none") +
+    scale_linetype_manual(values = c("TRUE" = 1, "FALSE" = 2))
+  for(extn in extns)
+    ggsave(paste0(dir_priorshypercoverage, "fig-priorshypercoverage-", d$parameter[1], ".", extn), pl, height = 6, width = 6, dpi = 1200)
+})
+
+
 # credible interval info
 l = as.data.frame(readRDS("priors_analyze/ci/ci.rds"))
 l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
