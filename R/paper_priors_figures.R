@@ -200,7 +200,7 @@ for(n in c("simulation", "analysis")) d[[n]] = ordered(d[[n]], levels = c("norma
 d$simulation = ordered(d$simulation, labels = paste(levels(d$simulation), "sim"))
 d$analysis = ordered(d$analysis,  labels = paste(levels(d$analysis), "analysis"))
 pl = ggplot(d) + 
-  geom_line(aes_string(x = "analysis", y = "meanerror", group = "analysis"), color = "black") +
+  geom_line(aes_string(x = "analysis", y = "meanerror", group = "rep"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "meanerror"), color = "black") +
   facet_grid(as.formula("~simulation"), scales = "fixed") +
   xlab("analysis") + 
@@ -209,7 +209,7 @@ pl = ggplot(d) +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
-  ggsave(paste0(dir_priorscomparecalerror, "fig-priorscomparecalerror.", extn), pl, height = 8, width = 10, dpi = 1200)
+  ggsave(paste0(dir_priorscomparecalerror, "fig-priorscomparecalerror.", extn), pl, height = 5, width = 6, dpi = 1200)
 
 # fig:priorsroc
 dir_priorsroc = newdir(paste0(dir, "fig-priorsroc"))
@@ -243,7 +243,7 @@ for(n in c("simulation", "analysis")) d[[n]] = ordered(d[[n]], levels = c("norma
 d$simulation = ordered(d$simulation, labels = paste(levels(d$simulation), "sim"))
 d$analysis = ordered(d$analysis,  labels = paste(levels(d$analysis), "analysis"))
 pl = ggplot(d) + 
-  geom_line(aes_string(x = "analysis", y = "auc_1", group = "analysis"), color = "black") +
+  geom_line(aes_string(x = "analysis", y = "auc_1", group = "rep"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "auc_1"), color = "black") +
   facet_grid(as.formula("~simulation"), scales = "fixed") +
   xlab("Analysis") + 
@@ -252,7 +252,7 @@ pl = ggplot(d) +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
-  ggsave(paste0(dir_priorsauc, "fig-priorsauc.", extn), pl, height = 8, width = 10, dpi = 1200)
+  ggsave(paste0(dir_priorsauc, "fig-priorsauc.", extn), pl, height = 5, width = 6, dpi = 1200)
 
 
 
