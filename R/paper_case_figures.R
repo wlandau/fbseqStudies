@@ -22,14 +22,14 @@ l = l[l$analysis == "fullybayes+normal",]
 
 # fig:hypercoverage
 dir_hypercoverage = newdir(paste0(dir, "fig-hypercoverage"))
-level = 0.5
-l0 = l[!grepl("beta", l$parameter) & l$level == level,]
+l0 = l[!grepl("beta", l$parameter),]
 l1 = ddply(l0, c("type", "simulation", "libraries", "analysis"), function(x){
-  if(mean(x$cover) >= level) return(NULL)
+  if(mean(x[x$level == 0.5,]$cover) >= 0.5) return(NULL)
   x
 })
 pl = ggplot(l1) + 
-  geom_segment(aes_string(x = "rep", xend = "rep", y = "lower", yend = "upper")) + 
+  geom_segment(data = l1[l1$level == 0.5,], mapping = aes_string(x = "rep", xend = "rep", y = "lower", yend = "upper"), size = 2) +
+  geom_segment(data = l1[l1$level == 0.95,], mapping = aes_string(x = "rep", xend = "rep", y = "lower", yend = "upper")) + 
   facet_wrap(as.formula("~type"), scales = "free_y", labeller = label_parsed) + 
   geom_abline(aes(slope = 0, intercept = l1$truth)) + 
   xlab("simulated dataset") +

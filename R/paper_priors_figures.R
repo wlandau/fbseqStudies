@@ -66,11 +66,10 @@ l$analysis = gsub("fullybayes\\+", "", as.character(l$analysis))
 for(n in c("simulation", "analysis")) l[[n]] = ordered(l[[n]], levels = c("normal", "Laplace", "t"))
 l$simulation = ordered(l$simulation, labels = paste(levels(l$simulation), "sim"))
 l$analysis = ordered(l$analysis,  labels = paste(levels(l$analysis), "analysis"))
-level = 0.5
-l0 = l[l$level == level,]
-x = ddply(l0, "parameter", function(d){
+x = ddply(l, "parameter", function(d){
   pl = ggplot(d) + 
-    geom_segment(aes_string(x = "rep", xend = "rep", y = "lower", yend = "upper", linetype = "cover")) + 
+    geom_segment(data = d[d$level == 0.5,], mapping = aes_string(x = "rep", xend = "rep", y = "lower", yend = "upper"), size = 2) + 
+    geom_segment(data = d[d$level == 0.95,], mapping = aes_string(x = "rep", xend = "rep", y = "lower", yend = "upper")) + 
     facet_grid(as.formula("simulation~analysis"), scales = "free") + 
     geom_abline(intercept = d$truth[1], slope = 0) + 
     xlab("simulated dataset") +
@@ -80,7 +79,6 @@ x = ddply(l0, "parameter", function(d){
   for(extn in extns)
     ggsave(paste0(dir_priorshypercoverage, "fig-priorshypercoverage-", d$parameter[1], ".", extn), pl, height = 6, width = 6, dpi = 1200)
 })
-
 
 # credible interval info
 l = as.data.frame(readRDS("priors_analyze/ci/ci.rds"))
