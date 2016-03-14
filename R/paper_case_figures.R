@@ -36,7 +36,7 @@ pl = ggplot(l1) +
   ylab("credible interval") + 
   mytheme_pub() + theme(strip.text.x = element_text(size = 14))
 for(extn in extns)
-  ggsave(paste0(dir_hypercoverage, "fig-hypercoverage.", extn), pl, height = 4, width = 5, dpi = 1200)
+  ggsave(paste0(dir_hypercoverage, "fig-hypercoverage.", extn), pl, height = 6, width = 7, dpi = 1200)
 
 # fig:betarates
 dir_betarates = newdir(paste0(dir, "fig-betarates"))
