@@ -5,7 +5,7 @@
 #' @param sim a list, the current simulation object
 #' @param method one of "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth", or "fullybayes"
 #' "ebayesFromFullybayes" requires a "fullybayes" analysis already present
-#' @param prior prior distribution on betas
+#' @param prior hierarchical distributions on betas
 #' @param debug debug mode, TRUE/FALSE
 #' @param configs \code{Configs} object for \code{fbseq}
 #' @param zeronormfactors TRUE/FALSE. If TRUE, starts@@h is set to 0.
