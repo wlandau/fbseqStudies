@@ -26,6 +26,9 @@ for(f in list.files("priors_mcmc")) if(as.integer(meta(f)["libraries"]) == 8 & a
     m = m[,grep("nu|tau|theta|sigma", colnames(m))]
     m_long = melt(m, id.vars = NULL)
     m_long$simulation = gsub("priors", "", l$simulation)
+    a$analysis = gsub("normalnormal", "normal", a$analysis)
+    a$analysis = gsub("normalLaplace", "Laplace", a$analysis)
+    a$analysis = gsub("normalt", "t", a$analysis)
     m_long$analysis = gsub("fullybayes\\+", "", a$analysis)
     tr = l$scenario@supplement$truth
     for(n in c("simulation", "analysis")) m_long[[n]] = ordered(m_long[[n]], levels = c("normal", "Laplace", "t"))
@@ -57,6 +60,9 @@ for(v in unique(m_hyper$variable)){
 # fig-priorshypercoverage
 dir_priorshypercoverage = newdir(paste0(dir, "fig-priorshypercoverage"))
 l = as.data.frame(readRDS("priors_analyze/ci/ci.rds"))
+l$analysis = gsub("normalnormal", "normal", l$analysis)
+l$analysis = gsub("normalLaplace", "Laplace", l$analysis)
+l$analysis = gsub("normalt", "t", l$analysis)
 l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
 l = l[grepl("fullybayes", l$analysis) & grepl("nu|tau|theta|sigma", l$type) & l$libraries == 8,]
 l$parameter = as.factor(as.character(l$parameter))
@@ -82,6 +88,9 @@ x = ddply(l, "parameter", function(d){
 
 # credible interval info
 l = as.data.frame(readRDS("priors_analyze/ci/ci.rds"))
+l$analysis = gsub("normalnormal", "normal", l$analysis)
+l$analysis = gsub("normalLaplace", "Laplace", l$analysis)
+l$analysis = gsub("normalt", "t", l$analysis)
 l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
 l = l[grep("fullybayes", l$analysis) & l$type == "beta[2]" & l$libraries == 8,]
 
