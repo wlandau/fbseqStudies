@@ -17,7 +17,8 @@ fit(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes",
 \item{fbseq_methods}{"ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth", "fullybayes", 
 or a combination/vector of these. "fullybayes" must come before "ebayesFromFullybayes".}
 
-\item{priors}{priors on the betas}
+\item{priors}{hierarchical distributions on the betas. Either a vector, each of whose elements 
+is in the slot Configs()@priors, or a list of vectors, where each vector is in the slot Configs@priors.}
 
 \item{ncores}{number of cores for CPU-parallel methods}
 

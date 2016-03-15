@@ -18,4 +18,5 @@ paper_priors = function(){
   priors_init("priors_mcmc")
   priors_mcmc("priors_mcmc")
   priors_analyze("priors_mcmc", "priors_analyze")
+  paper_priors_figures()
 }

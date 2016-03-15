@@ -9,7 +9,9 @@ NULL
 #' @param benchmarks benchmark methods to run
 #' @param fbseq_methods "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth", "fullybayes", 
 #' or a combination/vector of these. "fullybayes" must come before "ebayesFromFullybayes".
-#' @param priors priors on the betas
+#' @param priors hierarchical distributions on the betas. Either a vector, each of whose elements 
+#' is in the slot Configs()@priors, or a list of vectors, where each vector is in the slot Configs@priors.
+#'
 #' @param ncores number of cores for CPU-parallel methods
 #' @param debug debug mode, TRUE/FALSE
 #' @param configs \code{Configs} object for \code{fbseq}
@@ -41,7 +43,7 @@ fit = function(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullyb
     p = paste0(path, f)
     o = readRDS(paste0(path, f))
     s = o$scenario
-    method = paste0(fbseq_method, "+", prior)
+    method = paste0(fbseq_method, "+", paste0(prior, collapse = ""))
 
     if(is.null(o$analyses[[method]])){
       o$analyses[[method]] = fit_fbseq(o, fbseq_method, prior, debug, configs = configs, zeronormfactors = zeronormfactors)

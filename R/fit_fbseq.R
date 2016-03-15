@@ -5,7 +5,8 @@
 #' @param sim a list, the current simulation object
 #' @param method one of "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth", or "fullybayes"
 #' "ebayesFromFullybayes" requires a "fullybayes" analysis already present
-#' @param prior hierarchical distributions on betas
+#' @param prior hierarchical distributions on betas: an atomic or vector element that goes in the 
+#' Configs()@priors slot
 #' @param debug debug mode, TRUE/FALSE
 #' @param configs \code{Configs} object for \code{fbseq}
 #' @param zeronormfactors TRUE/FALSE. If TRUE, starts@@h is set to 0.
@@ -34,7 +35,7 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
     }
 
   if(method == "ebayesFromFullybayes"){
-    est = estimates(sim$analyses[[paste0("fullybayes+", prior)]]$chains)
+    est = estimates(sim$analyses[[paste0("fullybayes+", paste0(prior, collapse = ""))]]$chains)
     for(p in hyper) slot(starts, p) = est[grep(p, rownames(est)), "mean"]
   }
 
@@ -61,7 +62,7 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
   rownames(est) = rownames(s@counts)
 
   unsink(logs)
-  list(analysis = paste0(method, "+", prior), estimates = est, chains = chains, 
+  list(analysis = paste0(method, "+", paste0(prior, collapse = "")), estimates = est, chains = chains, 
     runtime = my.proc.time() - t, configs = configs, starts = starts, psrf = psrf(chains),
     ess = effectiveSize(mcmc_samples(chains)))
 }

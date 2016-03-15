@@ -13,7 +13,8 @@ fit_fbseq(sim, method = "fullybayes", prior = "normal", debug = F,
 \item{method}{one of "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth", or "fullybayes"
 "ebayesFromFullybayes" requires a "fullybayes" analysis already present}
 
-\item{prior}{prior distribution on betas}
+\item{prior}{hierarchical distributions on betas: an atomic or vector element that goes in the 
+Configs()@priors slot}
 
 \item{debug}{debug mode, TRUE/FALSE}
 

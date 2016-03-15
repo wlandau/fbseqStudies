@@ -72,8 +72,6 @@ Collate:
     'fit_fbseq.R'
     'fit_edgeR.R'
     'fit.R'
-    'fit_fbseq2.R'
-    'fit2.R'
     'namespace.R'
     'util-relevel_heterosis.R'
     'paper_case_figures.R'
