@@ -16,7 +16,8 @@ NULL
 #' @param debug debug mode, TRUE/FALSE
 #' @param configs \code{Configs} object for \code{fbseq}
 #' @param zeronormfactors TRUE/FALSE. If TRUE, starts@@h is set to 0.
-fit = function(path, benchmarks = c("edgeR", "Niemi"), fbseq_methods = c("fullybayes", "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth"), 
+fit = function(path, benchmarks = "edgeR", #c("edgeR", "Niemi"), 
+  fbseq_methods = c("fullybayes", "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth"), 
   priors = c("normal", special_beta_priors()), ncores = detectCores(), debug = F, configs = Configs(),
   zeronormfactors = F){
 
