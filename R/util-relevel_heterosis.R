@@ -7,11 +7,11 @@ relevel_heterosis = function(x){
   x = as.character(x)
   x[x == "high-parent_hybrids"] = "high mean"
   x[x == "low-parent_hybrids"] = "low mean"
-  x[x == "high-parent_hybrid1"] = "high 1"
-  x[x == "low-parent_hybrid1"] = "low 1"
-  x[x == "high-parent_hybrid2"] = "high 2"
-  x[x == "low-parent_hybrid2"] = "low 2"
-  ordered(x, levels = c("high 1", "high 2", "high mean", "low 1",  "low 2", "low mean"))
+  x[x == "high-parent_hybrid1"] = "high H12"
+  x[x == "low-parent_hybrid1"] = "low H12"
+  x[x == "high-parent_hybrid2"] = "high H21"
+  x[x == "low-parent_hybrid2"] = "low H21"
+  ordered(x, levels = c("high H12", "high H21", "high mean", "low H12",  "low H21", "low mean"))
 }
 
 

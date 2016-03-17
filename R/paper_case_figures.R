@@ -56,6 +56,20 @@ pl = ggplot(l1) +
 for(extn in extns)
   ggsave(paste0(dir_betarates, "fig-betarates.", extn), pl, height = 4, width = 5, dpi = 1200)
 
+# fig:modelroc
+dir_modelroc = newdir(paste0(dir, "fig-modelroc"))
+df = ggplot2_df("coverage_analyze/roc")
+df = df[df$analysis == "fullybayes+normal",]
+df$heterosis = relevel_heterosis(df$heterosis)
+pl = ggplot(df) +
+  geom_line(aes_string(x = "fpr", y = "tpr", group = "file"), color = "black") + 
+  geom_abline(slope = 1, intercept = 0, linetype = 2) + 
+  facet_wrap(as.formula("~heterosis")) + xlab("false positive rate") + ylab("true positive rate") +
+  mytheme_pub() + theme(legend.position = "none") + 
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_modelroc, "fig-modelroc.", extn), pl, height = 4, width = 4, dpi = 1200)
+
 # fig:modelcalibration
 dir_modelcalibration = newdir(paste0(dir, "fig-modelcalibration"))
 df = ggplot2_df("coverage_analyze/calibration")
