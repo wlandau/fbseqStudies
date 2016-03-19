@@ -5,20 +5,17 @@ NULL
 #' @description plot information about coverage of beta parameters in credible intervals
 #' @export
 #' @param from directory containing mcmc results on real data
-#' @param from_s3 directory containing classification information of genes according to Paschold (2012)
 #' @param to directory to save plots
-comparehprobs = function(from, from_s3, to){
+comparehprobs = function(from, to){
 
-# from = "~/home/work/projects/thesis_data/mcmc/real_mcmc/"
-# from_s3 = "~/home/work/projects/thesis_data/analyze/real_analyze/tableS3/"
-# to = "~/home/work/projects/thesis_data/analyze/real_analyze/comparehprobs/"
+# from = "~/home/work/projects/thesis_data/results/real_mcmc/"
+# to = "~/home/work/projects/thesis_data/results/real_analyze/comparehprobs/"
 
   from = newdir(from)
-  from = newdir(from_s3)
   to = newdir(to)
 
-  if(!file.exists(paste0(from_s3, "tableS3part.txt"))) return()
-  groups = read.table(paste0(from_s3, "tableS3part.txt"), sep = "\t", header = T, stringsAsFactors = F)
+  data(tableS3table1)
+  groups = get("tableS3table1")
 
   l = readRDS(paste0(from, list.files(from)[1]))
   a = l$analyses[["fullybayes+normal"]]

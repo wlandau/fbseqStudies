@@ -4,12 +4,10 @@
 \alias{comparehprobs}
 \title{Function \code{comparehprobs}}
 \usage{
-comparehprobs(from, from_s3, to)
+comparehprobs(from, to)
 }
 \arguments{
 \item{from}{directory containing mcmc results on real data}
-
-\item{from_s3}{directory containing classification information of genes according to Paschold (2012)}
 
 \item{to}{directory to save plots}
 }
