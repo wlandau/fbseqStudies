@@ -166,8 +166,8 @@ for(N in c(16, 32)){
     facet_grid(as.formula("simulation~heterosis")) +
     xlab("false positive rate") + 
     ylab("true positive rate") +
-    scale_color_manual(name = "analysis", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
-    scale_linetype_manual(name = "analysis", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
+    scale_color_manual(name = "analysis", labels = analyses(), values = mycolors[1:length(analyses())]) +
+    scale_linetype_manual(name = "analysis", labels = analyses(), values = 1:length(analyses())) +
     mytheme_pub() +
     theme(axis.text.x = element_text(angle = -80, hjust = 0))
   for(extn in extns)
@@ -203,8 +203,8 @@ for(N in c(16, 32)){
     facet_grid(as.formula("simulation~heterosis")) +
     xlab("probability") + 
     ylab("proportion") +
-    scale_color_manual(name = "analysis", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
-    scale_linetype_manual(name = "analysis", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
+    scale_color_manual(name = "analysis", labels = analyses(), values = mycolors[1:length(analyses())]) +
+    scale_linetype_manual(name = "analysis", labels = analyses(), values = 1:length(analyses())) +
     mytheme_pub() +
     theme(axis.text.x = element_text(angle = -80, hjust = 0))
   for(extn in extns)
