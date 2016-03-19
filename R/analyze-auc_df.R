@@ -21,6 +21,6 @@ auc_df = function(path){
   out$analysis = gsub("normalLaplace", "Laplace", out$analysis)
   out$analysis = gsub("normalt", "t", out$analysis)
   out$analysis = relevel_analyses(out$analysis)
-  out$analysis = ordered(out$analysis, levels = intersect(analyses(), unique(as.character(out$analysis))))
+  out$analysis = ordered(out$analysis, levels = union(analyses(), unique(as.character(out$analysis))))
   out
 }
