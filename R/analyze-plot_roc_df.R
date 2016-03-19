@@ -12,11 +12,11 @@ NULL
 plot_roc_df = function(df, to, cutoff = 1, analysis = analyses(), reps = 1:10){
   to = newdir(to)
   df = df[df$fpr < cutoff,]
-  df = df[df$analysis %in% analysis,]
   df = df[as.integer(df$rep) %in% reps,]
   df$analysis = relevel_analyses(df$analysis)
   df$simulation = relevel_simulations(df$simulation)
   df$heterosis = relevel_heterosis(df$heterosis)
+  df = df[df$analysis %in% analysis,]
   for(h in levels(df$heterosis)){
     d = df[df$heterosis == h,]
     pl = ggplot(d) + mytheme() + xlim(c(0, cutoff)) + 

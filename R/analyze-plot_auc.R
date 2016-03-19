@@ -12,11 +12,11 @@ plot_auc = function(from, to, analysis = analyses()){
   to = newdir(to)
   df = auc_df(from)
   saveRDS(df, paste0(to, "auc.rds"))
-  df = df[df$analysis %in% analysis,]
   df$analysis = relevel_analyses(df$analysis)
   df$simulation = relevel_simulations(df$simulation)
   df$heterosis = relevel_heterosis(df$heterosis)
   df$group = paste(df$genes, df$libraries, df$rep, sep = "_")
+  df = df[df$analysis %in% analysis,]
   cutoffs = colnames(df)[grepl("auc_", colnames(df))]
   for(h in levels(df$heterosis)) for(cutoff in cutoffs){
     d = df[df$heterosis == h,]
