@@ -3,6 +3,6 @@
 #' @export
 #' @return analysis analyses
 analyses = function(){
-  out = c("eBayes (Oracle)", "eBayes (Means)", "fully Bayes")
+  out = c("fully Bayes", "eBayes (Oracle)", "eBayes (Means)")
   ordered(out, levels = out)
 }
