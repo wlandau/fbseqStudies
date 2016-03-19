@@ -1,4 +1,4 @@
-#' @include util-mytheme.R util-myrelevel.R
+#' @include util-relevel_analyses.R util-relevel_simulations.R util-relevel_heterosis.R util-mytheme.R
 NULL
 
 #' @title Function \code{plot_auc}
@@ -13,7 +13,9 @@ plot_auc = function(from, to, analysis = analyses()){
   df = auc_df(from)
   saveRDS(df, paste0(to, "auc.rds"))
   df = df[df$analysis %in% analysis,]
-  df$analysis = myrelevel(df$analysis)
+  df$analysis = relevel_analyses(df$analysis)
+  df$simulation = relevel_simulations(df$simulation)
+  df$heterosis = relevel_heterosis(df$heterosis)
   df$group = paste(df$genes, df$libraries, df$rep, sep = "_")
   cutoffs = colnames(df)[grepl("auc_", colnames(df))]
   for(h in levels(df$heterosis)) for(cutoff in cutoffs){

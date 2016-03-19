@@ -18,6 +18,5 @@ ggplot2_df = function(path){
   out$analysis = gsub("normalnormal", "normal", out$analysis)
   out$analysis = gsub("normalLaplace", "Laplace", out$analysis)
   out$analysis = gsub("normalt", "t", out$analysis)
-  out$analysis = ordered(out$analysis, levels = levels(analyses()))
   out
 }

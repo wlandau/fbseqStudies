@@ -1,10 +1,8 @@
 #' @title Function \code{analyses}
-#' @description analysis analyses
+#' @description analysis to show in plots
 #' @export
 #' @return analysis analyses
 analyses = function(){
-  out = c(
-     "ebayesFromTruth+normal", "ebayesFromStarts+normal", "ebayesFromFullybayes+normal",
-    "fullybayes+normal", "fullybayes+Laplace", "fullybayes+t", "fullybayes+horseshoe", "edgeR", "Niemi")
+  out = c("eBayes (Oracle)", "eBayes (Means)", "fully Bayes")
   ordered(out, levels = out)
 }

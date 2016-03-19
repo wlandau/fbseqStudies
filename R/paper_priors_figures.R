@@ -1,4 +1,4 @@
-#' @include util-myrelevel.R util-relevel_heterosis.R util-mytheme.R
+#' @include util-analyses.R util-simulations.R util-relevel_analyses.R util-relevel_simulations.R util-relevel_heterosis.R util-mytheme.R
 NULL
 
 #' @title Function \code{paper_priors_figures}
@@ -12,7 +12,7 @@ paper_priors_figures = function(){
 dir = newdir("priors_study_paper_figures")
 extns = c("pdf", "ps", "eps")
 mycolors = c("black", "blue", "red")
-analysislevels = c("normal", "Laplace", "t")
+ans = c("fullybayes+normal", "fullybayes+Laplace", "fullybayes+t")
 gray = "#707070"
 
 # fig-priorshyperhist
@@ -359,10 +359,10 @@ for(extn in extns[grepl("ps", extns)])
 for(N in c(16, 32)){
   dir_roc = newdir(paste0(dir, "fig-roc", N))
   d = readRDS("comparison_analyze/plot_roc/roc.rds")
-  ans = c("fullybayes+normal", "fullybayes+Laplace", "fullybayes+t")
   d = d[d$analysis %in% ans & d$libraries == N,]
   d$analysis = ordered(gsub("fullybayes\\+", "", as.character(d$analysis)), levels = c("normal", "Laplace", "t"))
-  d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
+  d$simulation = relevel_simulations(d$simulation)
+  d = d[d$simulation %in% simulations(),]
   d$heterosis = relevel_heterosis(d$heterosis)
 
   pl = ggplot(d) + 
@@ -381,10 +381,10 @@ for(N in c(16, 32)){
 # fig:auc
 dir_auc = newdir(paste0(dir, "fig-auc"))
 d = readRDS("comparison_analyze/plot_auc/auc.rds")
-ans = c("fullybayes+normal", "fullybayes+Laplace", "fullybayes+t")
 d = d[d$analysis %in% ans,]
 d$analysis = ordered(gsub("fullybayes\\+", "", as.character(d$analysis)), levels = c("normal", "Laplace", "t"))
-d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
+d$simulation = relevel_simulations(d$simulation)
+d = d[d$simulation %in% simulations(),]
 d$heterosis = relevel_heterosis(d$heterosis)
 pl = ggplot(d) + 
   geom_line(aes_string(x = "analysis", y = "auc_1", group = "libraries"), color = "black") +
@@ -402,9 +402,9 @@ for(extn in extns)
 for(N in c(16, 32)){
   dir_comparecal = newdir(paste0(dir, "fig-comparecal", N))
   d = readRDS("comparison_analyze/plot_calibration/calibration.rds")
-  ans = c("fullybayes+normal", "fullybayes+Laplace", "fullybayes+t")
   d = d[d$analysis %in% ans & d$libraries == N,]
-  d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
+  d$simulation = relevel_simulations(d$simulation)
+  d = d[d$simulation %in% simulations(),]
   d$analysis = ordered(gsub("fullybayes\\+", "", as.character(d$analysis)), levels = c("normal", "Laplace", "t"))
   d$heterosis = relevel_heterosis(d$heterosis)
 
@@ -430,10 +430,10 @@ d = ddply(df, c("file", "heterosis"), function(x){
   x$meanerror = trapz(x = x$probability, y = x$error)
   x[1,]
 })
-ans = c("fullybayes+normal", "fullybayes+Laplace", "fullybayes+t")
 d = d[d$analysis %in% ans,]
 d$analysis = ordered(gsub("fullybayes\\+", "", as.character(d$analysis)), levels = c("normal", "Laplace", "t"))
-d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
+d$simulation = relevel_simulations(d$simulation)
+d = d[d$simulation %in% simulations(),]
 d$heterosis = relevel_heterosis(d$heterosis)
 pl = ggplot(d) + 
   geom_line(aes_string(x = "analysis", y = "meanerror", group = "libraries"), color = "black") +
@@ -454,6 +454,16 @@ as = list(normal = l$analyses[["fullybayes+normal"]],
   t = l$analyses[["fullybayes+t"]])
 m = lapply(as, function(a) mcmc_samples(a$chains))
 e = lapply(as, function(a) estimates(a$chains, level = 0.95))
+
+#fig:logcounts
+dir_logcounts = newdir(paste0(dir, "fig-logcounts"))
+data(paschold)
+d = melt(log(get("paschold")@counts + 1))
+pl = ggplot(d) + stat_density(aes_string(x = "value", y = "..density.."), color = gray, fill = gray) + 
+  mytheme_pub() + 
+  xlab("log(count + 1)")
+for(extn in extns)
+  ggsave(paste0(dir_logcounts, "fig-logcounts.", extn), pl, height = 8, width = 10, dpi = 1200)
 
 # fig:hyperhist
 dir_hyperhist = newdir(paste0(dir, "fig-hyperhist"))

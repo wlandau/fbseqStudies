@@ -10,6 +10,6 @@ analyses()
 analysis analyses
 }
 \description{
-analysis analyses
+analysis to show in plots
 }
 

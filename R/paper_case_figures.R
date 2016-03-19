@@ -1,4 +1,4 @@
-#' @include util-myrelevel.R util-relevel_heterosis.R util-mytheme.R
+#' @include util-analyses.R util-simulations.R util-relevel_analyses.R util-relevel_simulations.R util-relevel_heterosis.R util-mytheme.R
 NULL
 
 #' @title Function \code{paper_case_figures}
@@ -6,13 +6,12 @@ NULL
 #' @export
 paper_case_figures = function(){
 
-# library(fbseqStudies); library(xtable); library(reshape2); library(plyr); library(pracma); library(ggthemes); library(actuar); setwd("~/home/work/projects/thesis_data/results")
+# library(fbseqStudies); library(xtable); library(reshape2); library(plyr); library(pracma); library(ggthemes); library(actuar); setwd("~/home/work/projects/thesis_data/results"); library(gridExtra)
 
 # control parms
 dir = newdir("case_study_paper_figures")
 extns = c("pdf", "ps", "eps")
 mycolors = c("black", "blue", "red", "green", "purple")
-analysislevels = c("eBayes (oracle)", "eBayes (naive)", "eBayes (posterior)", "Niemi", "fully Bayes")
 gray = "#707070"
 
 # credible interval info
@@ -60,7 +59,7 @@ for(extn in extns)
 dir_modelroc = newdir(paste0(dir, "fig-modelroc"))
 df = ggplot2_df("coverage_analyze/roc")
 df = df[df$analysis == "fullybayes+normal",]
-df$heterosis = relevel_heterosis(df$heterosis)
+df = clean_df(df)
 pl = ggplot(df) +
   geom_line(aes_string(x = "fpr", y = "tpr", group = "file"), color = "black") + 
   geom_abline(slope = 1, intercept = 0, linetype = 2) + 
@@ -74,7 +73,7 @@ for(extn in extns)
 dir_modelcalibration = newdir(paste0(dir, "fig-modelcalibration"))
 df = ggplot2_df("coverage_analyze/calibration")
 df = df[df$analysis == "fullybayes+normal",]
-df$heterosis = relevel_heterosis(df$heterosis)
+df = clean_df(df)
 pl = ggplot(df) +
   geom_line(aes_string(x = "probability", y = "proportion", group = "file"), color = "black") + 
   geom_abline(slope = 1, intercept = 0, linetype = 2) + 
@@ -99,10 +98,16 @@ pl = ggplot(l0) +
   geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = gray) +
   geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
   facet_wrap(as.formula("~type"), scales = "free", labeller = label_parsed) +
-  xlab("credible interval") + ylab("parameter value") + 
+  xlab("credible interval") + ylab("true parameter value") + 
   mytheme_pub() + theme(strip.text.x = element_text(size = 14))
 for(extn in extns)
   ggsave(paste0(dir_betacred, "fig-betacred.", extn), pl, height = 6, width = 7, dpi = 1200)
+pl1 = ggplot(l0) +
+  geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = gray) +
+  geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
+  facet_wrap(as.formula("~type"), scales = "free", labeller = label_parsed, nrow = 1) +
+  xlab("credible interval") + ylab("true parameter value") + 
+  mytheme_pub() + theme(strip.text.x = element_blank()) + theme(axis.text.x = element_blank()) #+ theme(axis.text.x = element_text(angle = -80, hjust = 0))
 
 # fig:betacoveragetrend
 dir_betacoveragetrend = newdir(paste0(dir, "fig-betacoveragetrend"))
@@ -129,17 +134,32 @@ for(extn in extns[!grepl("ps", extns)])
 for(extn in extns[grepl("ps", extns)])
   ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, device=cairo_ps,
  height = 6, width = 7, dpi = 1200)
+pl2 = ggplot(l1) + 
+  geom_line(aes_string(x = "truth", y = "cover", group = "rep"), alpha = 0.5) + 
+  geom_abline(slope = 0, intercept = level, linetype = "dotted") +
+  facet_grid(as.formula("~type"), scales = "free_x", labeller = label_parsed) +
+  xlab("true parameter value") + 
+  ylab("smoothed coverage rate") +
+  mytheme_pub() + theme(strip.text.x = element_text(size = 14)) #+ theme(axis.text.x = element_text(angle = -80, hjust = 0))
+
+# fig:betashrink
+dir_betashrink = newdir(paste0(dir, "fig-betashrink"))
+file = paste0(dir_betashrink, "fig-betashrink.")
+pdf(paste0(file, "pdf"), width = 10)
+grid.arrange(pl2, pl1, ncol = 1)
+dev.off()
+for(ex in c("ps", "eps")){
+  cairo_ps(paste0(file, ex), width = 10)
+  grid.arrange(pl2, pl1, ncol = 1)
+  dev.off()
+}
 
 # fig:roc16 and fig:roc32
 for(N in c(16, 32)){
   dir_roc = newdir(paste0(dir, "fig-roc", N))
   d = readRDS("comparison_analyze/plot_roc/roc.rds")
-  ans = c("Niemi", as.character(analyses()[grep("+normal", analyses())]))
-  d = d[d$analysis %in% ans & d$libraries == N,]
-  d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
-  d$analysis = myrelevel(d$analysis)
-  d$analysis = ordered(d$analysis, levels = analysislevels)
-  d$heterosis = relevel_heterosis(d$heterosis)
+  d = clean_df(d)
+  d = d[d$libraries == N,]
 
   pl = ggplot(d) + 
     geom_line(aes_string(x = "fpr", y = "tpr", group = "file", color = "analysis", linetype = "analysis")) +
@@ -154,15 +174,10 @@ for(N in c(16, 32)){
     ggsave(paste0(dir_roc, "fig-roc", N, ".", extn), pl, height = 8, width = 10, dpi = 1200)
 }
 
-# fig:auc16 and fig:auc32
+# fig:auc
 dir_auc = newdir(paste0(dir, "fig-auc"))
 d = readRDS("comparison_analyze/plot_auc/auc.rds")
-ans = c("Niemi", as.character(analyses()[grep("+normal", analyses())]))
-d = d[d$analysis %in% ans,]
-d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
-d$analysis = myrelevel(d$analysis)
-d$analysis = ordered(d$analysis, levels = analysislevels)
-d$heterosis = relevel_heterosis(d$heterosis)
+d = clean_df(d)
 pl = ggplot(d) + 
   geom_line(aes_string(x = "analysis", y = "auc_1", group = "libraries"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "auc_1", pch = "libraries"), color = "black") +
@@ -179,12 +194,8 @@ for(extn in extns)
 for(N in c(16, 32)){
   dir_comparecal = newdir(paste0(dir, "fig-comparecal", N))
   d = readRDS("comparison_analyze/plot_calibration/calibration.rds")
-  ans = c("Niemi", as.character(analyses()[grep("+normal", analyses())]))
-  d = d[d$analysis %in% ans & d$libraries == N,]
-  d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
-  d$analysis = myrelevel(d$analysis)
-  d$analysis = ordered(d$analysis, levels = rev(analysislevels))
-  d$heterosis = relevel_heterosis(d$heterosis)
+  d = d[d$libraries == N,]
+  d = clean_df(d)
 
   pl = ggplot(d) + 
     geom_abline(slope = 1, intercept = 0, color = gray) +
@@ -208,12 +219,7 @@ d = ddply(df, c("file", "heterosis"), function(x){
   x$meanerror = trapz(x = x$probability, y = x$error)
   x[1,]
 })
-ans = c("Niemi", as.character(analyses()[grep("+normal", analyses())]))
-d = d[d$analysis %in% ans,]
-d$simulation = ordered(d$simulation, levels = c("simple", "model", "edgeR", "Niemi"))
-d$analysis = myrelevel(d$analysis)
-d$analysis = ordered(d$analysis, levels = analysislevels)
-d$heterosis = relevel_heterosis(d$heterosis)
+d = clean_df(d)
 pl = ggplot(d) + 
   geom_line(aes_string(x = "analysis", y = "meanerror", group = "libraries"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "meanerror", pch = "libraries"), color = "black") +
@@ -231,6 +237,16 @@ l = readRDS("real_mcmc/paschold_39656_16_1.rds")
 a = l$analyses[["fullybayes+normal"]]
 m = mcmc_samples(a$chains)
 e = estimates(a$chains, level = 0.95)
+
+#fig:logcounts
+dir_logcounts = newdir(paste0(dir, "fig-logcounts"))
+data(paschold)
+d = melt(log(get("paschold")@counts + 1))
+pl = ggplot(d) + stat_density(aes_string(x = "value", y = "..density.."), color = gray, fill = gray) + 
+  mytheme_pub() + 
+  xlab("log(count + 1)")
+for(extn in extns)
+  ggsave(paste0(dir_logcounts, "fig-logcounts.", extn), pl, height = 8, width = 10, dpi = 1200)
 
 # fig:hyperhist
 dir_hyperhist = newdir(paste0(dir, "fig-hyperhist"))

@@ -1,4 +1,4 @@
-#' @include util-mytheme.R util-myrelevel.R
+#' @include util-relevel_analyses.R util-relevel_simulations.R util-relevel_heterosis.R util-mytheme.R
 NULL
 
 #' @title Function \code{plot_calibration_df}
@@ -12,7 +12,9 @@ plot_calibration_df = function(df, to, analysis = analyses(), reps = 1:10){
   to = newdir(to)
   df = df[df$analysis %in% analysis,]
   df = df[as.integer(df$rep) %in% reps,]
-  df$analysis = myrelevel(df$analysis)
+  df$analysis = relevel_analyses(df$analysis)
+  df$simulation = relevel_simulations(df$simulation)
+  df$heterosis = relevel_heterosis(df$heterosis)
   for(h in levels(df$heterosis)){
     d = df[df$heterosis == h,]
     pl = ggplot(d) + mytheme() + 
