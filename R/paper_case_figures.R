@@ -57,7 +57,7 @@ for(extn in extns)
 
 # fig:modelroc
 dir_modelroc = newdir(paste0(dir, "fig-modelroc"))
-df = ggplot2_df("coverage_analyze/roc")
+df = readRDS("coverage_analyze/plot_roc/roc.rds")
 df = df[df$analysis == "fullybayes+normal",]
 df = case_clean_df(df)
 pl = ggplot(df) +
@@ -71,7 +71,7 @@ for(extn in extns)
 
 # fig:modelcalibration
 dir_modelcalibration = newdir(paste0(dir, "fig-modelcalibration"))
-df = ggplot2_df("coverage_analyze/calibration")
+df = readRDS("coverage_analyze/plot_calibration/calibration.rds")
 df = df[df$analysis == "fullybayes+normal",]
 df = case_clean_df(df)
 pl = ggplot(df) +
