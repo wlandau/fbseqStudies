@@ -8,11 +8,11 @@ analyses = function(){
     "fully Bayes (Laplace)",
     "fully Bayes (t)",
     "fully Bayes (horseshoe)",
-    "eBayes (Oracle)", 
+    "edgeR",
+    "Niemi",
     "eBayes (Naive)",
     "eBayes (Means)",
-    "edgeR",
-    "Niemi")
+    "eBayes (Oracle)")
   ordered(out, levels = out)
 }
 
@@ -21,7 +21,7 @@ analyses = function(){
 #' @export
 #' @return analysis analyses
 case_analyses = function(){
-  out = c("fully Bayes", "eBayes (Oracle)", "eBayes (Means)")
+  out = c("fully Bayes", "eBayes (Means)", "eBayes (Oracle)")
   ordered(out, levels = out)
 }
 

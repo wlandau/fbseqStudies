@@ -17,9 +17,9 @@ relevel_analyses = function(x){
     "fully Bayes (Laplace)",
     "fully Bayes (t)",
     "fully Bayes (horseshoe)",
-    "eBayes (Oracle)", 
+    "edgeR",
+    "Niemi",
     "eBayes (Naive)",
     "eBayes (Means)",
-    "edgeR",
-    "Niemi"))
+    "eBayes (Oracle)"))
 }
