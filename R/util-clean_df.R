@@ -34,8 +34,8 @@ case_clean_df = function(d){
 #' @return clean data frame for plotting
 priors_clean_df = function(d){
   d$simulation = relevel_simulations(d$simulation)
-  d$analysis = relevel_analyses(d$analysis)
+  d$analysis = priors_relevel_analyses(d$analysis)
   d$heterosis = relevel_heterosis(d$heterosis)
-  d = d[d$simulation %in% priors_simulations() & d$analysis %in% priors_analyses(),]
+  d = d[d$simulation %in% simulations() & d$analysis %in% priors_analyses(),]
   d
 }

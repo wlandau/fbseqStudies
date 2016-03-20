@@ -30,6 +30,6 @@ case_analyses = function(){
 #' @export
 #' @return analysis analyses
 priors_analyses = function(){
-  out = c("fully Bayes", "fully Bayes (Laplace)", "fully Bayes (t)")
+  out = c("normal", "Laplace", "t")
   ordered(out, levels = out)
 }

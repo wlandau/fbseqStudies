@@ -12,7 +12,6 @@ paper_priors_figures = function(){
 dir = newdir("priors_study_paper_figures")
 extns = c("pdf", "ps", "eps")
 mycolors = c("black", "blue", "red")
-ans = c("fullybayes+normal", "fullybayes+Laplace", "fullybayes+t")
 gray = "#707070"
 
 # fig-priorshyperhist
@@ -31,7 +30,7 @@ for(f in list.files("priors_mcmc")) if(as.integer(meta(f)["libraries"]) == 8 & a
     a$analysis = gsub("normalt", "t", a$analysis)
     m_long$analysis = gsub("fullybayes\\+", "", a$analysis)
     tr = l$scenario@supplement$truth
-    for(n in c("simulation", "analysis")) m_long[[n]] = ordered(m_long[[n]], levels = c("normal", "Laplace", "t"))
+    for(n in c("simulation", "analysis")) m_long[[n]] = ordered(m_long[[n]], levels = priors_analyses())
     m_long = ddply(m_long, "variable", function(x){
       s = unlist(strsplit(as.character(x$variable[1]), "_"))
       if(length(s) > 1){
@@ -69,7 +68,7 @@ l$parameter = as.factor(as.character(l$parameter))
 l$type = as.factor(as.character(l$type))
 l$simulation = gsub("priors", "", as.character(l$simulation))
 l$analysis = gsub("fullybayes\\+", "", as.character(l$analysis))
-for(n in c("simulation", "analysis")) l[[n]] = ordered(l[[n]], levels = c("normal", "Laplace", "t"))
+for(n in c("simulation", "analysis")) l[[n]] = ordered(l[[n]], levels = priors_analyses())
 l$simulation = ordered(l$simulation, labels = paste(levels(l$simulation), "sim"))
 l$analysis = ordered(l$analysis,  labels = paste(levels(l$analysis), "analysis"))
 x = ddply(l, "parameter", function(d){
@@ -105,7 +104,7 @@ l1 = ddply(l0, c("type", "rep", "analysis", "simulation"), function(x){
 })
 l1$simulation = gsub("priors", "", as.character(l1$simulation))
 l1$analysis = gsub("fullybayes\\+", "", as.character(l1$analysis))
-for(n in c("simulation", "analysis")) l1[[n]] = ordered(l1[[n]], levels = c("normal", "Laplace", "t"))
+for(n in c("simulation", "analysis")) l1[[n]] = ordered(l1[[n]], levels = priors_analyses())
 l1$simulation = ordered(l1$simulation, labels = paste(levels(l1$simulation), "sim"))
 l1$analysis = ordered(l1$analysis,  labels = paste(levels(l1$analysis), "analysis"))
 pl = ggplot(l1) +
@@ -130,7 +129,7 @@ l1 = ddply(l0, c("analysis", "simulation", "type"), function(x){
 })
 l1$simulation = gsub("priors", "", as.character(l1$simulation))
 l1$analysis = gsub("fullybayes\\+", "", as.character(l1$analysis))
-for(n in c("simulation", "analysis")) l1[[n]] = ordered(l1[[n]], levels = c("normal", "Laplace", "t"))
+for(n in c("simulation", "analysis")) l1[[n]] = ordered(l1[[n]], levels = priors_analyses())
 l1$simulation = ordered(l1$simulation, labels = paste(levels(l1$simulation), "sim"))
 l1$analysis = ordered(l1$analysis,  labels = paste(levels(l1$analysis), "analysis"))
 pl = ggplot(l1) +
@@ -157,14 +156,13 @@ l1 = ddply(l0, c("simulation", "analysis", "rep", "type"), function(z){
 }, .progress = "text")
 l1$simulation = gsub("priors", "", as.character(l1$simulation))
 l1$analysis = gsub("fullybayes\\+", "", as.character(l1$analysis))
-for(n in c("simulation", "analysis")) l1[[n]] = ordered(l1[[n]], levels = c("normal", "Laplace", "t"))
+for(n in c("simulation", "analysis")) l1[[n]] = ordered(l1[[n]], levels = priors_analyses())
 l1$simulation = ordered(l1$simulation, labels = paste(levels(l1$simulation), "sim"))
 l1$analysis = ordered(l1$analysis,  labels = paste(levels(l1$analysis), "analysis"))
 pl = ggplot(l1) + 
   geom_line(aes_string(x = "truth", y = "cover", group = "rep"), alpha = 0.5) + 
   geom_abline(slope = 0, intercept = level, linetype = "dotted") +
   facet_grid(as.formula("simulation~analysis"), scales = "free") +
-  xlim(c(-2, 2)) +
   xlab("true parameter value") +
   ylab("smoothed coverage rate") +
   mytheme_pub() + theme(strip.text = element_text(size = 14))
@@ -176,11 +174,11 @@ for(extn in extns[grepl("ps", extns)])
 
 # fig:priorsmodelcalibration
 dir_priorsmodelcalibration = newdir(paste0(dir, "fig-priorsmodelcalibration"))
-df = ggplot2_df("priors_analyze/calibration")
+df = readRDS("priors_analyze/calibration_long/calibration_long.rds")
 df = df[df$heterosis == "high" & df$libraries == 8,]
 df$simulation = gsub("priors", "", as.character(df$simulation))
 df$analysis = gsub("fullybayes\\+", "", as.character(df$analysis))
-for(n in c("simulation", "analysis")) df[[n]] = ordered(df[[n]], levels = c("normal", "Laplace", "t"))
+for(n in c("simulation", "analysis")) df[[n]] = ordered(df[[n]], levels = priors_analyses())
 df$simulation = ordered(df$simulation, labels = paste(levels(df$simulation), "sim"))
 df$analysis = ordered(df$analysis,  labels = paste(levels(df$analysis), "analysis"))
 pl = ggplot(df) +
@@ -194,7 +192,7 @@ for(extn in extns)
 
 # fig:priorscomparecalerror
 dir_priorscomparecalerror = newdir(paste0(dir, "fig-priorscomparecalerror"))
-df = readRDS("priors_analyze/plot_calibration/calibration.rds")
+df = readRDS("priors_analyze/calibration_long/calibration_long.rds")
 df$error = abs(df$proportion - df$probability)
 d = ddply(df, c("file", "heterosis"), function(x){
   x$meanerror = trapz(x = x$probability, y = x$error)
@@ -203,7 +201,7 @@ d = ddply(df, c("file", "heterosis"), function(x){
 d = d[d$heterosis == "high" & d$libraries == 8,]
 d$simulation = gsub("priors", "", as.character(d$simulation))
 d$analysis = gsub("fullybayes\\+", "", as.character(d$analysis))
-for(n in c("simulation", "analysis")) d[[n]] = ordered(d[[n]], levels = c("normal", "Laplace", "t"))
+for(n in c("simulation", "analysis")) d[[n]] = ordered(d[[n]], levels = priors_analyses())
 d$simulation = ordered(d$simulation, labels = paste(levels(d$simulation), "sim"))
 d$analysis = ordered(d$analysis,  labels = paste(levels(d$analysis), "analysis"))
 pl = ggplot(d) + 
@@ -211,7 +209,7 @@ pl = ggplot(d) +
   geom_point(aes_string(x = "analysis", y = "meanerror"), color = "black") +
   facet_grid(as.formula("~simulation"), scales = "fixed") +
   xlab("analysis") + 
-  ylab("average absolute calibration error") +
+  ylab("calibration error") +
   labs(pch = "N") +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
@@ -220,14 +218,13 @@ for(extn in extns)
 
 # fig:priorsroc
 dir_priorsroc = newdir(paste0(dir, "fig-priorsroc"))
-d = readRDS("priors_analyze/plot_roc/roc.rds")
+d = readRDS("priors_analyze/roc_long/roc_long.rds")
 d = d[d$heterosis == "high" & d$libraries == 8,]
 d$simulation = gsub("priors", "", as.character(d$simulation))
 d$analysis = gsub("fullybayes\\+", "", as.character(d$analysis))
-for(n in c("simulation", "analysis")) d[[n]] = ordered(d[[n]], levels = c("normal", "Laplace", "t"))
+for(n in c("simulation", "analysis")) d[[n]] = ordered(d[[n]], levels = priors_analyses())
 d$simulation = ordered(d$simulation, labels = paste(levels(d$simulation), "sim"))
 d$analysis = ordered(d$analysis,  labels = paste(levels(d$analysis), "analysis"))
-
 pl = ggplot(d) + 
   geom_line(aes_string(x = "fpr", y = "tpr", group = "file")) +
   facet_grid(as.formula("simulation~analysis")) +
@@ -242,19 +239,18 @@ for(extn in extns)
 
 # fig:priorsauc
 dir_priorsauc = newdir(paste0(dir, "fig-priorsauc"))
-d = readRDS("priors_analyze/plot_auc/auc.rds")
+d = readRDS("priors_analyze/auc_long/auc_long.rds")
 d = d[d$heterosis == "high" & d$libraries == 8,]
 d$simulation = gsub("priors", "", as.character(d$simulation))
 d$analysis = gsub("fullybayes\\+", "", as.character(d$analysis))
-for(n in c("simulation", "analysis")) d[[n]] = ordered(d[[n]], levels = c("normal", "Laplace", "t"))
+for(n in c("simulation", "analysis")) d[[n]] = ordered(d[[n]], levels = priors_analyses())
 d$simulation = ordered(d$simulation, labels = paste(levels(d$simulation), "sim"))
-d$analysis = ordered(d$analysis,  labels = paste(levels(d$analysis), "analysis"))
 pl = ggplot(d) + 
   geom_line(aes_string(x = "analysis", y = "auc_1", group = "rep"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "auc_1"), color = "black") +
   facet_grid(as.formula("~simulation"), scales = "fixed") +
-  xlab("Analysis") + 
-  ylab("Area under ROC curve") +
+  xlab("analysis") + 
+  ylab("area under ROC curve") +
   labs(pch = "N") +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
@@ -267,7 +263,7 @@ for(extn in extns)
 
 
 
-
+## compare with case study
 
 # credible interval info
 l = as.data.frame(readRDS("coverage_analyze/ci/ci.rds"))
@@ -283,7 +279,7 @@ l0$type = gsub("]", ")]", l0$type)
 l1 = ddply(l0, c("type", "rep", "analysis"), function(x){
   data.frame(analysis = x$analysis[1], type = x$type[1], rep = x$rep[1], coverage = mean(x$cover))
 })
-l1$analysis = ordered(gsub("fullybayes\\+", "", as.character(l1$analysis)), levels = c("normal", "Laplace", "t"))
+l1$analysis = ordered(gsub("fullybayes\\+", "", as.character(l1$analysis)), levels = priors_analyses())
 pl = ggplot(l1) +
   geom_point(aes_string(x = "rep", y = "coverage"), size = 0.75) + 
   geom_hline(yintercept = level) + 
@@ -292,20 +288,6 @@ pl = ggplot(l1) +
   mytheme_pub() + theme(strip.text = element_text(size = 14))
 for(extn in extns)
   ggsave(paste0(dir_betarates, "fig-betarates.", extn), pl, height = 8, width = 6, dpi = 1200)
-
-# fig:modelcalibration
-dir_modelcalibration = newdir(paste0(dir, "fig-modelcalibration"))
-df = ggplot2_df("coverage_analyze/calibration")
-df$heterosis = relevel_heterosis(df$heterosis)
-df$analysis = ordered(gsub("fullybayes\\+", "", as.character(df$analysis)), levels = c("normal", "Laplace", "t"))
-pl = ggplot(df) +
-  geom_line(aes_string(x = "probability", y = "proportion", group = "file"), color = "black") + 
-  geom_abline(slope = 1, intercept = 0, linetype = 2) + 
-  facet_grid(as.formula("heterosis~analysis")) + xlab("probability") + ylab("proportion") +
-  mytheme_pub() + theme(legend.position = "none") + 
-  theme(axis.text.x = element_text(angle = -80, hjust = 0))
-for(extn in extns)
-  ggsave(paste0(dir_modelcalibration, "fig-modelcalibration.", extn), pl, height = 8, width = 6, dpi = 1200)
 
 # fig:betacred
 dir_betacred = newdir(paste0(dir, "fig-betacred"))
@@ -318,7 +300,7 @@ l0 = ddply(l0, c("analysis", "type"), function(x){
   x$interval = 1:dim(x)[1]
   x
 })
-l0$analysis = ordered(gsub("fullybayes\\+", "", as.character(l0$analysis)), levels = c("normal", "Laplace", "t"))
+l0$analysis = ordered(gsub("fullybayes\\+", "", as.character(l0$analysis)), levels = priors_analyses())
 pl = ggplot(l0) +
   geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = gray) +
   geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
@@ -341,7 +323,7 @@ l1 = ddply(l0, c("analysis", "rep", "type"), function(z){
   ys = fn(xs)
   data.frame(analysis = z$analysis[1], truth = xs, cover = ys, type = z$type[1], rep = z$rep[1])
 }, .progress = "text")
-l1$analysis = ordered(gsub("fullybayes\\+", "", as.character(l1$analysis)), levels = c("normal", "Laplace", "t"))
+l1$analysis = ordered(gsub("fullybayes\\+", "", as.character(l1$analysis)), levels = priors_analyses())
 pl = ggplot(l1) + 
   geom_line(aes_string(x = "truth", y = "cover", group = "rep"), alpha = 0.5) + 
   geom_abline(slope = 0, intercept = level, linetype = "dotted") +
@@ -355,16 +337,26 @@ for(extn in extns[grepl("ps", extns)])
   ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, device=cairo_ps,
  height = 6, width = 7, dpi = 1200)
 
+# fig:modelcalibration
+dir_modelcalibration = newdir(paste0(dir, "fig-modelcalibration"))
+df = readRDS("coverage_analyze/calibration_long/calibration_long.rds")
+df$heterosis = relevel_heterosis(df$heterosis)
+df$analysis = ordered(gsub("fullybayes\\+", "", as.character(df$analysis)), levels = priors_analyses())
+pl = ggplot(df) +
+  geom_line(aes_string(x = "probability", y = "proportion", group = "file"), color = "black") + 
+  geom_abline(slope = 1, intercept = 0, linetype = 2) + 
+  facet_grid(as.formula("heterosis~analysis")) + xlab("probability") + ylab("proportion") +
+  mytheme_pub() + theme(legend.position = "none") + 
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_modelcalibration, "fig-modelcalibration.", extn), pl, height = 8, width = 6, dpi = 1200)
+
 # fig:roc16 and fig:roc32
 for(N in c(16, 32)){
   dir_roc = newdir(paste0(dir, "fig-roc", N))
-  d = readRDS("comparison_analyze/plot_roc/roc.rds")
-  d = d[d$analysis %in% ans & d$libraries == N,]
-  d$analysis = ordered(gsub("fullybayes\\+", "", as.character(d$analysis)), levels = c("normal", "Laplace", "t"))
-  d$simulation = relevel_simulations(d$simulation)
-  d = d[d$simulation %in% priors_simulations(),]
-  d$heterosis = relevel_heterosis(d$heterosis)
-
+  d = readRDS("comparison_analyze/roc_long/roc_long.rds")
+  d = d[d$libraries == N,]
+  d = priors_clean_df(d)
   pl = ggplot(d) + 
     geom_line(aes_string(x = "fpr", y = "tpr", group = "file", color = "analysis", linetype = "analysis")) +
     facet_grid(as.formula("simulation~heterosis")) +
@@ -380,12 +372,8 @@ for(N in c(16, 32)){
 
 # fig:auc
 dir_auc = newdir(paste0(dir, "fig-auc"))
-d = readRDS("comparison_analyze/plot_auc/auc.rds")
-d = d[d$analysis %in% ans,]
-d$analysis = ordered(gsub("fullybayes\\+", "", as.character(d$analysis)), levels = c("normal", "Laplace", "t"))
-d$simulation = relevel_simulations(d$simulation)
-d = d[d$simulation %in% simulations(),]
-d$heterosis = relevel_heterosis(d$heterosis)
+d = readRDS("comparison_analyze/auc_long/auc_long.rds")
+d = priors_clean_df(d)
 pl = ggplot(d) + 
   geom_line(aes_string(x = "analysis", y = "auc_1", group = "libraries"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "auc_1", pch = "libraries"), color = "black") +
@@ -401,13 +389,9 @@ for(extn in extns)
 # fig:comparecal16 and fig:comparecal32
 for(N in c(16, 32)){
   dir_comparecal = newdir(paste0(dir, "fig-comparecal", N))
-  d = readRDS("comparison_analyze/plot_calibration/calibration.rds")
-  d = d[d$analysis %in% ans & d$libraries == N,]
-  d$simulation = relevel_simulations(d$simulation)
-  d = d[d$simulation %in% simulations(),]
-  d$analysis = ordered(gsub("fullybayes\\+", "", as.character(d$analysis)), levels = c("normal", "Laplace", "t"))
-  d$heterosis = relevel_heterosis(d$heterosis)
-
+  d = readRDS("comparison_analyze/calibration_long/calibration_long.rds")
+  d = d[d$libraries == N,]
+  d = priors_clean_df(d)
   pl = ggplot(d) + 
     geom_abline(slope = 1, intercept = 0, color = gray) +
     geom_line(aes_string(x = "probability", y = "proportion", group = "file", color = "analysis", linetype = "analysis")) +
@@ -424,23 +408,19 @@ for(N in c(16, 32)){
 
 # fig:comparecalerror
 dir_comparecalerror = newdir(paste0(dir, "fig-comparecalerror"))
-df = readRDS("comparison_analyze/plot_calibration/calibration.rds")
+df = readRDS("comparison_analyze/calibration_long/calibration_long.rds")
 df$error = abs(df$proportion - df$probability)
 d = ddply(df, c("file", "heterosis"), function(x){
   x$meanerror = trapz(x = x$probability, y = x$error)
   x[1,]
 })
-d = d[d$analysis %in% ans,]
-d$analysis = ordered(gsub("fullybayes\\+", "", as.character(d$analysis)), levels = c("normal", "Laplace", "t"))
-d$simulation = relevel_simulations(d$simulation)
-d = d[d$simulation %in% simulations(),]
-d$heterosis = relevel_heterosis(d$heterosis)
+d = priors_clean_df(d)
 pl = ggplot(d) + 
   geom_line(aes_string(x = "analysis", y = "meanerror", group = "libraries"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "meanerror", pch = "libraries"), color = "black") +
   facet_grid(as.formula("simulation~heterosis"), scales = "fixed") +
   xlab("analysis") + 
-  ylab("average absolute calibration error") +
+  ylab("calibration error") +
   labs(pch = "N") +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
@@ -463,12 +443,12 @@ pl = ggplot(d) + stat_density(aes_string(x = "value", y = "..density.."), color 
   mytheme_pub() + 
   xlab("log(count + 1)")
 for(extn in extns)
-  ggsave(paste0(dir_logcounts, "fig-logcounts.", extn), pl, height = 8, width = 10, dpi = 1200)
+  ggsave(paste0(dir_logcounts, "fig-logcounts.", extn), pl, height = 6, width = 6, dpi = 1200)
 
 # fig:hyperhist
 dir_hyperhist = newdir(paste0(dir, "fig-hyperhist"))
 d = NULL
-for(prior in c("normal", "Laplace", "t")){
+for(prior in priors_analyses()){
   m_hyper = m[[prior]][,c("nu", "tau", paste0("theta_", 1:5), paste0("sigmaSquared_", 1:5))]
   cn = colnames(m_hyper)
   for(i in 1:5) cn = gsub(paste0("_", i), paste0("\\[", i, "\\]"), cn)
@@ -479,7 +459,7 @@ for(prior in c("normal", "Laplace", "t")){
   d0$analysis = prior
   d = rbind(d, d0)
 }
-d$analysis = ordered(d$analysis, levels = c("normal", "Laplace", "t"))
+d$analysis = ordered(d$analysis, levels = priors_analyses())
 for(v in unique(d$variable)){ # c("nu|tau", "theta", "sigma")
   pl = ggplot(d[d$variable == v,]) + 
     stat_density(aes_string(x = "value", y = "..density.."), color = gray, fill = gray) + 
@@ -489,17 +469,18 @@ for(v in unique(d$variable)){ # c("nu|tau", "theta", "sigma")
     xlab("parameter value") + 
     ylab("density")
   for(extn in extns)
-    ggsave(paste0(dir_hyperhist, "fig-hyperhist-", v, ".", extn), pl, height = 6, width = 4, dpi = 1200)
+    ggsave(paste0(dir_hyperhist, "fig-hyperhist-", v, ".", extn), pl, height = 8, width = 6, dpi = 1200)
 }
 
-# fig:betahist
+# loop over type of hierarchical distribution
 l = readRDS("real_mcmc/paschold_39656_16_1.rds")
-for(prior in c("normal", "Laplace", "t")){
+for(prior in priors_analyses()){
 
 a = l$analyses[[paste0("fullybayes+", prior)]]
 m = mcmc_samples(a$chains)
 e = estimates(a$chains, level = 0.95)
 
+# fig:betahist
 dir_betahist = newdir(paste0(dir, "fig-betahist"))
 m_beta = m[,grep("beta", colnames(m))]
 cn = colnames(m_beta)
@@ -609,4 +590,5 @@ pl = ggplot(d) +
   mytheme_pub()
 for(extn in extns)
   ggsave(paste0(dir_probhist, "fig-probhist-", prior, ".", extn), pl, height = 6, width = 8, dpi = 1200)
-}}
+}
+}

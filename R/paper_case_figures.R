@@ -246,7 +246,7 @@ pl = ggplot(d) + stat_density(aes_string(x = "value", y = "..density.."), color 
   mytheme_pub() + 
   xlab("log(count + 1)")
 for(extn in extns)
-  ggsave(paste0(dir_logcounts, "fig-logcounts.", extn), pl, height = 8, width = 10, dpi = 1200)
+  ggsave(paste0(dir_logcounts, "fig-logcounts.", extn), pl, height = 6, width = 6, dpi = 1200)
 
 # fig:hyperhist
 dir_hyperhist = newdir(paste0(dir, "fig-hyperhist"))
