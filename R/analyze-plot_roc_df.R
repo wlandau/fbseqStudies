@@ -17,7 +17,7 @@ plot_roc_df = function(df, to, cutoff = 1, analysis = analyses(), reps = 1:10){
   df$simulation = relevel_simulations(df$simulation)
   df$heterosis = relevel_heterosis(df$heterosis)
   df = df[df$analysis %in% analysis,]
-  for(h in levels(df$heterosis)){
+  for(h in unique(df$heterosis)){
     d = df[df$heterosis == h,]
     pl = ggplot(d) + mytheme() + xlim(c(0, cutoff)) + 
       geom_line(aes_string(x = "fpr", y = "tpr", group = "file", color = "analysis", linetype = "analysis")) + 

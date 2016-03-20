@@ -1,4 +1,4 @@
-#' @include util-analyses.R util-simulations.R util-relevel_analyses.R util-relevel_simulations.R util-relevel_heterosis.R util-mytheme.R
+#' @include util-analyses.R util-simulations.R util-relevel_analyses.R util-relevel_simulations.R util-relevel_heterosis.R util-mytheme.R util-clean_df.R
 NULL
 
 #' @title Function \code{paper_case_figures}
@@ -59,7 +59,7 @@ for(extn in extns)
 dir_modelroc = newdir(paste0(dir, "fig-modelroc"))
 df = ggplot2_df("coverage_analyze/roc")
 df = df[df$analysis == "fullybayes+normal",]
-df = clean_df(df)
+df = case_clean_df(df)
 pl = ggplot(df) +
   geom_line(aes_string(x = "fpr", y = "tpr", group = "file"), color = "black") + 
   geom_abline(slope = 1, intercept = 0, linetype = 2) + 
@@ -73,7 +73,7 @@ for(extn in extns)
 dir_modelcalibration = newdir(paste0(dir, "fig-modelcalibration"))
 df = ggplot2_df("coverage_analyze/calibration")
 df = df[df$analysis == "fullybayes+normal",]
-df = clean_df(df)
+df = case_clean_df(df)
 pl = ggplot(df) +
   geom_line(aes_string(x = "probability", y = "proportion", group = "file"), color = "black") + 
   geom_abline(slope = 1, intercept = 0, linetype = 2) + 
@@ -158,7 +158,7 @@ for(ex in c("ps", "eps")){
 for(N in c(16, 32)){
   dir_roc = newdir(paste0(dir, "fig-roc", N))
   d = readRDS("comparison_analyze/plot_roc/roc.rds")
-  d = clean_df(d)
+  d = case_clean_df(d)
   d = d[d$libraries == N,]
 
   pl = ggplot(d) + 
@@ -166,8 +166,8 @@ for(N in c(16, 32)){
     facet_grid(as.formula("simulation~heterosis")) +
     xlab("false positive rate") + 
     ylab("true positive rate") +
-    scale_color_manual(name = "analysis", labels = analyses(), values = mycolors[1:length(analyses())]) +
-    scale_linetype_manual(name = "analysis", labels = analyses(), values = 1:length(analyses())) +
+    scale_color_manual(name = "analysis", labels = case_analyses(), values = mycolors[1:length(case_analyses())]) +
+    scale_linetype_manual(name = "analysis", labels = case_analyses(), values = 1:length(case_analyses())) +
     mytheme_pub() +
     theme(axis.text.x = element_text(angle = -80, hjust = 0))
   for(extn in extns)
@@ -177,7 +177,7 @@ for(N in c(16, 32)){
 # fig:auc
 dir_auc = newdir(paste0(dir, "fig-auc"))
 d = readRDS("comparison_analyze/plot_auc/auc.rds")
-d = clean_df(d)
+d = case_clean_df(d)
 pl = ggplot(d) + 
   geom_line(aes_string(x = "analysis", y = "auc_1", group = "libraries"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "auc_1", pch = "libraries"), color = "black") +
@@ -195,7 +195,7 @@ for(N in c(16, 32)){
   dir_comparecal = newdir(paste0(dir, "fig-comparecal", N))
   d = readRDS("comparison_analyze/plot_calibration/calibration.rds")
   d = d[d$libraries == N,]
-  d = clean_df(d)
+  d = case_clean_df(d)
 
   pl = ggplot(d) + 
     geom_abline(slope = 1, intercept = 0, color = gray) +
@@ -203,8 +203,8 @@ for(N in c(16, 32)){
     facet_grid(as.formula("simulation~heterosis")) +
     xlab("probability") + 
     ylab("proportion") +
-    scale_color_manual(name = "analysis", labels = analyses(), values = mycolors[1:length(analyses())]) +
-    scale_linetype_manual(name = "analysis", labels = analyses(), values = 1:length(analyses())) +
+    scale_color_manual(name = "analysis", labels = case_analyses(), values = mycolors[1:length(case_analyses())]) +
+    scale_linetype_manual(name = "analysis", labels = case_analyses(), values = 1:length(case_analyses())) +
     mytheme_pub() +
     theme(axis.text.x = element_text(angle = -80, hjust = 0))
   for(extn in extns)
@@ -219,7 +219,7 @@ d = ddply(df, c("file", "heterosis"), function(x){
   x$meanerror = trapz(x = x$probability, y = x$error)
   x[1,]
 })
-d = clean_df(d)
+d = case_clean_df(d)
 pl = ggplot(d) + 
   geom_line(aes_string(x = "analysis", y = "meanerror", group = "libraries"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "meanerror", pch = "libraries"), color = "black") +

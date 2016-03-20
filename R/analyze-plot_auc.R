@@ -18,7 +18,7 @@ plot_auc = function(from, to, analysis = analyses()){
   df$group = paste(df$genes, df$libraries, df$rep, sep = "_")
   df = df[df$analysis %in% analysis,]
   cutoffs = colnames(df)[grepl("auc_", colnames(df))]
-  for(h in levels(df$heterosis)) for(cutoff in cutoffs){
+  for(h in unique(df$heterosis)) for(cutoff in cutoffs){
     d = df[df$heterosis == h,]
     pl = ggplot(d) + mytheme() + 
       geom_line(aes_string(x = "analysis", y = cutoff, group = "group")) +

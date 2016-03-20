@@ -362,7 +362,7 @@ for(N in c(16, 32)){
   d = d[d$analysis %in% ans & d$libraries == N,]
   d$analysis = ordered(gsub("fullybayes\\+", "", as.character(d$analysis)), levels = c("normal", "Laplace", "t"))
   d$simulation = relevel_simulations(d$simulation)
-  d = d[d$simulation %in% simulations(),]
+  d = d[d$simulation %in% priors_simulations(),]
   d$heterosis = relevel_heterosis(d$heterosis)
 
   pl = ggplot(d) + 

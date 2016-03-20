@@ -7,7 +7,13 @@ relevel_simulations = function(x){
   out = as.character(x)
   out[out == "simple"] = "Simple"
   out[out == "model"] = "Model"
+  out[out == "priorsnormal"] = "normal"
+  out[out == "priorsLaplace"] = "Laplace"
+  out[out == "priorst"] = "t"
   ordered(out, levels = c(
+    "normal", 
+    "Laplace", 
+    "t",
     "Simple", 
     "Model",
     "edgeR",

@@ -11,7 +11,7 @@ relevel_heterosis = function(x){
   x[x == "low-parent_hybrid1"] = "low H12"
   x[x == "high-parent_hybrid2"] = "high H21"
   x[x == "low-parent_hybrid2"] = "low H21"
-  ordered(x, levels = c("high H12", "high H21", "high mean", "low H12",  "low H21", "low mean"))
+  ordered(x, levels = c("high H12", "high H21", "high mean", "low H12",  "low H21", "low mean", "high", "low"))
 }
 
 
