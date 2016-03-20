@@ -203,7 +203,6 @@ d$simulation = gsub("priors", "", as.character(d$simulation))
 d$analysis = gsub("fullybayes\\+", "", as.character(d$analysis))
 for(n in c("simulation", "analysis")) d[[n]] = ordered(d[[n]], levels = priors_analyses())
 d$simulation = ordered(d$simulation, labels = paste(levels(d$simulation), "sim"))
-d$analysis = ordered(d$analysis,  labels = paste(levels(d$analysis), "analysis"))
 pl = ggplot(d) + 
   geom_line(aes_string(x = "analysis", y = "meanerror", group = "rep"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "meanerror"), color = "black") +
