@@ -57,7 +57,7 @@ for(extn in extns)
 
 # fig:modelroc
 dir_modelroc = newdir(paste0(dir, "fig-modelroc"))
-df = readRDS("coverage_analyze/plot_roc/roc.rds")
+df = readRDS("coverage_analyze/roc_long/roc_long.rds")
 df = df[df$analysis == "fullybayes+normal",]
 df = case_clean_df(df)
 pl = ggplot(df) +
@@ -71,7 +71,7 @@ for(extn in extns)
 
 # fig:modelcalibration
 dir_modelcalibration = newdir(paste0(dir, "fig-modelcalibration"))
-df = readRDS("coverage_analyze/plot_calibration/calibration.rds")
+df = readRDS("coverage_analyze/calibration_long/calibration_long.rds")
 df = df[df$analysis == "fullybayes+normal",]
 df = case_clean_df(df)
 pl = ggplot(df) +
@@ -157,7 +157,7 @@ for(ex in c("ps", "eps")){
 # fig:roc16 and fig:roc32
 for(N in c(16, 32)){
   dir_roc = newdir(paste0(dir, "fig-roc", N))
-  d = readRDS("comparison_analyze/plot_roc/roc.rds")
+  d = readRDS("comparison_analyze/roc_long/roc_long.rds")
   d = case_clean_df(d)
   d = d[d$libraries == N,]
 
@@ -176,7 +176,7 @@ for(N in c(16, 32)){
 
 # fig:auc
 dir_auc = newdir(paste0(dir, "fig-auc"))
-d = readRDS("comparison_analyze/plot_auc/auc.rds")
+d = readRDS("comparison_analyze/auc_long/auc_long.rds")
 d = case_clean_df(d)
 pl = ggplot(d) + 
   geom_line(aes_string(x = "analysis", y = "auc_1", group = "libraries"), color = "black") +
@@ -193,7 +193,7 @@ for(extn in extns)
 # fig:comparecal16 and fig:comparecal32
 for(N in c(16, 32)){
   dir_comparecal = newdir(paste0(dir, "fig-comparecal", N))
-  d = readRDS("comparison_analyze/plot_calibration/calibration.rds")
+  d = readRDS("comparison_analyze/calibration_long/calibration_long.rds")
   d = d[d$libraries == N,]
   d = case_clean_df(d)
 
@@ -213,7 +213,7 @@ for(N in c(16, 32)){
 
 # fig:comparecalerror
 dir_comparecalerror = newdir(paste0(dir, "fig-comparecalerror"))
-df = readRDS("comparison_analyze/plot_calibration/calibration.rds")
+df = readRDS("comparison_analyze/calibration_long/calibration_long.rds")
 df$error = abs(df$proportion - df$probability)
 d = ddply(df, c("file", "heterosis"), function(x){
   x$meanerror = trapz(x = x$probability, y = x$error)

@@ -6,6 +6,7 @@ auc_df = function(path){
   path = newdir(path)
   out = NULL
   for(f in list.files(path)){
+    print(f)
     x = readRDS(paste0(path, f))
     for(n in names(x)){
       x[[n]]$fpr = x[[n]]$tpr = NULL
@@ -20,7 +21,5 @@ auc_df = function(path){
   out$analysis = gsub("normalnormal", "normal", out$analysis)
   out$analysis = gsub("normalLaplace", "Laplace", out$analysis)
   out$analysis = gsub("normalt", "t", out$analysis)
-  out$analysis = relevel_analyses(out$analysis)
-  out$analysis = ordered(out$analysis, levels = union(analyses(), unique(as.character(out$analysis))))
   out
 }

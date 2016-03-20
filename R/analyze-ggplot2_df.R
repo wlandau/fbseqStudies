@@ -6,6 +6,7 @@ ggplot2_df = function(path){
   path = newdir(path)
   out = NULL
   for(f in list.files(path)){
+    print(f)
     x = readRDS(paste0(path, f))
     x = lapply(x, function(y){do.call(cbind, y)})
     for(n in names(x)) x[[n]] = data.frame(x[[n]], heterosis = n)
