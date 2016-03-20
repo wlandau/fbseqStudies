@@ -6,7 +6,18 @@ NULL
 #' dissertation of Will Landau (http://will-landau.com, will.landau@@gmail.com).
 #' @export
 Landau_dissertation = function(){
-  paper_computation()
-  paper_case()
-  paper_priors()
+  real_mcmc("real_mcmc")
+  computation_mcmc("computation_mcmc")
+  coverage_mcmc("coverage_mcmc", zeronormfactors = T)  
+  coverage_mcmc("coverage_norm_mcmc", zeronormfactors = F)
+  comparison_mcmc("comparison_mcmc")
+
+  real_analyze("real_mcmc", "real_analyze")
+  computation_analyze("computation_mcmc", "computation_analyze")
+  coverage_analyze("coverage_mcmc", "coverage_analyze")
+  coverage_analyze("coverage_norm_mcmc", "coverage_norm_analyze")
+  comparison_analyze("comparison_mcmc", "comparison_analyze")
+
+  paper_case_figures()
+  paper_priors_figures()
 }
