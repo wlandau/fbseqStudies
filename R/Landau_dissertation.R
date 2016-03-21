@@ -11,12 +11,14 @@ Landau_dissertation = function(){
   coverage_mcmc("coverage_mcmc", zeronormfactors = T)  
   coverage_mcmc("coverage_norm_mcmc", zeronormfactors = F)
   comparison_mcmc("comparison_mcmc")
+  priors_mcmc("priors_mcmc")
 
   real_analyze("real_mcmc", "real_analyze")
   computation_analyze("computation_mcmc", "computation_analyze")
   coverage_analyze("coverage_mcmc", "coverage_analyze")
   coverage_analyze("coverage_norm_mcmc", "coverage_norm_analyze")
   comparison_analyze("comparison_mcmc", "comparison_analyze")
+  priors_analyze("priors_mcmc", "priors_analyze")
 
   paper_case_figures()
   paper_priors_figures()
