@@ -127,7 +127,7 @@ pl = ggplot(l1) +
   geom_abline(slope = 0, intercept = level, linetype = "dotted") +
   facet_wrap(as.formula("~type"), scales = "free_x", labeller = label_parsed) +
   xlab("true parameter value") +
-  ylab("smoothed coverage rate") +
+  ylab("local coverage rate") +
   mytheme_pub() + theme(strip.text.x = element_text(size = 14))
 for(extn in extns[!grepl("ps", extns)])
   ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, height = 6, width = 7, dpi = 1200)
@@ -139,7 +139,7 @@ pl2 = ggplot(l1) +
   geom_abline(slope = 0, intercept = level, linetype = "dotted") +
   facet_grid(as.formula("~type"), scales = "free_x", labeller = label_parsed) +
   xlab("true parameter value") + 
-  ylab("smoothed coverage rate") +
+  ylab("local coverage rate") +
   mytheme_pub() + theme(strip.text.x = element_text(size = 14)) #+ theme(axis.text.x = element_text(angle = -80, hjust = 0))
 
 # fig:betashrink
@@ -225,7 +225,7 @@ pl = ggplot(d) +
   geom_point(aes_string(x = "analysis", y = "meanerror", pch = "libraries"), color = "black") +
   facet_grid(as.formula("simulation~heterosis"), scales = "fixed") +
   xlab("analysis") + 
-  ylab("average absolute calibration error") +
+  ylab("calibration error") +
   labs(pch = "N") +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))

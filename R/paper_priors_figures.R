@@ -164,7 +164,7 @@ pl = ggplot(l1) +
   geom_abline(slope = 0, intercept = level, linetype = "dotted") +
   facet_grid(as.formula("simulation~analysis"), scales = "free") +
   xlab("true parameter value") +
-  ylab("smoothed coverage rate") +
+  ylab("local coverage rate") +
   mytheme_pub() + theme(strip.text = element_text(size = 14))
 for(extn in extns[!grepl("ps", extns)])
   ggsave(paste0(dir_priorsbetacoveragetrend, "fig-priorsbetacoveragetrend.", extn), pl, height = 6, width = 8, dpi = 1200)
@@ -328,7 +328,7 @@ pl = ggplot(l1) +
   geom_abline(slope = 0, intercept = level, linetype = "dotted") +
   facet_grid(as.formula("analysis~type"), scales = "free_x", labeller = label_parsed) +
   xlab("true parameter value") +
-  ylab("smoothed coverage rate") +
+  ylab("local coverage rate") +
   mytheme_pub() + theme(strip.text = element_text(size = 14))
 for(extn in extns[!grepl("ps", extns)])
   ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, height = 6, width = 8, dpi = 1200)
