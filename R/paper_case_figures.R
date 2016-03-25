@@ -23,19 +23,22 @@ l = l[l$analysis == "fullybayes+normal",]
 dir_hypercoverage = newdir(paste0(dir, "fig-hypercoverage"))
 l0 = l[!grepl("beta", l$parameter),]
 l1 = ddply(l0, c("type", "simulation", "libraries", "analysis"), function(x){
-  if(mean(x[x$level == 0.5,]$cover) >= 0.5) return(NULL)
+#  if(mean(x[x$level == 0.5,]$cover) >= 0.5) return(NULL)
   x
 })
+types = c("nu", "tau", #paste0("blank", 1:3), 
+  paste0("theta[", 1:5, "]"), paste0("sigma[", 1:5, "]^2"))
+l1$type = ordered(l1$type, levels = types)
 pl = ggplot(l1) + 
   geom_segment(data = l1[l1$level == 0.5,], mapping = aes_string(x = "rep", xend = "rep", y = "lower", yend = "upper"), size = 2) +
   geom_segment(data = l1[l1$level == 0.95,], mapping = aes_string(x = "rep", xend = "rep", y = "lower", yend = "upper")) + 
-  facet_wrap(as.formula("~type"), scales = "free_y", labeller = label_parsed) + 
-  geom_abline(aes(slope = 0, intercept = l1$truth)) + 
+  facet_wrap(as.formula("~type"), scales = "free_y", labeller = label_parsed) + # , drop = F, ncol = 5) + 
+  geom_abline(aes_string(slope = "0", intercept = "truth")) + 
   xlab("simulated dataset") +
   ylab("credible interval") + 
   mytheme_pub() + theme(strip.text.x = element_text(size = 14))
 for(extn in extns)
-  ggsave(paste0(dir_hypercoverage, "fig-hypercoverage.", extn), pl, height = 6, width = 7, dpi = 1200)
+  ggsave(paste0(dir_hypercoverage, "fig-hypercoverage.", extn), pl, height = 7, width = 9, dpi = 1200)
 
 # fig:betarates
 dir_betarates = newdir(paste0(dir, "fig-betarates"))
@@ -143,6 +146,7 @@ pl2 = ggplot(l1) +
   mytheme_pub() + theme(strip.text.x = element_text(size = 14)) #+ theme(axis.text.x = element_text(angle = -80, hjust = 0))
 
 # fig:betashrink
+tryCatch({
 dir_betashrink = newdir(paste0(dir, "fig-betashrink"))
 file = paste0(dir_betashrink, "fig-betashrink.")
 pdf(paste0(file, "pdf"), width = 10)
@@ -152,7 +156,7 @@ for(ex in c("ps", "eps")){
   cairo_ps(paste0(file, ex), width = 10)
   grid.arrange(pl2, pl1, ncol = 1)
   dev.off()
-}
+}}, error = function(e) print("Could not make fig-betashrink."))
 
 # fig:roc16 and fig:roc32
 for(N in c(16, 32)){

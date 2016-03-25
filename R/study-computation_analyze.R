@@ -9,5 +9,7 @@ computation_analyze = function(from, to){
   gelman(from, paste0(to, "gelman"))
   ess(from, paste0(to, "ess"))
   runtime(from, paste0(to, "runtime"))
-  plot_runtime(paste0(to, "runtime"), paste0(to, "plot_runtime"))
+  tryCatch({
+    plot_runtime(paste0(to, "runtime"), paste0(to, "plot_runtime"))
+  }, error = function(e) print("Could not plot runtime."))
 }
