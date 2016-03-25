@@ -34,21 +34,25 @@ plot_runtime = function(from, to){
     geom_line(aes_string(x = "G", y = "runtime", group = "N", linetype = "N")) + theme_few() + 
     scale_x_continuous(breaks = sort(unique(long$G))) +  
     theme(axis.text.x = element_text(angle = -80, hjust = 0)) + ylab("Total elapsed hours")
+ggsave(plot = p1, file = paste0(to, "runtimeG.pdf"))
 
   p2 = ggplot(long2) +
     geom_line(aes_string(x = "N", y = "runtime", group = "G", linetype = "G")) + theme_few() + 
     scale_x_continuous(breaks = sort(unique(long$N), decreasing = T)) + ylab("")
+ggsave(plot = p1, file = paste0(to, "runtimeN.pdf"))
 
-  pdf(paste0(to, "runtime.pdf"), width= 8,height=3)
-  grid.arrange(p1, p2, nrow = 1)
-  dev.off()
+  tryCatch({
+   pdf(paste0(to, "runtime.pdf"), width= 8,height=3)
+    grid.arrange(p1, p2, nrow = 1)
+    dev.off()
 
-  postscript(paste0(to, "runtime.ps"), width= 8,height=3)
-  grid.arrange(p1, p2, nrow = 1)
-  dev.off()
+    postscript(paste0(to, "runtime.ps"), width= 8,height=3)
+    grid.arrange(p1, p2, nrow = 1)
+    dev.off()
 
-  setEPS()
-  postscript(paste0(to, "runtime.eps"), width= 8,height=3)
-  grid.arrange(p1, p2, nrow = 1)
-  dev.off()
+    setEPS()
+    postscript(paste0(to, "runtime.eps"), width= 8,height=3)
+    grid.arrange(p1, p2, nrow = 1)
+    dev.off()
+  }, error = function(e) print("Failed to make grid.arrange'ed runtime plots."))
 }
