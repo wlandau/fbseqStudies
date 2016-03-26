@@ -97,9 +97,17 @@ l0 = ddply(l0, "type", function(x){
   x$interval = 1:dim(x)[1]
   x
 })
+hmean = rep(0, dim(l0)[1])
+hmean[l0$type == "beta[list(g1)]"] = 3
+hmean[l0$type == "beta[list(g2)]"] = 0
+hmean[l0$type == "beta[list(g3)]"] = -0.007
+hmean[l0$type == "beta[list(g4)]"] = -0.005
+hmean[l0$type == "beta[list(g5)]"] = 0.008
+l0$hmean = hmean
 pl = ggplot(l0) +
   geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = gray) +
   geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
+  geom_hline(aes_string(yintercept = "hmean")) +
   facet_wrap(as.formula("~type"), scales = "free", labeller = label_parsed) +
   xlab("credible interval") + ylab("true parameter value") + 
   mytheme_pub() + theme(strip.text.x = element_text(size = 14))
@@ -108,6 +116,7 @@ for(extn in extns)
 pl1 = ggplot(l0) +
   geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = gray) +
   geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
+  geom_hline(aes_string(yintercept = "hmean")) +
   facet_wrap(as.formula("~type"), scales = "free", labeller = label_parsed, nrow = 1) +
   xlab("credible interval") + ylab("true parameter value") + 
   mytheme_pub() + theme(strip.text.x = element_blank()) + theme(axis.text.x = element_blank()) #+ theme(axis.text.x = element_text(angle = -80, hjust = 0))
@@ -125,9 +134,17 @@ l1 = ddply(l0, c("rep", "type"), function(z){
   ys = fn(xs)
   data.frame(truth = xs, cover = ys, type = z$type[1], rep = z$rep[[1]])
 }, .progress = "text")
+hmean = rep(0, dim(l1)[1])
+hmean[l1$type == "beta[list(g1)]"] = 3
+hmean[l1$type == "beta[list(g2)]"] = 0
+hmean[l1$type == "beta[list(g3)]"] = -0.007
+hmean[l1$type == "beta[list(g4)]"] = -0.005
+hmean[l1$type == "beta[list(g5)]"] = 0.008
+l1$hmean = hmean
 pl = ggplot(l1) + 
   geom_line(aes_string(x = "truth", y = "cover", group = "rep"), alpha = 0.5) + 
   geom_abline(slope = 0, intercept = level, linetype = "dotted") +
+  geom_vline(aes_string(xintercept = "hmean")) +
   facet_wrap(as.formula("~type"), scales = "free_x", labeller = label_parsed) +
   xlab("true parameter value") +
   ylab("local coverage rate") +
@@ -140,6 +157,7 @@ for(extn in extns[grepl("ps", extns)])
 pl2 = ggplot(l1) + 
   geom_line(aes_string(x = "truth", y = "cover", group = "rep"), alpha = 0.5) + 
   geom_abline(slope = 0, intercept = level, linetype = "dotted") +
+  geom_vline(aes_string(xintercept = "hmean")) +
   facet_grid(as.formula("~type"), scales = "free_x", labeller = label_parsed) +
   xlab("true parameter value") + 
   ylab("local coverage rate") +

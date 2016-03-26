@@ -135,6 +135,7 @@ l1$analysis = ordered(l1$analysis,  labels = paste(levels(l1$analysis), "analysi
 pl = ggplot(l1) +
   geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = gray) +
   geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
+  geom_hline(yintercept = 0) + 
   facet_grid(as.formula("simulation~analysis"), scales = "free") +
   xlab("credible interval") + ylab("parameter value") + 
   mytheme_pub() + theme(strip.text.x = element_text(size = 14))
@@ -162,6 +163,7 @@ l1$analysis = ordered(l1$analysis,  labels = paste(levels(l1$analysis), "analysi
 pl = ggplot(l1) + 
   geom_line(aes_string(x = "truth", y = "cover", group = "rep"), alpha = 0.5) + 
   geom_abline(slope = 0, intercept = level, linetype = "dotted") +
+  geom_vline(xintercept = 0) + 
   facet_grid(as.formula("simulation~analysis"), scales = "free") +
   xlab("true parameter value") +
   ylab("local coverage rate") +
@@ -300,9 +302,17 @@ l0 = ddply(l0, c("analysis", "type"), function(x){
   x
 })
 l0$analysis = ordered(gsub("fullybayes\\+", "", as.character(l0$analysis)), levels = priors_analyses())
+hmean = rep(0, dim(l0)[1])
+hmean[l0$type == "beta[list(g1)]"] = 3
+hmean[l0$type == "beta[list(g2)]"] = 0
+hmean[l0$type == "beta[list(g3)]"] = -0.007
+hmean[l0$type == "beta[list(g4)]"] = -0.005
+hmean[l0$type == "beta[list(g5)]"] = 0.008
+l0$hmean = hmean
 pl = ggplot(l0) +
   geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = gray) +
   geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
+  geom_hline(aes_string(yintercept = "hmean")) +
   facet_grid(as.formula("type~analysis"), scales = "free", labeller = label_parsed) +
   xlab("credible interval") + ylab("parameter value") + 
   mytheme_pub() + theme(strip.text.x = element_text(size = 14))
@@ -323,9 +333,17 @@ l1 = ddply(l0, c("analysis", "rep", "type"), function(z){
   data.frame(analysis = z$analysis[1], truth = xs, cover = ys, type = z$type[1], rep = z$rep[1])
 }, .progress = "text")
 l1$analysis = ordered(gsub("fullybayes\\+", "", as.character(l1$analysis)), levels = priors_analyses())
+hmean = rep(0, dim(l1)[1])
+hmean[l1$type == "beta[list(g1)]"] = 3
+hmean[l1$type == "beta[list(g2)]"] = 0
+hmean[l1$type == "beta[list(g3)]"] = -0.007
+hmean[l1$type == "beta[list(g4)]"] = -0.005
+hmean[l1$type == "beta[list(g5)]"] = 0.008
+l1$hmean = hmean
 pl = ggplot(l1) + 
   geom_line(aes_string(x = "truth", y = "cover", group = "rep"), alpha = 0.5) + 
   geom_abline(slope = 0, intercept = level, linetype = "dotted") +
+  geom_vline(aes_string(xintercept = "hmean")) +
   facet_grid(as.formula("analysis~type"), scales = "free_x", labeller = label_parsed) +
   xlab("true parameter value") +
   ylab("local coverage rate") +
