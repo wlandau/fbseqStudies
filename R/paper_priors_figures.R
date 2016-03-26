@@ -342,9 +342,9 @@ hmean[l1$type == "beta[list(g5)]"] = 0.008
 l1$hmean = hmean
 pl = ggplot(l1) + 
   geom_line(aes_string(x = "truth", y = "cover", group = "rep"), alpha = 0.5) + 
+  facet_grid(as.formula("analysis~type"), scales = "free", labeller = label_parsed) +
   geom_abline(slope = 0, intercept = level, linetype = "dotted") +
   geom_vline(aes_string(xintercept = "hmean")) +
-  facet_grid(as.formula("analysis~type"), scales = "free_x", labeller = label_parsed) +
   xlab("true parameter value") +
   ylab("local coverage rate") +
   mytheme_pub() + theme(strip.text = element_text(size = 14))
@@ -352,7 +352,7 @@ for(extn in extns[!grepl("ps", extns)])
   ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, height = 6, width = 8, dpi = 1200)
 for(extn in extns[grepl("ps", extns)])
   ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, device=cairo_ps,
- height = 6, width = 7, dpi = 1200)
+ height = 6, width = 8, dpi = 1200)
 
 # fig:modelcalibration
 dir_modelcalibration = newdir(paste0(dir, "fig-modelcalibration"))
