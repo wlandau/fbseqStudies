@@ -51,7 +51,6 @@ comparehprobs = function(from, to){
   ggsave(paste0(to, "comparehprobs.pdf"), pl, width = 8, height = 4, dpi = 1200)
   ggsave(paste0(to, "comparehprobs.ps"), pl, width = 8, height = 4, dpi = 1200)
   ggsave(paste0(to, "comparehprobs.eps"), pl, width = 8, height = 4, dpi = 1200)
-  ggsave(paste0(to, "comparehprobs.tiff"), pl, width = 8, height = 4, dpi = 1200)
 
   data(paschold)
   paschold = get("paschold")

@@ -5,19 +5,19 @@ NULL
 #' @description Workflow for the case study paper
 #' @export
 paper_case = function(){
-  path = real_init("real_mcmc")
-  fit(path, priors = "normal", fbseq_methods = "fullybayes")
+  real_init("real_mcmc")
+  fit("real_mcmc", priors = "normal", fbseq_methods = "fullybayes")
   coverage_init("coverage_mcmc")
   fit("coverage_mcmc", benchmarks = NULL, zeronormfactors = T, fbseq_methods = "fullybayes", priors = "normal")
   coverage_init("coverage_norm_mcmc")
   fit("coverage_norm_mcmc", benchmarks = NULL, zeronormfactors = F, fbseq_methods = "fullybayes", priors = "normal")
-  path = comparison_init("comparison_mcmc")
-  fit(path, benchmarks = NULL, priors = "normal")
+  comparison_init("comparison_mcmc")
+  fit("comparison_mcmc", benchmarks = NULL, priors = "normal")
 
-  real_analyze(path, "real_analyze")
+  real_analyze("real_mcmc", "real_analyze")
   coverage_analyze("coverage_mcmc", "coverage_analyze")
   coverage_analyze("coverage_norm_mcmc", "coverage_norm_analyze")
-  comparison_analyze(path, "comparison_analyze")
+  comparison_analyze("comparison_mcmc", "comparison_analyze")
 
   paper_case_figures()
 }
