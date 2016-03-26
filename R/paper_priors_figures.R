@@ -368,6 +368,28 @@ pl = ggplot(df) +
 for(extn in extns)
   ggsave(paste0(dir_modelcalibration, "fig-modelcalibration.", extn), pl, height = 8, width = 6, dpi = 1200)
 
+# fig:modelcomparecalerror 
+dir_modelcomparecalerror = newdir(paste0(dir, "fig-modelcomparecalerror"))
+df = readRDS("coverage_analyze/calibration_long/calibration_long.rds")
+df$heterosis = relevel_heterosis(df$heterosis)
+df$analysis = ordered(gsub("fullybayes\\+", "", as.character(df$analysis)), levels = priors_analyses())
+df$error = abs(df$proportion - df$probability)
+d = ddply(df, c("file", "heterosis"), function(x){
+  x$meanerror = trapz(x = x$probability, y = x$error)
+  x[1,]
+})
+pl = ggplot(d) + 
+  geom_line(aes_string(x = "analysis", y = "meanerror", group = "rep"), color = "black") +
+  geom_point(aes_string(x = "analysis", y = "meanerror"), color = "black") +
+  facet_wrap(as.formula("~heterosis"), ncol = 3) +
+  xlab("analysis") + 
+  ylab("calibration error") +
+  labs(pch = "N") +
+  mytheme_pub() +
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_modelcomparecalerror, "fig-modelcomparecalerror.", extn), pl, height = 8, width = 6, dpi = 1200)
+
 # fig:roc16 and fig:roc32
 for(N in c(16, 32)){
   dir_roc = newdir(paste0(dir, "fig-roc", N))
