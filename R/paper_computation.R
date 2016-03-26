@@ -7,7 +7,7 @@ NULL
 paper_computation = function(){
   path = real_init("real_mcmc")
   fit(path, benchmarks = NULL, priors = "normal", fbseq_methods = "fullybayes")
-  real_analyze(path, "real_analyze")
   computation_mcmc("computation_mcmc")
+  real_analyze(path, "real_analyze")
   computation_analyze("computation_mcmc", "computation_analyze")
 }

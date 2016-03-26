@@ -6,14 +6,18 @@ NULL
 #' @export
 paper_case = function(){
   path = real_init("real_mcmc")
-  fit(path, priors = "normal")
-  real_analyze(path, "real_analyze")
-  coverage_mcmc("coverage_mcmc", zeronormfactors = T)
-  coverage_analyze("coverage_mcmc", "coverage_analyze")
-  coverage_mcmc("coverage_norm_mcmc", zeronormfactors = F)
-  coverage_analyze("coverage_norm_mcmc", "coverage_norm_analyze")
+  fit(path, priors = "normal", fbseq_methods = "fullybayes")
+  coverage_init("coverage_mcmc")
+  fit("coverage_mcmc", benchmarks = NULL, zeronormfactors = T, fbseq_methods = "fullybayes", priors = "normal")
+  coverage_init("coverage_norm_mcmc")
+  fit("coverage_norm_mcmc", benchmarks = NULL, zeronormfactors = F, fbseq_methods = "fullybayes", priors = "normal")
   path = comparison_init("comparison_mcmc")
   fit(path, benchmarks = NULL, priors = "normal")
+
+  real_analyze(path, "real_analyze")
+  coverage_analyze("coverage_mcmc", "coverage_analyze")
+  coverage_analyze("coverage_norm_mcmc", "coverage_norm_analyze")
   comparison_analyze(path, "comparison_analyze")
+
   paper_case_figures()
 }
