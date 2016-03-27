@@ -17,7 +17,7 @@ gelman = function(from, to){
   saveRDS(out, paste0(to, "gelman.rds"))
   gelman_important = lapply(out, function(x){
     x = x[x > 1.1]
-    x = x[!grepl("epsilon", names(x))]
+    x = x[!grepl("epsilon|xi", names(x))]
     x = sort(x, decreasing = TRUE)
   })
   saveRDS(gelman_important, paste0(to, "gelman_important.rds"))
