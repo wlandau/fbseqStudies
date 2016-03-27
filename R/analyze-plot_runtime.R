@@ -39,7 +39,7 @@ ggsave(plot = p1, filename = paste0(to, "runtimeG.pdf"))
   p2 = ggplot(long2) +
     geom_line(aes_string(x = "N", y = "runtime", group = "G", linetype = "G")) + theme_few() + 
     scale_x_continuous(breaks = sort(unique(long$N), decreasing = T)) + ylab("")
-ggsave(plot = p1, filename = paste0(to, "runtimeN.pdf"))
+ggsave(plot = p2, filename = paste0(to, "runtimeN.pdf"))
 
   tryCatch({
    pdf(paste0(to, "runtime.pdf"), width= 8,height=3)
