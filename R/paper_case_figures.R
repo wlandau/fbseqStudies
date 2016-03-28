@@ -49,6 +49,7 @@ l0$type = gsub("]", ")]", l0$type)
 l1 = ddply(l0, c("type", "rep"), function(x){
   data.frame(type = x$type[1], rep = x$rep[1], coverage = mean(x$cover))
 })
+saveRDS(l1, paste0(dir_betarates, "betarates.rds"))
 pl = ggplot(l1) +
   geom_point(aes_string(x = "rep", y = "coverage")) + 
   geom_hline(yintercept = level) + 
@@ -620,5 +621,167 @@ for(type in levels(d$Heterosis)){
   rownames(yesm) = NULL
   str = print(xtable(yesm, align = lgn), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
   write(str, file = paste0(td, iden, ".tex"))
+} # for(type in levels(d$Heterosis))
+
+# credible interval info for comparison study
+l = as.data.frame(readRDS("comparison_analyze/ci/ci.rds"))
+l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
+lc = l[l$analysis %in% c("fullybayes+normal", "ebayesFromFullybayes+normal", "ebayesFromTruth+normal"),]
+l = l[l$analysis == "fullybayes+normal",]
+
+# fig:comparebetarates
+dir_comparebetarates = newdir(paste0(dir, "fig-comparebetarates"))
+level = 0.95
+l0 = lc[grepl("beta", lc$parameter) & lc$level == level,]
+l0$heterosis = NA
+l0 = clean_df(l0)
+l0$type = gsub("\\[", "[list(g", l0$type)
+l0$type = gsub("]", ")]", l0$type)
+l1 = ddply(l0, c("type", "rep", "simulation", "analysis", "libraries"), function(x){
+  data.frame(type = x$type[1], rep = x$rep[1], coverage = mean(x$cover))
+})
+saveRDS(l1, paste0(dir_comparebetarates, "comparebetarates.rds"))
+pl = ggplot(l1) +
+  geom_hline(yintercept = level, color = gray) + 
+  geom_line(aes_string(x = "analysis", y = "coverage", group = "libraries", linetype = "libraries")) + 
+  geom_point(aes_string(x = "analysis", y = "coverage", pch = "libraries")) + 
+  facet_grid(as.formula("simulation~type"), labeller = label_parsed) +
+  mytheme_pub() + theme(strip.text.x = element_text(size = 14), axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_comparebetarates, "fig-comparebetarates.", extn), pl, height = 6, width = 8, dpi = 1200)
+
+# fig:comparebetacred
+dir_comparebetacred = newdir(paste0(dir, "fig-comparebetacred"))
+level = 0.95
+l2 = l[grepl("beta", l$parameter) & l$level == level & l$rep == 1 & !l$cover & l$libraries == 16,]
+l2$heterosis = NA
+l2 = clean_df(l2)
+l2$type = gsub("\\[", "[list(g", l2$type)
+l2$type = gsub("]", ")]", l2$type)
+l2 = l2[order(l2$truth),]
+l2 = ddply(l2, c("type", "simulation", "analysis"), function(x){
+  x$interval = 1:dim(x)[1]/dim(x)[1]
+  x
+})
+hmean = rep(0, dim(l2)[1])
+hmean[l2$type == "beta[list(g1)]" & l2$simulation == "Model"] = 3
+hmean[l2$type == "beta[list(g2)]" & l2$simulation == "Model"] = 0
+hmean[l2$type == "beta[list(g3)]" & l2$simulation == "Model"] = -0.007
+hmean[l2$type == "beta[list(g4)]" & l2$simulation == "Model"] = -0.005
+hmean[l2$type == "beta[list(g5)]" & l2$simulation == "Model"] = 0.008
+hmean[l2$type == "beta[list(g1)]" & l2$simulation == "Simple"] = 3
+for(g in 2:5)
+  hmean[l2$type == paste0("beta[list(g", g, ")]") & l2$simulation == "Simple"] = 0
+for(g in 1:5){
+  i = l2$type == paste0("beta[list(g", g, ")]") & l2$simulation == "edgeR"
+  hmean[i] = mean(l2[i,"truth"])
 }
+l2$hmean = hmean
+pl = ggplot(l2) +
+  geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = gray) +
+  geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
+  geom_hline(aes_string(yintercept = "hmean")) +
+  facet_grid(as.formula("type~simulation"), scales = "free", labeller = label_parsed) +
+  xlab("credible interval") + ylab("true parameter value") + 
+  mytheme_pub() + theme(axis.text.x = element_blank(), strip.text.y = element_text(size = 14))
+for(extn in extns)
+  ggsave(paste0(dir_comparebetacred, "fig-comparebetacred.", extn), pl, height = 6, width = 7, dpi = 1200)
+for(s in unique(l2$simulation)){
+  dir_comparebetacred = newdir(paste0(dir, "fig-comparebetacred", s))
+  pl = ggplot(l2[l2$simulation == s,]) +
+    geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = gray) +
+    geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
+    geom_hline(aes_string(yintercept = "hmean")) +
+    facet_wrap(as.formula("~type"), scales = "free", labeller = label_parsed) +
+    xlab("credible interval") + ylab("true parameter value") + 
+    mytheme_pub() + theme(axis.text.x = element_blank(), strip.text.y = element_text(size = 16))
+  for(extn in extns)
+    ggsave(paste0(dir_comparebetacred, "fig-comparebetacred", s, ".", extn), pl, height = 6, width = 7, dpi = 1200)
 }
+
+# fig:comparebetacoveragetrend
+level = 0.95
+l0 = l[grepl("beta", l$parameter) & l$level == level,]
+l0$heterosis = NA
+l0 = clean_df(l0)
+l0$type = gsub("\\[", "[list(g", l0$type)
+l0$type = gsub("]", ")]", l0$type)
+l1 = ddply(l0, c("rep", "type", "libraries", "simulation", "analysis"), function(z){
+  k = ksmooth(x = z$truth, y = z$cover, bandwidth = 4*sd(z$truth))
+  fn = stepfun(x = k$x, y = c(0, k$y))
+  xs = seq(from = min(k$x), to = max(k$x), length.out = 4e2)
+  ys = fn(xs)
+  data.frame(truth = xs, cover = ys, type = z$type[1], rep = z$rep[[1]])
+}, .progress = "text")
+hmean = rep(0, dim(l1)[1])
+hmean[l1$type == "beta[list(g1)]" & l1$simulation == "Model"] = 3
+hmean[l1$type == "beta[list(g2)]" & l1$simulation == "Model"] = 0
+hmean[l1$type == "beta[list(g3)]" & l1$simulation == "Model"] = -0.007
+hmean[l1$type == "beta[list(g4)]" & l1$simulation == "Model"] = -0.005
+hmean[l1$type == "beta[list(g5)]" & l1$simulation == "Model"] = 0.008
+hmean[l1$type == "beta[list(g1)]" & l1$simulation == "Simple"] = 3
+for(g in 2:5)
+  hmean[l1$type == paste0("beta[list(g", g, ")]") & l1$simulation == "Simple"] = 0
+for(g in 1:5){
+  i = l1$type == paste0("beta[list(g", g, ")]") & l1$simulation == "edgeR"
+  hmean[i] = mean(l1[i,"truth"])
+}
+l1$hmean = hmean
+dir_comparebetacoveragetrend = newdir(paste0(dir, "fig-comparebetacoveragetrend"))
+pl = ggplot(l1) + 
+    geom_line(aes_string(x = "truth", y = "cover", linetype = "libraries")) + 
+    geom_abline(slope = 0, intercept = level, color = gray) +
+    geom_vline(aes_string(xintercept = "hmean")) +
+    facet_grid(as.formula("type~simulation"), scales = "free", labeller = label_parsed) +
+    xlab("true parameter value") +
+    ylab("local coverage rate") +
+    mytheme_pub() + theme(strip.text.y = element_text(size = 14))
+for(extn in extns)
+  ggsave(paste0(dir_comparebetacoveragetrend, "fig-comparebetacoveragetrend.", extn), pl, height = 6, width = 7, dpi = 1200)
+for(s in unique(l1$simulation)){
+  dir_comparebetacoveragetrend = newdir(paste0(dir, "fig-comparebetacoveragetrend", s))
+  d = l1[l1$simulation == s,]
+  pl = ggplot(d) + 
+    geom_line(aes_string(x = "truth", y = "cover", linetype = "libraries")) + 
+    geom_abline(slope = 0, intercept = level, color = gray) +
+    geom_vline(aes_string(xintercept = "hmean")) +
+    facet_wrap(as.formula("~type"), scales = "free_x", labeller = label_parsed) +
+    xlab("true parameter value") +
+    ylab("local coverage rate") +
+    mytheme_pub() + theme(strip.text.x = element_text(size = 14))
+  for(extn in extns)
+    ggsave(paste0(dir_comparebetacoveragetrend, "fig-comparebetacoveragetrend", s, ".", extn), pl, height = 6, width = 7, dpi = 1200)
+}
+
+# fig:comparebetashrink
+for(s in unique(l1$simulation)){tryCatch({
+  pl1 = ggplot(l1[l1$simulation == s,]) + 
+    geom_line(aes_string(x = "truth", y = "cover", linetype = "libraries")) + 
+    geom_abline(slope = 0, intercept = level) +
+    #geom_vline(aes_string(xintercept = "hmean")) +
+    facet_grid(as.formula("~type"), scales = "free_x", labeller = label_parsed) +
+    xlab("true parameter value") +
+    ylab("local coverage rate") +
+    mytheme_pub() + theme(strip.text.x = element_text(size = 14), legend.position = "top")
+
+  pl2 = ggplot(l2[l2$simulation == s,]) +
+    geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = gray) +
+    geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
+    geom_hline(aes_string(yintercept = "hmean")) +
+    facet_wrap(as.formula("~type"), scales = "free", labeller = label_parsed, nrow = 1) +
+    xlab("credible interval") + ylab("true parameter value") + 
+    mytheme_pub() + theme(axis.text.x = element_blank(), strip.text.y = element_blank())
+
+  dir_comparebetashrink = newdir(paste0(dir, "fig-comparebetashrink", s))
+  file = paste0(dir_comparebetashrink, "fig-comparebetashrink", s, ".")
+  pdf(paste0(file, "pdf"), width = 10)
+  grid.arrange(pl1, pl2, ncol = 1)
+  dev.off()
+  for(ex in c("ps", "eps")){
+    cairo_ps(paste0(file, ex), width = 10)
+    grid.arrange(pl2, pl1, ncol = 1)
+    dev.off()
+  }
+}, error = function(e) print(paste0("Could not make fig-comparebetashrink for ", s, ".")))}
+
+} # paper_case_figures

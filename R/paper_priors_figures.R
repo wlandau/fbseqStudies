@@ -102,6 +102,7 @@ l0$type = gsub("]", ")]", l0$type)
 l1 = ddply(l0, c("type", "rep", "analysis", "simulation"), function(x){
   data.frame(simulation = x$simulation[1], analysis = x$analysis[1], type = x$type[1], rep = x$rep[1], coverage = mean(x$cover))
 })
+saveRDS(l1, paste0(dir_priorsbetarates, "priorsbetarates.rds"))
 l1$simulation = gsub("priors", "", as.character(l1$simulation))
 l1$analysis = gsub("fullybayes\\+", "", as.character(l1$analysis))
 for(n in c("simulation", "analysis")) l1[[n]] = ordered(l1[[n]], levels = priors_analyses())
@@ -280,6 +281,7 @@ l0$type = gsub("]", ")]", l0$type)
 l1 = ddply(l0, c("type", "rep", "analysis"), function(x){
   data.frame(analysis = x$analysis[1], type = x$type[1], rep = x$rep[1], coverage = mean(x$cover))
 })
+saveRDS(l1, paste0(dir_betarates, "betarates.rds"))
 l1$analysis = ordered(gsub("fullybayes\\+", "", as.character(l1$analysis)), levels = priors_analyses())
 pl = ggplot(l1) +
   geom_point(aes_string(x = "rep", y = "coverage"), size = 0.75) + 
@@ -629,5 +631,35 @@ pl = ggplot(d) +
   mytheme_pub()
 for(extn in extns)
   ggsave(paste0(dir_probhist, "fig-probhist-", prior, ".", extn), pl, height = 6, width = 8, dpi = 1200)
-}
-}
+} # for(prior in priors_analyses())
+
+# credible interval info for comparison study
+l = as.data.frame(readRDS("comparison_analyze/ci/ci.rds"))
+l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
+l = l[grepl("fullybayes", l$analysis),]
+l = l[!grepl("horseshoe", l$analysis),]
+l = l[!grepl("horseshoe|Niemi", l$simulation),]
+
+# fig:comparebetarates
+dir_comparebetarates = newdir(paste0(dir, "fig-comparebetarates"))
+level = 0.95
+l0 = l[grepl("beta", l$parameter) & l$level == level,]
+l1 = ddply(l0, c("type", "rep", "simulation", "analysis", "libraries"), function(x){
+  data.frame(type = x$type[1], rep = x$rep[1], coverage = mean(x$cover))
+})
+l1$analysis = ordered(gsub("fullybayes\\+", "", as.character(l1$analysis)), levels = priors_analyses())
+l1$simulation = relevel_simulations(l1$simulation)
+l1$type = gsub("\\[", "[list(g", l1$type)
+l1$type = gsub("]", ")]", l1$type)
+saveRDS(l1, paste0(dir_comparebetarates, "comparebetarates.rds"))
+pl = ggplot(l1) +
+  geom_hline(yintercept = level, color = gray) + 
+  geom_line(aes_string(x = "analysis", y = "coverage", group = "libraries", linetype = "libraries")) + 
+  geom_point(aes_string(x = "analysis", y = "coverage", pch = "libraries")) + 
+  facet_grid(as.formula("simulation~type"), labeller = label_parsed) +
+  mytheme_pub() + theme(strip.text.x = element_text(size = 14), axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_comparebetarates, "fig-comparebetarates.", extn), pl, height = 6, width = 6, dpi = 1200)
+
+} # paper_priors_figures
+
