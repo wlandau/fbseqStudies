@@ -1,6 +1,6 @@
 Package: fbseqStudies
 Title: fbseqStudies
-Description: A comparison study for fbseq.
+Description: Reproduces results of papers using the fbseq and fbseqCUDA packages.
 Version: 0.0
 Author: Will Landau <will.landau@gmail.com>
 Maintainer: Will Landau <will.landau@gmail.com>
