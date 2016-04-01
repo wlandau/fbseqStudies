@@ -480,7 +480,7 @@ colnames(p) = gsub("B73xMo17_Mo17xB73", "hybrid-mean", colnames(p))
 data(paschold)
 paschold = get("paschold")
 ct = paschold@counts
-colnames(ct) = paste0(colnames(paschold@counts), "_total-replicate-count")
+colnames(ct) = paste0(colnames(paschold@counts), "_count-data")
 p = cbind(geneID, ct, p)
 rownames(p) = NULL
 for(l in 1:5){
