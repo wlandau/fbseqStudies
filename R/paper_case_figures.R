@@ -260,6 +260,7 @@ l = readRDS("real_mcmc/paschold_39656_16_1.rds")
 a = l$analyses[["fullybayes+normal"]]
 m = mcmc_samples(a$chains)
 e = estimates(a$chains, level = 0.95)
+e0 = e
 
 #fig:logcounts
 dir_logcounts = newdir(paste0(dir, "fig-logcounts"))
@@ -469,21 +470,26 @@ for(extn in extns)
   ggsave(paste0(dir_probhist, "fig-probhist.", extn), pl, height = 6, width = 8, dpi = 1200)
 
 # supplementary table of heterosis probabilities
-dir_suppheteroisisprobs = newdir(paste0(dir, "supp-suppheteroisisprobs"))
+dir_TableS1 = newdir(paste0(dir, "TableS1"))
+e = e0
 p = as.data.frame(probs(a$chains))
-p$geneID = rownames(p)
+geneID = rownames(p)
+colnames(p) = paste0("probability_", colnames(p))
+colnames(p) = gsub("parent", "parent-heterosis", colnames(p))
+colnames(p) = gsub("B73xMo17_Mo17xB73", "hybrid-mean", colnames(p))
 data(paschold)
 paschold = get("paschold")
-ct = paschold@counts %*% kronecker(diag(4), matrix(1, nrow = 4))/4
-ct = cbind(ct, paschold@counts)
-colnames(ct) = c(paste0(unique(gsub("_[0-9]$", "", colnames(paschold@counts))), "_mean_count"), colnames(paschold@counts))
-p = cbind(p, ct)
-d = melt(p, id.vars = c("geneID", colnames(ct)))
-d = d[,c(23, 22, 1:21)]
-colnames(d)[1:2] = c("heterosis_prob", "heterosis_type")
-d$heterosis_type = relevel_heterosis_paschold(d$heterosis_type)
-d = d[order(d$heterosis_prob, decreasing = T),]
-write.csv(d, paste0(dir_suppheteroisisprobs, "supp-heterosisprobs.csv"), row.names = F)
+ct = paschold@counts
+colnames(ct) = paste0(colnames(paschold@counts), "_total-replicate-count")
+p = cbind(geneID, ct, p)
+rownames(p) = NULL
+for(l in 1:5){
+  p[[paste0("beta_g", l, "_posterior-mean")]] = e[grepl(paste0("beta_", l), rownames(e)), "mean"]
+  p[[paste0("beta_g", l, "_posterior-std-dev")]] = e[grepl(paste0("beta_", l), rownames(e)), "sd"]
+}
+p[["gamma_posterior-mean"]] = e[grepl("gamma", rownames(e)), "mean"]
+p[["gamma_posterior-standard-deviation"]] = e[grepl("gamma", rownames(e)), "sd"]
+write.csv(p, paste0(dir_TableS1, "TableS1.csv"), row.names = F)
 
 # compare with paschold results
 data(paschold)
@@ -528,11 +534,12 @@ for(extn in extns)
   ggsave(paste0(dir_comparehprobs, "fig-comparehprobs.", extn), pl, height = 6, width = 8, dpi = 1200)
 
 # tables of interesting genes
-ntopgenes = 10
-lgn = "llr|r|r|r|r"
-for(type in levels(d$Heterosis)){
+if(F){ ## LONG COMMENT TO SUPPRESS TABLES
+ ntopgenes = 10
+ lgn = "llr|r|r|r|r"
+ for(type in levels(d$Heterosis)){
   iden = gsub(" ", "-", paste0("tab-", type, "-highprob-nondiscoveries"))
-  td = newdir(paste0(dir, iden))
+  td = newdir(paste0(dir, iden)) 
   x = d[d$Heterosis == type,]
   no = x[x$Paschold == "nondiscovery",]
   no = no[order(no$Probability, decreasing = T),]
@@ -552,7 +559,6 @@ for(type in levels(d$Heterosis)){
   rownames(nom) = NULL
   str = print(xtable(nom, align = lgn), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
   write(str, file = paste0(td, iden, ".tex"))
-
 
   iden = gsub(" ", "-", paste0("tab-", type, "-lowprob-nondiscoveries"))
   td = newdir(paste0(dir, iden))
@@ -575,7 +581,6 @@ for(type in levels(d$Heterosis)){
   rownames(nom) = NULL
   str = print(xtable(nom, align = lgn), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
   write(str, file = paste0(td, iden, ".tex"))
-
 
   iden = gsub(" ", "-", paste0("tab-", type, "-lowprob-discoveries"))
   td = newdir(paste0(dir, iden))
@@ -622,6 +627,7 @@ for(type in levels(d$Heterosis)){
   str = print(xtable(yesm, align = lgn), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
   write(str, file = paste0(td, iden, ".tex"))
 } # for(type in levels(d$Heterosis))
+} # if(F)
 
 # credible interval info for comparison study
 l = as.data.frame(readRDS("comparison_analyze/ci/ci.rds"))
