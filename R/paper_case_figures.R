@@ -485,7 +485,7 @@ p = cbind(geneID, ct, p)
 rownames(p) = NULL
 for(l in 1:5){
   p[[paste0("beta_g", l, "_posterior-mean")]] = e[grepl(paste0("beta_", l), rownames(e)), "mean"]
-  p[[paste0("beta_g", l, "_posterior-std-dev")]] = e[grepl(paste0("beta_", l), rownames(e)), "sd"]
+  p[[paste0("beta_g", l, "_posterior-standard-deviation")]] = e[grepl(paste0("beta_", l), rownames(e)), "sd"]
 }
 p[["gamma_posterior-mean"]] = e[grepl("gamma", rownames(e)), "mean"]
 p[["gamma_posterior-standard-deviation"]] = e[grepl("gamma", rownames(e)), "sd"]
