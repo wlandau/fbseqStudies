@@ -484,11 +484,11 @@ colnames(ct) = paste0(colnames(paschold@counts), "_count-data")
 p = cbind(geneID, ct, p)
 rownames(p) = NULL
 for(l in 1:5){
-  p[[paste0("beta_g", l, "_posterior-mean")]] = e[grepl(paste0("beta_", l), rownames(e)), "mean"]
-  p[[paste0("beta_g", l, "_posterior-standard-deviation")]] = e[grepl(paste0("beta_", l), rownames(e)), "sd"]
+  p[[paste0("beta_g", l, "_mean")]] = e[grepl(paste0("beta_", l), rownames(e)), "mean"]
+  p[[paste0("beta_g", l, "_standard-deviation")]] = e[grepl(paste0("beta_", l), rownames(e)), "sd"]
 }
-p[["gamma_posterior-mean"]] = e[grepl("gamma", rownames(e)), "mean"]
-p[["gamma_posterior-standard-deviation"]] = e[grepl("gamma", rownames(e)), "sd"]
+p[["gamma_mean"]] = e[grepl("gamma", rownames(e)), "mean"]
+p[["gamma_standard-deviation"]] = e[grepl("gamma", rownames(e)), "sd"]
 write.csv(p, paste0(dir_TableS1, "TableS1.csv"), row.names = F)
 
 # compare with paschold results
