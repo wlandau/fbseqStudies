@@ -469,41 +469,17 @@ pl = ggplot(d) +
 for(extn in extns)
   ggsave(paste0(dir_probhist, "fig-probhist.", extn), pl, height = 6, width = 8, dpi = 1200)
 
-# supplementary table of heterosis probabilities
-dir_TableS1 = newdir(paste0(dir, "TableS1"))
-e = e0
-p = as.data.frame(probs(a$chains))
-geneID = rownames(p)
-colnames(p) = paste0("probability_", colnames(p))
-colnames(p) = gsub("parent", "parent-heterosis", colnames(p))
-colnames(p) = gsub("B73xMo17_Mo17xB73", "hybrid-mean", colnames(p))
-data(paschold)
-paschold = get("paschold")
-ct = paschold@counts
-colnames(ct) = paste0(colnames(paschold@counts), "_count-data")
-p = cbind(geneID, ct, p)
-rownames(p) = NULL
-for(l in 1:5){
-  p[[paste0("beta_g", l, "_mean")]] = e[grepl(paste0("beta_", l), rownames(e)), "mean"]
-  p[[paste0("beta_g", l, "_standard-deviation")]] = e[grepl(paste0("beta_", l), rownames(e)), "sd"]
-}
-p[["gamma_mean"]] = e[grepl("gamma", rownames(e)), "mean"]
-p[["gamma_standard-deviation"]] = e[grepl("gamma", rownames(e)), "sd"]
-write.csv(p, paste0(dir_TableS1, "TableS1.csv"), row.names = F)
-
 # compare with paschold results
 data(paschold)
 paschold = get("paschold")
 ct = paschold@counts
 data(tableS3table1)
 groups = get("tableS3table1")
-
 cn = c("high-parent_B73xMo17", "high-parent_Mo17xB73", "low-parent_B73xMo17", "low-parent_Mo17xB73")
 p = as.data.frame(probs(a$chains)[,cn])
 colnames(p) = c("hph_bm", "hph_mb", "lph_bm", "lph_mb")
 p$Gene = rownames(p)
 d = melt(p, id.vars = "Gene")
-
 g2 = data.frame(
   hph_bm = groups$BxM %in% 5:6,
   hph_mb = groups$MxB %in% 5:6,
@@ -512,7 +488,6 @@ g2 = data.frame(
   Gene = rownames(p)
 )
 d2 = melt(g2, id.vars = "Gene")
-
 colnames(d) = c("Gene", "Heterosis", "Probability")
 d$Paschold = ifelse(d2$value, "discovery", "nondiscovery") 
 levels(d$Heterosis) = c(
@@ -520,6 +495,7 @@ levels(d$Heterosis) = c(
   "hph_mb" = "high Mo17xB73", 
   "lph_bm" = "low B73xMo17", 
   "lph_mb" = "low Mo17xB73")
+paschold_status = d
 
 # fig:comparehprobs
 dir_comparehprobs = newdir(paste0(dir, "fig-comparehprobs"))
@@ -533,101 +509,45 @@ pl = ggplot(d) +
 for(extn in extns)
   ggsave(paste0(dir_comparehprobs, "fig-comparehprobs.", extn), pl, height = 6, width = 8, dpi = 1200)
 
-# tables of interesting genes
-if(F){ ## LONG COMMENT TO SUPPRESS TABLES
- ntopgenes = 10
- lgn = "llr|r|r|r|r"
- for(type in levels(d$Heterosis)){
-  iden = gsub(" ", "-", paste0("tab-", type, "-highprob-nondiscoveries"))
-  td = newdir(paste0(dir, iden)) 
-  x = d[d$Heterosis == type,]
-  no = x[x$Paschold == "nondiscovery",]
-  no = no[order(no$Probability, decreasing = T),]
-  nogenes = no$Gene[1:ntopgenes]
-  noct = ct[nogenes,]
-  nom = round(as.data.frame(t(apply(noct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)}))))
 
-  sds = round(t(apply(noct, 1, function(x){tapply(x, rep(1:4, each = 4), function(i){sd(i)})})), 0)
-  v = as.character(as.vector(sds))
-  ml = max(nchar(v))
-  for(i in 1:length(v)) v[i] = paste0(" \\phantom{", paste0(rep("0",ml - nchar(v[i])), collapse = ""), "}(", v[i], ")")
-  sds = as.data.frame(matrix(v, ncol = 4))
-  nom = as.data.frame(matrix(paste0(as.matrix(nom), as.matrix(sds)), ncol = ncol(sds)))
+# Table S1 (TableS1.csv)
+dir_TableS1 = newdir(paste0(dir, "TableS1"))
+e = e0
+p = as.data.frame(probs(a$chains))
+geneID = rownames(p)
+colnames(p) = paste0("probability_", colnames(p))
+colnames(p) = gsub("parent", "parent-heterosis", colnames(p))
+colnames(p) = gsub("B73xMo17_Mo17xB73", "hybrid-mean", colnames(p))
+data(paschold)
+paschold = get("paschold")
+ct = paschold@counts
+colnames(ct) = paste0(colnames(paschold@counts), "_count-data")
+p = cbind(geneID, ct, p)
 
-  nom = cbind(nogenes, no$Probability[1:ntopgenes], nom)
-  colnames(nom) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(noct))))
-  rownames(nom) = NULL
-  str = print(xtable(nom, align = lgn), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
-  write(str, file = paste0(td, iden, ".tex"))
+highB73xMo17 = paschold_status[paschold_status$Heterosis == "high B73xMo17",]
+lowB73xMo17 = paschold_status[paschold_status$Heterosis == "low B73xMo17",]
+highMo17xB73 = paschold_status[paschold_status$Heterosis == "high Mo17xB73",]
+lowMo17xB73 = paschold_status[paschold_status$Heterosis == "low Mo17xB73",]
 
-  iden = gsub(" ", "-", paste0("tab-", type, "-lowprob-nondiscoveries"))
-  td = newdir(paste0(dir, iden))
-  x = d[d$Heterosis == type,]
-  no = x[x$Paschold == "nondiscovery",]
-  no = no[order(no$Probability, decreasing = F),]
-  nogenes = no$Gene[1:ntopgenes]
-  noct = ct[nogenes,]
-  nom = round(as.data.frame(t(apply(noct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)}))))
+rownames(highB73xMo17) = highB73xMo17$Gene
+rownames(lowB73xMo17) = lowB73xMo17$Gene
+rownames(highMo17xB73) = highMo17xB73$Gene
+rownames(lowMo17xB73) = lowMo17xB73$Gene
 
-  sds = round(t(apply(noct, 1, function(x){tapply(x, rep(1:4, each = 4), function(i){sd(i)})})), 0)
-  v = as.character(as.vector(sds))
-  ml = max(nchar(v))
-  for(i in 1:length(v)) v[i] = paste0(" \\phantom{", paste0(rep("0",ml - nchar(v[i])), collapse = ""), "}(", v[i], ")")
-  sds = as.data.frame(matrix(v, ncol = 4))
-  nom = as.data.frame(matrix(paste0(as.matrix(nom), as.matrix(sds)), ncol = ncol(sds)))
+p[["Paschold-results_high-parent-heterosis_B73xMo17"]] = highB73xMo17[p$geneID,"Paschold"]
+p[["Paschold-results_low-parent-heterosis_B73xMo17"]] = lowB73xMo17[p$geneID,"Paschold"]
+p[["Paschold-results_high-parent-heterosis_Mo17xB73"]] = highMo17xB73[p$geneID,"Paschold"]
+p[["Paschold-results_low-parent-heterosis_Mo17xB73"]] = lowMo17xB73[p$geneID,"Paschold"]
 
-  nom = cbind(nogenes, no$Probability[1:ntopgenes], nom)
-  colnames(nom) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(noct))))
-  rownames(nom) = NULL
-  str = print(xtable(nom, align = lgn), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
-  write(str, file = paste0(td, iden, ".tex"))
+rownames(p) = NULL
+for(l in 1:5){
+  p[[paste0("beta_g", l, "_mean")]] = e[grepl(paste0("beta_", l), rownames(e)), "mean"]
+  p[[paste0("beta_g", l, "_standard-deviation")]] = e[grepl(paste0("beta_", l), rownames(e)), "sd"]
+}
+p[["gamma_mean"]] = e[grepl("gamma", rownames(e)), "mean"]
+p[["gamma_standard-deviation"]] = e[grepl("gamma", rownames(e)), "sd"]
+write.csv(p, paste0(dir_TableS1, "TableS1.csv"), row.names = F)
 
-  iden = gsub(" ", "-", paste0("tab-", type, "-lowprob-discoveries"))
-  td = newdir(paste0(dir, iden))
-  x = d[d$Heterosis == type,]
-  yes = x[x$Paschold == "discovery",]
-  yes = yes[order(yes$Probability, decreasing = F),]
-  yesgenes = yes$Gene[1:ntopgenes]
-  yesct = ct[yesgenes,]
-  yesm = round(as.data.frame(t(apply(yesct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)}))))
-
-  sds = round(t(apply(yesct, 1, function(x){tapply(x, rep(1:4, each = 4), function(i){sd(i)})})), 0)
-  v = as.character(as.vector(sds))
-  ml = max(nchar(v))
-  for(i in 1:length(v)) v[i] = paste0(" \\phantom{", paste0(rep("0",ml - nchar(v[i])), collapse = ""), "}(", v[i], ")")
-  sds = as.data.frame(matrix(v, ncol = 4))
-  yesm = as.data.frame(matrix(paste0(as.matrix(yesm), as.matrix(sds)), ncol = ncol(sds)))
-
-  yesm = cbind(yesgenes, yes$Probability[1:ntopgenes], yesm)
-  colnames(yesm) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(yesct))))
-  rownames(yesm) = NULL
-  str = print(xtable(yesm, align = lgn), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
-  write(str, file = paste0(td, iden, ".tex"))
-
-
-  iden = gsub(" ", "-", paste0("tab-", type, "-highprob-discoveries"))
-  td = newdir(paste0(dir, iden))
-  x = d[d$Heterosis == type,]
-  yes = x[x$Paschold == "discovery",]
-  yes = yes[order(yes$Probability, decreasing = T),]
-  yesgenes = yes$Gene[1:ntopgenes]
-  yesct = ct[yesgenes,]
-  yesm = round(as.data.frame(t(apply(yesct, 1, function(x){tapply(x, rep(1:4, each = 4), mean)}))))
-
-  sds = round(t(apply(yesct, 1, function(x){tapply(x, rep(1:4, each = 4), function(i){sd(i)})})), 0)
-  v = as.character(as.vector(sds))
-  ml = max(nchar(v))
-  for(i in 1:length(v)) v[i] = paste0(" \\phantom{", paste0(rep("0",ml - nchar(v[i])), collapse = ""), "}(", v[i], ")")
-  sds = as.data.frame(matrix(v, ncol = 4))
-  yesm = as.data.frame(matrix(paste0(as.matrix(yesm), as.matrix(sds)), ncol = ncol(sds)))
-
-  yesm = cbind(yesgenes, yes$Probability[1:ntopgenes], yesm)
-  colnames(yesm) = c("Gene", "Probability", unique(gsub("_[0-9]", "", colnames(yesct))))
-  rownames(yesm) = NULL
-  str = print(xtable(yesm, align = lgn), include.rownames=F, sanitize.text.function=function(x){x}, hline.after = 0)
-  write(str, file = paste0(td, iden, ".tex"))
-} # for(type in levels(d$Heterosis))
-} # if(F)
 
 # credible interval info for comparison study
 l = as.data.frame(readRDS("comparison_analyze/ci/ci.rds"))

@@ -15,7 +15,7 @@ mycolors = c("black", "blue", "red")
 gray = "#707070"
 
 # fig-priorshyperhist
-dir_priorshyperhist = newdir(paste0(dir, "fig-priorshyperhist"))
+dir_priorshyperhist = newdir(paste0(dir, "PAPER3fig-priorshyperhist"))
 m_hyper = NULL
 for(f in list.files("priors_mcmc")) if(as.integer(meta(f)["libraries"]) == 8 & as.integer(meta(f)["rep"]) == 1){
   print(f)
@@ -57,7 +57,7 @@ for(v in unique(m_hyper$variable)){
 }
 
 # fig-priorshypercoverage
-dir_priorshypercoverage = newdir(paste0(dir, "fig-priorshypercoverage"))
+dir_priorshypercoverage = newdir(paste0(dir, "PAPER3fig-priorshypercoverage"))
 l = as.data.frame(readRDS("priors_analyze/ci/ci.rds"))
 l$analysis = gsub("normalnormal", "normal", l$analysis)
 l$analysis = gsub("normalLaplace", "Laplace", l$analysis)
@@ -94,7 +94,7 @@ l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
 l = l[grep("fullybayes", l$analysis) & l$type == "beta[2]" & l$libraries == 8,]
 
 # fig:priorsbetarates
-dir_priorsbetarates = newdir(paste0(dir, "fig-priorsbetarates"))
+dir_priorsbetarates = newdir(paste0(dir, "PAPER3fig-priorsbetarates"))
 level = 0.95
 l0 = l[grepl("beta", l$parameter) & l$level == level,]
 l0$type = gsub("\\[", "[list(g", l0$type)
@@ -118,7 +118,7 @@ for(extn in extns)
   ggsave(paste0(dir_priorsbetarates, "fig-priorsbetarates.", extn), pl, height = 8, width = 6, dpi = 1200)
 
 # fig:priorsbetacred
-dir_priorsbetacred = newdir(paste0(dir, "fig-priorsbetacred"))
+dir_priorsbetacred = newdir(paste0(dir, "PAPER3fig-priorsbetacred"))
 level = 0.95
 l0 = l[grepl("beta", l$parameter) & l$level == level & l$rep == 1 & !l$cover,]
 l0$type = gsub("\\[", "[list(g", l0$type)
@@ -144,7 +144,7 @@ for(extn in extns)
   ggsave(paste0(dir_priorsbetacred, "fig-priorsbetacred.", extn), pl, height = 8, width = 7, dpi = 1200)
 
 # fig:priorsbetacoveragetrend
-dir_priorsbetacoveragetrend = newdir(paste0(dir, "fig-priorsbetacoveragetrend"))
+dir_priorsbetacoveragetrend = newdir(paste0(dir, "PAPER3fig-priorsbetacoveragetrend"))
 level = 0.95
 l0 = l[grepl("beta", l$parameter) & l$level == level,]
 l0$type = gsub("\\[", "[list(g", l0$type)
@@ -176,7 +176,7 @@ for(extn in extns[grepl("ps", extns)])
  height = 6, width = 7, dpi = 1200)
 
 # fig:priorsmodelcalibration
-dir_priorsmodelcalibration = newdir(paste0(dir, "fig-priorsmodelcalibration"))
+dir_priorsmodelcalibration = newdir(paste0(dir, "PAPER3fig-priorsmodelcalibration"))
 df = readRDS("priors_analyze/calibration_long/calibration_long.rds")
 df = df[df$heterosis == "high" & df$libraries == 8,]
 df$simulation = gsub("priors", "", as.character(df$simulation))
@@ -194,7 +194,7 @@ for(extn in extns)
   ggsave(paste0(dir_priorsmodelcalibration, "fig-priorsmodelcalibration.", extn), pl, height = 8, width = 6, dpi = 1200)
 
 # fig:priorscomparecalerror
-dir_priorscomparecalerror = newdir(paste0(dir, "fig-priorscomparecalerror"))
+dir_priorscomparecalerror = newdir(paste0(dir, "PAPER3fig-priorscomparecalerror"))
 df = readRDS("priors_analyze/calibration_long/calibration_long.rds")
 df$error = abs(df$proportion - df$probability)
 d = ddply(df, c("file", "heterosis"), function(x){
@@ -219,7 +219,7 @@ for(extn in extns)
   ggsave(paste0(dir_priorscomparecalerror, "fig-priorscomparecalerror.", extn), pl, height = 5, width = 6, dpi = 1200)
 
 # fig:priorsroc
-dir_priorsroc = newdir(paste0(dir, "fig-priorsroc"))
+dir_priorsroc = newdir(paste0(dir, "PAPER3fig-priorsroc"))
 d = readRDS("priors_analyze/roc_long/roc_long.rds")
 d = d[d$heterosis == "high" & d$libraries == 8,]
 d$simulation = gsub("priors", "", as.character(d$simulation))
@@ -240,7 +240,7 @@ for(extn in extns)
   ggsave(paste0(dir_priorsroc, "fig-priorsroc.", extn), pl, height = 6, width = 6, dpi = 1200)
 
 # fig:priorsauc
-dir_priorsauc = newdir(paste0(dir, "fig-priorsauc"))
+dir_priorsauc = newdir(paste0(dir, "PAPER3fig-priorsauc"))
 d = readRDS("priors_analyze/auc_long/auc_long.rds")
 d = d[d$heterosis == "high" & d$libraries == 8,]
 d$simulation = gsub("priors", "", as.character(d$simulation))
@@ -273,7 +273,7 @@ l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
 l = l[grep("fullybayes", l$analysis),]
 
 # fig:betarates
-dir_betarates = newdir(paste0(dir, "fig-betarates"))
+dir_betarates = newdir(paste0(dir, "PAPER3fig-betarates"))
 level = 0.95
 l0 = l[grepl("beta", l$parameter) & l$level == level,]
 l0$type = gsub("\\[", "[list(g", l0$type)
@@ -293,7 +293,7 @@ for(extn in extns)
   ggsave(paste0(dir_betarates, "fig-betarates.", extn), pl, height = 8, width = 6, dpi = 1200)
 
 # fig:betacred
-dir_betacred = newdir(paste0(dir, "fig-betacred"))
+dir_betacred = newdir(paste0(dir, "PAPER3fig-betacred"))
 level = 0.95
 l0 = l[grepl("beta", l$parameter) & l$level == level & l$rep == 1 & !l$cover,]
 l0$type = gsub("\\[", "[list(g", l0$type)
@@ -322,7 +322,7 @@ for(extn in extns)
   ggsave(paste0(dir_betacred, "fig-betacred.", extn), pl, height = 8, width = 7, dpi = 1200)
 
 # fig:betacoveragetrend
-dir_betacoveragetrend = newdir(paste0(dir, "fig-betacoveragetrend"))
+dir_betacoveragetrend = newdir(paste0(dir, "PAPER3fig-betacoveragetrend"))
 level = 0.95
 l0 = l[grepl("beta", l$parameter) & l$level == level,]
 l0$type = gsub("\\[", "[list(g", l0$type)
@@ -357,7 +357,7 @@ for(extn in extns[grepl("ps", extns)])
  height = 6, width = 8, dpi = 1200)
 
 # fig:modelcalibration
-dir_modelcalibration = newdir(paste0(dir, "fig-modelcalibration"))
+dir_modelcalibration = newdir(paste0(dir, "PAPER3fig-modelcalibration"))
 df = readRDS("coverage_analyze/calibration_long/calibration_long.rds")
 df$heterosis = relevel_heterosis(df$heterosis)
 df$analysis = ordered(gsub("fullybayes\\+", "", as.character(df$analysis)), levels = priors_analyses())
@@ -371,7 +371,7 @@ for(extn in extns)
   ggsave(paste0(dir_modelcalibration, "fig-modelcalibration.", extn), pl, height = 8, width = 6, dpi = 1200)
 
 # fig:modelcomparecalerror 
-dir_modelcomparecalerror = newdir(paste0(dir, "fig-modelcomparecalerror"))
+dir_modelcomparecalerror = newdir(paste0(dir, "PAPER3fig-modelcomparecalerror"))
 df = readRDS("coverage_analyze/calibration_long/calibration_long.rds")
 df$heterosis = relevel_heterosis(df$heterosis)
 df$analysis = ordered(gsub("fullybayes\\+", "", as.character(df$analysis)), levels = priors_analyses())
@@ -394,7 +394,7 @@ for(extn in extns)
 
 # fig:roc16 and fig:roc32
 for(N in c(16, 32)){
-  dir_roc = newdir(paste0(dir, "fig-roc", N))
+  dir_roc = newdir(paste0(dir, "PAPER3fig-roc", N))
   d = readRDS("comparison_analyze/roc_long/roc_long.rds")
   d = d[d$libraries == N,]
   d = priors_clean_df(d)
@@ -412,7 +412,7 @@ for(N in c(16, 32)){
 }
 
 # fig:auc
-dir_auc = newdir(paste0(dir, "fig-auc"))
+dir_auc = newdir(paste0(dir, "PAPER3fig-auc"))
 d = readRDS("comparison_analyze/auc_long/auc_long.rds")
 d = priors_clean_df(d)
 pl = ggplot(d) + 
@@ -429,7 +429,7 @@ for(extn in extns)
 
 # fig:comparecal16 and fig:comparecal32
 for(N in c(16, 32)){
-  dir_comparecal = newdir(paste0(dir, "fig-comparecal", N))
+  dir_comparecal = newdir(paste0(dir, "PAPER3fig-comparecal", N))
   d = readRDS("comparison_analyze/calibration_long/calibration_long.rds")
   d = d[d$libraries == N,]
   d = priors_clean_df(d)
@@ -448,7 +448,7 @@ for(N in c(16, 32)){
 }
 
 # fig:comparecalerror
-dir_comparecalerror = newdir(paste0(dir, "fig-comparecalerror"))
+dir_comparecalerror = newdir(paste0(dir, "PAPER3fig-comparecalerror"))
 df = readRDS("comparison_analyze/calibration_long/calibration_long.rds")
 df$error = abs(df$proportion - df$probability)
 d = ddply(df, c("file", "heterosis"), function(x){
@@ -477,7 +477,7 @@ m = lapply(as, function(a) mcmc_samples(a$chains))
 e = lapply(as, function(a) estimates(a$chains, level = 0.95))
 
 #fig:logcounts
-dir_logcounts = newdir(paste0(dir, "fig-logcounts"))
+dir_logcounts = newdir(paste0(dir, "PAPER3fig-logcounts"))
 data(paschold)
 d = melt(log(get("paschold")@counts + 1))
 pl = ggplot(d) + stat_density(aes_string(x = "value", y = "..density.."), color = gray, fill = gray) + 
@@ -487,7 +487,7 @@ for(extn in extns)
   ggsave(paste0(dir_logcounts, "fig-logcounts.", extn), pl, height = 6, width = 6, dpi = 1200)
 
 # fig:hyperhist
-dir_hyperhist = newdir(paste0(dir, "fig-hyperhist"))
+dir_hyperhist = newdir(paste0(dir, "PAPER3fig-hyperhist"))
 d = NULL
 for(prior in priors_analyses()){
   m_hyper = m[[prior]][,c("nu", "tau", paste0("theta_", 1:5), paste0("sigmaSquared_", 1:5))]
@@ -522,7 +522,7 @@ m = mcmc_samples(a$chains)
 e = estimates(a$chains, level = 0.95)
 
 # fig:betahist
-dir_betahist = newdir(paste0(dir, "fig-betahist"))
+dir_betahist = newdir(paste0(dir, "PAPER3fig-betahist"))
 m_beta = m[,grep("beta", colnames(m))]
 cn = colnames(m_beta)
 cn = do.call(rbind, strsplit(cn, "_"))
@@ -579,7 +579,7 @@ for(extn in extns)
   ggsave(paste0(dir_betahist, "fig-betahist-", prior, ".", extn), pl, height = 10, width = 10, dpi = 1200)
 
 # fig:betapostmeanhist
-dir_betapostmeanhist = newdir(paste0(dir, "fig-betapostmeanhist"))
+dir_betapostmeanhist = newdir(paste0(dir, "PAPER3fig-betapostmeanhist"))
 e = estimates(a$chains)
 e = e[grep("beta_", rownames(e)),]
 e$parameter = gsub("_[0-9]*$", "", rownames(e))
@@ -599,7 +599,7 @@ for(extn in extns)
   ggsave(paste0(dir_betapostmeanhist, "fig-betapostmeanhist-", prior, ".", extn), pl, height = 6, width = 8, dpi = 1200)
 
 # fig:pascholdcred
-dir_pascholdcred = newdir(paste0(dir, "fig-pascholdcred"))
+dir_pascholdcred = newdir(paste0(dir, "PAPER3fig-pascholdcred"))
 d = ddply(e, "parameter", function(x){
   x = x[sample(dim(x)[1], 1e3),]
   x = x[order(x$mean),]
@@ -619,7 +619,7 @@ for(extn in extns)
   ggsave(paste0(dir_pascholdcred, "fig-pascholdcred-", prior, ".", extn), pl, height = 6, width = 8, dpi = 1200)
 
 # fig:probhist
-dir_probhist = newdir(paste0(dir, "fig-probhist"))
+dir_probhist = newdir(paste0(dir, "PAPER3fig-probhist"))
 p = as.data.frame(probs(a$chains))
 d = melt(p, id.vars = NULL)
 d$variable = relevel_heterosis_paschold(d$variable)
@@ -641,7 +641,7 @@ l = l[!grepl("horseshoe", l$analysis),]
 l = l[!grepl("horseshoe|Niemi", l$simulation),]
 
 # fig:comparebetarates
-dir_comparebetarates = newdir(paste0(dir, "fig-comparebetarates"))
+dir_comparebetarates = newdir(paste0(dir, "PAPER3fig-comparebetarates"))
 level = 0.95
 l0 = l[grepl("beta", l$parameter) & l$level == level,]
 l1 = ddply(l0, c("type", "rep", "simulation", "analysis", "libraries"), function(x){
