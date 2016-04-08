@@ -348,7 +348,7 @@ pl = ggplot() +
   ylab("density") + 
   labs(linetype = "95% credible interval")
 for(extn in extns)
-  ggsave(paste0(dir_betahist, "fig-betahist.", extn), pl, height = 10, width = 10, dpi = 1200)
+  ggsave(paste0(dir_betahist, "fig-betahist.", extn), pl, height = 8, width = 8, dpi = 1200)
 
 # fig:gammahist
 dir_gammahist = newdir(paste0(dir, "fig-gammahist"))

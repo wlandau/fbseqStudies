@@ -51,9 +51,9 @@ for(v in unique(m_hyper$variable)){
     stat_density(aes_string(x = "value", y = "..density.."), size = 0.75) + 
     geom_vline(xintercept = d$truth[1]) + 
     facet_grid(as.formula("simulation~analysis"), scales = "free") +
-    mytheme_pub() 
+    mytheme_pub() + theme(axis.text.x = element_text(angle = -80, hjust = 0))
   for(extn in extns)
-    ggsave(paste0(dir_priorshyperhist, "fig-priorshyperhist-", d$variable[1], ".", extn), pl, height = 8, width = 6, dpi = 1200)
+    ggsave(paste0(dir_priorshyperhist, "fig-priorshyperhist-", d$variable[1], ".", extn), pl, height = 8, width = 8, dpi = 1200)
 }
 
 # fig-priorshypercoverage
@@ -82,7 +82,7 @@ x = ddply(l, "parameter", function(d){
     mytheme_pub() + theme(legend.position = "none") +
     scale_linetype_manual(values = c("TRUE" = 1, "FALSE" = 2))
   for(extn in extns)
-    ggsave(paste0(dir_priorshypercoverage, "fig-priorshypercoverage-", d$parameter[1], ".", extn), pl, height = 6, width = 6, dpi = 1200)
+    ggsave(paste0(dir_priorshypercoverage, "fig-priorshypercoverage-", d$parameter[1], ".", extn), pl, height = 8, width = 8, dpi = 1200)
 })
 
 # credible interval info
@@ -112,10 +112,10 @@ pl = ggplot(l1) +
   geom_point(aes_string(x = "rep", y = "coverage"), size = 0.75) + 
   geom_hline(yintercept = level) + 
   facet_grid(as.formula("simulation~analysis")) +
-  xlab("simulated dataset") +
-  mytheme_pub() + theme(strip.text = element_text(size = 14))
+  xlab("simulated dataset") + ylab("coverage rate") +
+  mytheme_pub()
 for(extn in extns)
-  ggsave(paste0(dir_priorsbetarates, "fig-priorsbetarates.", extn), pl, height = 8, width = 6, dpi = 1200)
+  ggsave(paste0(dir_priorsbetarates, "fig-priorsbetarates.", extn), pl, height = 8, width = 8, dpi = 1200)
 
 # fig:priorsbetacred
 dir_priorsbetacred = newdir(paste0(dir, "PAPER3fig-priorsbetacred"))
@@ -139,9 +139,9 @@ pl = ggplot(l1) +
   geom_hline(yintercept = 0) + 
   facet_grid(as.formula("simulation~analysis"), scales = "free") +
   xlab("credible interval") + ylab("parameter value") + 
-  mytheme_pub() + theme(strip.text.x = element_text(size = 14))
+  mytheme_pub()
 for(extn in extns)
-  ggsave(paste0(dir_priorsbetacred, "fig-priorsbetacred.", extn), pl, height = 8, width = 7, dpi = 1200)
+  ggsave(paste0(dir_priorsbetacred, "fig-priorsbetacred.", extn), pl, height = 8, width = 8, dpi = 1200)
 
 # fig:priorsbetacoveragetrend
 dir_priorsbetacoveragetrend = newdir(paste0(dir, "PAPER3fig-priorsbetacoveragetrend"))
@@ -168,12 +168,12 @@ pl = ggplot(l1) +
   facet_grid(as.formula("simulation~analysis"), scales = "free") +
   xlab("true parameter value") +
   ylab("local coverage rate") +
-  mytheme_pub() + theme(strip.text = element_text(size = 14))
+  mytheme_pub()
 for(extn in extns[!grepl("ps", extns)])
-  ggsave(paste0(dir_priorsbetacoveragetrend, "fig-priorsbetacoveragetrend.", extn), pl, height = 6, width = 8, dpi = 1200)
+  ggsave(paste0(dir_priorsbetacoveragetrend, "fig-priorsbetacoveragetrend.", extn), pl, height = 8, width = 8, dpi = 1200)
 for(extn in extns[grepl("ps", extns)])
   ggsave(paste0(dir_priorsbetacoveragetrend, "fig-priorsbetacoveragetrend.", extn), pl, device=cairo_ps,
- height = 6, width = 7, dpi = 1200)
+ height = 8, width = 8, dpi = 1200)
 
 # fig:priorsmodelcalibration
 dir_priorsmodelcalibration = newdir(paste0(dir, "PAPER3fig-priorsmodelcalibration"))
@@ -187,11 +187,13 @@ df$analysis = ordered(df$analysis,  labels = paste(levels(df$analysis), "analysi
 pl = ggplot(df) +
   geom_line(aes_string(x = "probability", y = "proportion", group = "file"), color = "black") + 
   geom_abline(slope = 1, intercept = 0, linetype = 2) + 
-  facet_grid(as.formula("simulation~analysis")) + xlab("probability") + ylab("proportion") +
+  facet_grid(as.formula("simulation~analysis")) + 
+  xlab("estimated posterior probability") + 
+  ylab("proportion of genes with heterosis") +
   mytheme_pub() + theme(legend.position = "none") + 
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
-  ggsave(paste0(dir_priorsmodelcalibration, "fig-priorsmodelcalibration.", extn), pl, height = 8, width = 6, dpi = 1200)
+  ggsave(paste0(dir_priorsmodelcalibration, "fig-priorsmodelcalibration.", extn), pl, height = 8, width = 8, dpi = 1200)
 
 # fig:priorscomparecalerror
 dir_priorscomparecalerror = newdir(paste0(dir, "PAPER3fig-priorscomparecalerror"))
@@ -210,13 +212,13 @@ pl = ggplot(d) +
   geom_line(aes_string(x = "analysis", y = "meanerror", group = "rep"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "meanerror"), color = "black") +
   facet_grid(as.formula("~simulation"), scales = "fixed") +
-  xlab("analysis") + 
+  xlab("analysis method") + 
   ylab("calibration error") +
   labs(pch = "N") +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
-  ggsave(paste0(dir_priorscomparecalerror, "fig-priorscomparecalerror.", extn), pl, height = 5, width = 6, dpi = 1200)
+  ggsave(paste0(dir_priorscomparecalerror, "fig-priorscomparecalerror.", extn), pl, height = 7, width = 7, dpi = 1200)
 
 # fig:priorsroc
 dir_priorsroc = newdir(paste0(dir, "PAPER3fig-priorsroc"))
@@ -237,7 +239,7 @@ pl = ggplot(d) +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
-  ggsave(paste0(dir_priorsroc, "fig-priorsroc.", extn), pl, height = 6, width = 6, dpi = 1200)
+  ggsave(paste0(dir_priorsroc, "fig-priorsroc.", extn), pl, height = 8, width = 8, dpi = 1200)
 
 # fig:priorsauc
 dir_priorsauc = newdir(paste0(dir, "PAPER3fig-priorsauc"))
@@ -251,13 +253,13 @@ pl = ggplot(d) +
   geom_line(aes_string(x = "analysis", y = "auc_1", group = "rep"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "auc_1"), color = "black") +
   facet_grid(as.formula("~simulation"), scales = "fixed") +
-  xlab("analysis") + 
+  xlab("analysis method") + 
   ylab("area under ROC curve") +
   labs(pch = "N") +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
-  ggsave(paste0(dir_priorsauc, "fig-priorsauc.", extn), pl, height = 5, width = 6, dpi = 1200)
+  ggsave(paste0(dir_priorsauc, "fig-priorsauc.", extn), pl, height = 7, width = 7, dpi = 1200)
 
 
 
@@ -287,10 +289,10 @@ pl = ggplot(l1) +
   geom_point(aes_string(x = "rep", y = "coverage"), size = 0.75) + 
   geom_hline(yintercept = level) + 
   facet_grid(as.formula("type~analysis"), labeller = label_parsed) +
-  xlab("simulated dataset") +
-  mytheme_pub() + theme(strip.text = element_text(size = 14))
+  xlab("simulated dataset") + ylab("coverage rate") + 
+  mytheme_pub()
 for(extn in extns)
-  ggsave(paste0(dir_betarates, "fig-betarates.", extn), pl, height = 8, width = 6, dpi = 1200)
+  ggsave(paste0(dir_betarates, "fig-betarates.", extn), pl, height = 8, width = 8, dpi = 1200)
 
 # fig:betacred
 dir_betacred = newdir(paste0(dir, "PAPER3fig-betacred"))
@@ -317,9 +319,9 @@ pl = ggplot(l0) +
   geom_hline(aes_string(yintercept = "hmean")) +
   facet_grid(as.formula("type~analysis"), scales = "free", labeller = label_parsed) +
   xlab("credible interval") + ylab("parameter value") + 
-  mytheme_pub() + theme(strip.text.x = element_text(size = 14))
+  mytheme_pub()
 for(extn in extns)
-  ggsave(paste0(dir_betacred, "fig-betacred.", extn), pl, height = 8, width = 7, dpi = 1200)
+  ggsave(paste0(dir_betacred, "fig-betacred.", extn), pl, height = 8, width = 8, dpi = 1200)
 
 # fig:betacoveragetrend
 dir_betacoveragetrend = newdir(paste0(dir, "PAPER3fig-betacoveragetrend"))
@@ -349,12 +351,12 @@ pl = ggplot(l1) +
   geom_vline(aes_string(xintercept = "hmean")) +
   xlab("true parameter value") +
   ylab("local coverage rate") +
-  mytheme_pub() + theme(strip.text = element_text(size = 14))
+  mytheme_pub() + theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns[!grepl("ps", extns)])
   ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, height = 6, width = 8, dpi = 1200)
 for(extn in extns[grepl("ps", extns)])
   ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, device=cairo_ps,
- height = 6, width = 8, dpi = 1200)
+ height = 8, width = 8, dpi = 1200)
 
 # fig:modelcalibration
 dir_modelcalibration = newdir(paste0(dir, "PAPER3fig-modelcalibration"))
@@ -364,11 +366,13 @@ df$analysis = ordered(gsub("fullybayes\\+", "", as.character(df$analysis)), leve
 pl = ggplot(df) +
   geom_line(aes_string(x = "probability", y = "proportion", group = "file"), color = "black") + 
   geom_abline(slope = 1, intercept = 0, linetype = 2) + 
-  facet_grid(as.formula("heterosis~analysis")) + xlab("probability") + ylab("proportion") +
+  facet_grid(as.formula("heterosis~analysis")) +
+  xlab("estimated posterior probability") + 
+  ylab("proportion of genes with heterosis") +
   mytheme_pub() + theme(legend.position = "none") + 
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
-  ggsave(paste0(dir_modelcalibration, "fig-modelcalibration.", extn), pl, height = 8, width = 6, dpi = 1200)
+  ggsave(paste0(dir_modelcalibration, "fig-modelcalibration.", extn), pl, height = 8, width = 8, dpi = 1200)
 
 # fig:modelcomparecalerror 
 dir_modelcomparecalerror = newdir(paste0(dir, "PAPER3fig-modelcomparecalerror"))
@@ -384,13 +388,13 @@ pl = ggplot(d) +
   geom_line(aes_string(x = "analysis", y = "meanerror", group = "rep"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "meanerror"), color = "black") +
   facet_wrap(as.formula("~heterosis"), ncol = 3) +
-  xlab("analysis") + 
+  xlab("analysis method") + 
   ylab("calibration error") +
   labs(pch = "N") +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
-  ggsave(paste0(dir_modelcomparecalerror, "fig-modelcomparecalerror.", extn), pl, height = 8, width = 6, dpi = 1200)
+  ggsave(paste0(dir_modelcomparecalerror, "fig-modelcomparecalerror.", extn), pl, height = 7, width = 7, dpi = 1200)
 
 # fig:roc16 and fig:roc32
 for(N in c(16, 32)){
@@ -403,8 +407,8 @@ for(N in c(16, 32)){
     facet_grid(as.formula("simulation~heterosis")) +
     xlab("false positive rate") + 
     ylab("true positive rate") +
-    scale_color_manual(name = "analysis", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
-    scale_linetype_manual(name = "analysis", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
+    scale_color_manual(name = "analysis method", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
+    scale_linetype_manual(name = "analysis method", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
     mytheme_pub() +
     theme(axis.text.x = element_text(angle = -80, hjust = 0))
   for(extn in extns)
@@ -419,8 +423,8 @@ pl = ggplot(d) +
   geom_line(aes_string(x = "analysis", y = "auc_1", group = "libraries"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "auc_1", pch = "libraries"), color = "black") +
   facet_grid(as.formula("simulation~heterosis"), scales = "fixed") +
-  xlab("Analysis") + 
-  ylab("Area under ROC curve") +
+  xlab("analysis method") + 
+  ylab("area under ROC curve") +
   labs(pch = "N") +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
@@ -439,8 +443,8 @@ for(N in c(16, 32)){
     facet_grid(as.formula("simulation~heterosis")) +
     xlab("probability") + 
     ylab("proportion") +
-    scale_color_manual(name = "analysis", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
-    scale_linetype_manual(name = "analysis", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
+    scale_color_manual(name = "analysis method", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
+    scale_linetype_manual(name = "analysis method", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
     mytheme_pub() +
     theme(axis.text.x = element_text(angle = -80, hjust = 0))
   for(extn in extns)
@@ -460,7 +464,7 @@ pl = ggplot(d) +
   geom_line(aes_string(x = "analysis", y = "meanerror", group = "libraries"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "meanerror", pch = "libraries"), color = "black") +
   facet_grid(as.formula("simulation~heterosis"), scales = "fixed") +
-  xlab("analysis") + 
+  xlab("analysis method") + 
   ylab("calibration error") +
   labs(pch = "N") +
   mytheme_pub() +
@@ -484,7 +488,7 @@ pl = ggplot(d) + stat_density(aes_string(x = "value", y = "..density.."), color 
   mytheme_pub() + 
   xlab("log(count + 1)")
 for(extn in extns)
-  ggsave(paste0(dir_logcounts, "fig-logcounts.", extn), pl, height = 6, width = 6, dpi = 1200)
+  ggsave(paste0(dir_logcounts, "fig-logcounts.", extn), pl, height = 8, width = 8, dpi = 1200)
 
 # fig:hyperhist
 dir_hyperhist = newdir(paste0(dir, "PAPER3fig-hyperhist"))
@@ -506,11 +510,11 @@ for(v in unique(d$variable)){ # c("nu|tau", "theta", "sigma")
     stat_density(aes_string(x = "value", y = "..density.."), color = gray, fill = gray) + 
     facet_grid(as.formula("analysis~variable"), scales = "free", labeller = label_parsed) + 
     mytheme_pub() +
-    theme(strip.text.x = element_text(size = 14), axis.text.x = element_text(angle = -80, hjust = 0)) + 
+    theme(axis.text.x = element_text(angle = -80, hjust = 0)) + 
     xlab("parameter value") + 
     ylab("density")
   for(extn in extns)
-    ggsave(paste0(dir_hyperhist, "fig-hyperhist-", v, ".", extn), pl, height = 8, width = 6, dpi = 1200)
+    ggsave(paste0(dir_hyperhist, "fig-hyperhist-", v, ".", extn), pl, height = 8, width = 8, dpi = 1200)
 }
 
 # loop over type of hierarchical distribution
@@ -571,12 +575,12 @@ pl = ggplot() +
   geom_point(data = ci, mapping = aes_string(x = "upper", y = "lb"), alpha = 0, size = 0) +
   facet_wrap(as.formula("~variable"), scales = "free", labeller = label_parsed) + 
   mytheme_pub() + 
-  theme(strip.text.x = element_text(size = 14), legend.position = c(0.875, 0.1)) + #, axis.text.x = element_text(angle = -80, hjust = 0)) + 
+  theme(legend.position = c(0.875, 0.1)) + #, axis.text.x = element_text(angle = -80, hjust = 0)) + 
   xlab("parameter value") + 
   ylab("density") + 
   labs(linetype = "95% credible interval")
 for(extn in extns)
-  ggsave(paste0(dir_betahist, "fig-betahist-", prior, ".", extn), pl, height = 10, width = 10, dpi = 1200)
+  ggsave(paste0(dir_betahist, "fig-betahist-", prior, ".", extn), pl, height = 8, width = 8, dpi = 1200)
 
 # fig:betapostmeanhist
 dir_betapostmeanhist = newdir(paste0(dir, "PAPER3fig-betapostmeanhist"))
@@ -594,7 +598,7 @@ pl = ggplot(e) +
   xlab("estimated posterior mean") +
   ylab("density") +
   mytheme_pub() + 
-  theme(axis.text.x = element_text(angle = -80, hjust = 0), strip.text.x = element_text(size = 14))
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
   ggsave(paste0(dir_betapostmeanhist, "fig-betapostmeanhist-", prior, ".", extn), pl, height = 6, width = 8, dpi = 1200)
 
@@ -614,7 +618,7 @@ pl = ggplot(d) +
   xlab("index") +
   ylab("parameter value") +
   mytheme_pub() + 
-  theme(axis.text.x = element_text(angle = -80, hjust = 0), strip.text.x = element_text(size = 14))
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
   ggsave(paste0(dir_pascholdcred, "fig-pascholdcred-", prior, ".", extn), pl, height = 6, width = 8, dpi = 1200)
 
@@ -657,9 +661,11 @@ pl = ggplot(l1) +
   geom_line(aes_string(x = "analysis", y = "coverage", group = "libraries", linetype = "libraries")) + 
   geom_point(aes_string(x = "analysis", y = "coverage", pch = "libraries")) + 
   facet_grid(as.formula("simulation~type"), labeller = label_parsed) +
-  mytheme_pub() + theme(strip.text.x = element_text(size = 14), axis.text.x = element_text(angle = -80, hjust = 0))
+  xlab("analysis method") + ylab("coverage rate") + 
+  labs(linetype = "N", pch = "N") +
+  mytheme_pub() + theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
-  ggsave(paste0(dir_comparebetarates, "fig-comparebetarates.", extn), pl, height = 6, width = 6, dpi = 1200)
+  ggsave(paste0(dir_comparebetarates, "fig-comparebetarates.", extn), pl, height = 7, width = 7, dpi = 1200)
 
 } # paper_priors_figures
 
