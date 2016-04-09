@@ -151,7 +151,7 @@ pl = ggplot(l1) +
   facet_wrap(as.formula("~type"), scales = "free_x", labeller = label_parsed) +
   xlab("true parameter value") +
   ylab("local coverage rate") +
-  mytheme_pub()
+  mytheme_pub() + theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns[!grepl("ps", extns)])
   ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, height = 6, width = 7, dpi = 1200)
 for(extn in extns[grepl("ps", extns)])
@@ -164,7 +164,7 @@ pl2 = ggplot(l1) +
   facet_grid(as.formula("~type"), scales = "free_x", labeller = label_parsed) +
   xlab("true parameter value") + 
   ylab("local coverage rate") +
-  mytheme_pub() #+ theme(axis.text.x = element_text(angle = -80, hjust = 0))
+  mytheme_pub() + theme(axis.text.x = element_text(angle = -80, hjust = 0))
 
 # fig:betashrink
 tryCatch({
@@ -343,12 +343,12 @@ pl = ggplot() +
   geom_point(data = ci, mapping = aes_string(x = "upper", y = "lb"), alpha = 0, size = 0) +
   facet_wrap(as.formula("~variable"), scales = "free", labeller = label_parsed) + 
   mytheme_pub() + 
-  theme(legend.position = c(0.875, 0.1)) + #, axis.text.x = element_text(angle = -80, hjust = 0)) + 
+  theme(legend.position = c(0.9, 0.1), plot.margin = unit(c(0.5, 1, 0.5, 0.5), "cm")) + 
   xlab("parameter value") + 
   ylab("density") + 
   labs(linetype = "95% credible interval")
 for(extn in extns)
-  ggsave(paste0(dir_betahist, "fig-betahist.", extn), pl, height = 8, width = 8, dpi = 1200)
+  ggsave(paste0(dir_betahist, "fig-betahist.", extn), pl, height = 10, width = 10, dpi = 1200)
 
 # fig:gammahist
 dir_gammahist = newdir(paste0(dir, "fig-gammahist"))
@@ -467,7 +467,7 @@ pl = ggplot(d) +
   facet_wrap(as.formula("~variable"), scales = "free_x") + 
   xlab("estimated posterior probability") + 
   ylab("density") +
-  mytheme_pub()
+  mytheme_pub() + theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
   ggsave(paste0(dir_probhist, "fig-probhist.", extn), pl, height = 6, width = 8, dpi = 1200)
 
@@ -667,7 +667,7 @@ pl = ggplot(l1) +
     mytheme_pub() + theme(axis.text.x = element_text(angle = -80, hjust = 0)) + 
     labs(linetype = "N")
 for(extn in extns)
-  ggsave(paste0(dir_comparebetacoveragetrend, "fig-comparebetacoveragetrend.", extn), pl, height = 6, width = 7, dpi = 1200)
+  ggsave(paste0(dir_comparebetacoveragetrend, "fig-comparebetacoveragetrend.", extn), pl, height = 8, width = 8, dpi = 1200)
 for(s in unique(l1$simulation)){
   dir_comparebetacoveragetrend = newdir(paste0(dir, "fig-comparebetacoveragetrend", s))
   d = l1[l1$simulation == s,]
@@ -678,10 +678,10 @@ for(s in unique(l1$simulation)){
     facet_wrap(as.formula("~type"), scales = "free_x", labeller = label_parsed) +
     xlab("true parameter value") +
     ylab("local coverage rate") +
-    mytheme_pub() +
+    mytheme_pub() + theme(axis.text.x = element_text(angle = -80, hjust = 0)) +
     labs(linetype = "N")
   for(extn in extns)
-    ggsave(paste0(dir_comparebetacoveragetrend, "fig-comparebetacoveragetrend", s, ".", extn), pl, height = 6, width = 7, dpi = 1200)
+    ggsave(paste0(dir_comparebetacoveragetrend, "fig-comparebetacoveragetrend", s, ".", extn), pl, height = 7, width = 7, dpi = 1200)
 }
 
 # fig:comparebetashrink
