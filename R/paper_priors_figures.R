@@ -420,12 +420,12 @@ dir_auc = newdir(paste0(dir, "PAPER3fig-auc"))
 d = readRDS("comparison_analyze/auc_long/auc_long.rds")
 d = priors_clean_df(d)
 pl = ggplot(d) + 
-  geom_line(aes_string(x = "analysis", y = "auc_1", group = "libraries"), color = "black") +
+  geom_line(aes_string(x = "analysis", y = "auc_1", group = "libraries", linetype = "libraries"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "auc_1", pch = "libraries"), color = "black") +
   facet_grid(as.formula("simulation~heterosis"), scales = "fixed") +
   xlab("analysis method") + 
   ylab("area under ROC curve") +
-  labs(pch = "N") +
+  labs(linetype = "N", pch = "N") +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
@@ -461,12 +461,12 @@ d = ddply(df, c("file", "heterosis"), function(x){
 })
 d = priors_clean_df(d)
 pl = ggplot(d) + 
-  geom_line(aes_string(x = "analysis", y = "meanerror", group = "libraries"), color = "black") +
+  geom_line(aes_string(x = "analysis", y = "meanerror", group = "libraries", linetype = "libraries"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "meanerror", pch = "libraries"), color = "black") +
   facet_grid(as.formula("simulation~heterosis"), scales = "fixed") +
   xlab("analysis method") + 
   ylab("calibration error") +
-  labs(pch = "N") +
+  labs(linetype = "N", pch = "N") +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
