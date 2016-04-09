@@ -441,8 +441,8 @@ for(N in c(16, 32)){
     geom_abline(slope = 1, intercept = 0, color = gray) +
     geom_line(aes_string(x = "probability", y = "proportion", group = "file", color = "analysis", linetype = "analysis")) +
     facet_grid(as.formula("simulation~heterosis")) +
-    xlab("probability") + 
-    ylab("proportion") +
+    xlab("estimated posterior probability") + 
+    ylab("proportion of genes with heterosis") +
     scale_color_manual(name = "analysis method", labels = levels(d$analysis), values = mycolors[1:length(levels(d$analysis))]) +
     scale_linetype_manual(name = "analysis method", labels = levels(d$analysis), values = 1:length(levels(d$analysis))) +
     mytheme_pub() +
