@@ -802,6 +802,7 @@ dir_low = newdir(paste0(dir, "tab-lowprobDiscoveries"))
 
 print(xtable(highprobNondiscoveries), file = paste0(dir_high, "highprobNondiscoveries.tex"), include.rownames = F, hline.after = 0)
 print(xtable(lowprobDiscoveries), file = paste0(dir_low, "lowprobDiscoveries.tex"), include.rownames = F, hline.after = 0)
-ggsave(paste0(dir_volcano, "fig-volcano.pdf"), pl, height = 7, width = 7, dpi = 1200)
+for(extn in extns)
+ggsave(paste0(dir_volcano, "fig-volcano.", extn), pl, height = 7, width = 7, dpi = 1200)
 
 } # paper_case_figures
