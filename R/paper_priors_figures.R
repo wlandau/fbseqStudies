@@ -514,7 +514,7 @@ for(v in unique(d$variable)){ # c("nu|tau", "theta", "sigma")
     xlab("parameter value") + 
     ylab("density")
   for(extn in extns)
-    ggsave(paste0(dir_hyperhist, "fig-hyperhist-", v, ".", extn), pl, height = 8, width = 8, dpi = 1200)
+    ggsave(paste0(dir_hyperhist, "fig-hyperhist-", v, ".", extn), pl, height = 7, width = 7, dpi = 1200)
 }
 
 # loop over type of hierarchical distribution
@@ -524,6 +524,7 @@ for(prior in priors_analyses()){
 a = l$analyses[[paste0("fullybayes+", prior)]]
 m = mcmc_samples(a$chains)
 e = estimates(a$chains, level = 0.95)
+e0 = e
 
 # fig:betahist
 dir_betahist = newdir(paste0(dir, "PAPER3fig-betahist"))
@@ -575,12 +576,13 @@ pl = ggplot() +
   geom_point(data = ci, mapping = aes_string(x = "upper", y = "lb"), alpha = 0, size = 0) +
   facet_wrap(as.formula("~variable"), scales = "free", labeller = label_parsed) + 
   mytheme_pub() + 
-  theme(legend.position = c(0.875, 0.1)) + #, axis.text.x = element_text(angle = -80, hjust = 0)) + 
+  theme(legend.position = c(0.9, 0.1),plot.margin = unit(c(0.5, 1, 0.5, 0.5), "cm"), 
+axis.text.x = element_text(angle = -80, hjust = 0)) +
   xlab("parameter value") + 
   ylab("density") + 
   labs(linetype = "95% credible interval")
 for(extn in extns)
-  ggsave(paste0(dir_betahist, "fig-betahist-", prior, ".", extn), pl, height = 8, width = 8, dpi = 1200)
+  ggsave(paste0(dir_betahist, "fig-betahist-", prior, ".", extn), pl, height = 10, width = 10, dpi = 1200)
 
 # fig:betapostmeanhist
 dir_betapostmeanhist = newdir(paste0(dir, "PAPER3fig-betapostmeanhist"))
@@ -615,7 +617,7 @@ pl = ggplot(d) +
   geom_segment(aes_string(x = "index", xend = "index", y = "lower_ci_0.95", yend = "upper_ci_0.95"), 
     color = gray) + 
   geom_point(aes_string(x = "index", y = "mean"), size = I(0.15)) + 
-  xlab("index") +
+  xlab("credible interval") +
   ylab("parameter value") +
   mytheme_pub() + 
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
@@ -632,9 +634,88 @@ pl = ggplot(d) +
   facet_wrap(as.formula("~variable"), scales = "free_x") + 
   xlab("estimated posterior probability") + 
   ylab("density") +
-  mytheme_pub()
+  mytheme_pub() + theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
   ggsave(paste0(dir_probhist, "fig-probhist-", prior, ".", extn), pl, height = 6, width = 8, dpi = 1200)
+
+# compare with paschold results
+data(paschold)
+paschold = get("paschold")
+ct = paschold@counts
+data(tableS3table1)
+groups = get("tableS3table1")
+cn = c("high-parent_B73xMo17", "high-parent_Mo17xB73", "low-parent_B73xMo17", "low-parent_Mo17xB73")
+p = as.data.frame(probs(a$chains)[,cn])
+colnames(p) = c("hph_bm", "hph_mb", "lph_bm", "lph_mb")
+p$Gene = rownames(p)
+d = melt(p, id.vars = "Gene")
+g2 = data.frame(
+  hph_bm = groups$BxM %in% 5:6,
+  hph_mb = groups$MxB %in% 5:6,
+  lph_bm = groups$BxM %in% 7:8,
+  lph_mb = groups$MxB %in% 7:8,
+  Gene = rownames(p)
+)
+d2 = melt(g2, id.vars = "Gene")
+colnames(d) = c("Gene", "Heterosis", "Probability")
+d$Paschold = ifelse(d2$value, "discovery", "nondiscovery") 
+levels(d$Heterosis) = c(
+  "hph_bm" = "high B73xMo17", 
+  "hph_mb" = "high Mo17xB73", 
+  "lph_bm" = "low B73xMo17", 
+  "lph_mb" = "low Mo17xB73")
+paschold_status = d
+
+# fig:comparehprobs
+dir_comparehprobs = newdir(paste0(dir, "PAPER3fig-comparehprobs"))
+pl = ggplot(d) + 
+  geom_histogram(aes_string(x = "Probability", y = "..density.."), color = gray, fill = gray) + 
+  facet_grid(Paschold~Heterosis, scales = "free_y") + 
+  xlab("estimated posterior probability") +
+  ylab("density") +
+  mytheme_pub() +
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+for(extn in extns)
+  ggsave(paste0(dir_comparehprobs, "fig-comparehprobs", prior, ".", extn), pl, height = 6, width = 8, dpi = 1200)
+
+# Supplementary tables (like TableS1.csv from case study)
+dir_suppTables = newdir(paste0(dir, "PAPER3suppTables"))
+e = e0
+p = as.data.frame(probs(a$chains))
+geneID = rownames(p)
+colnames(p) = paste0("probability_", colnames(p))
+colnames(p) = gsub("parent", "parent-heterosis", colnames(p))
+colnames(p) = gsub("B73xMo17_Mo17xB73", "hybrid-mean", colnames(p))
+data(paschold)
+paschold = get("paschold")
+ct = paschold@counts
+colnames(ct) = paste0(colnames(paschold@counts), "_count-data")
+p = cbind(geneID, ct, p)
+
+highB73xMo17 = paschold_status[paschold_status$Heterosis == "high B73xMo17",]
+lowB73xMo17 = paschold_status[paschold_status$Heterosis == "low B73xMo17",]
+highMo17xB73 = paschold_status[paschold_status$Heterosis == "high Mo17xB73",]
+lowMo17xB73 = paschold_status[paschold_status$Heterosis == "low Mo17xB73",]
+
+rownames(highB73xMo17) = highB73xMo17$Gene
+rownames(lowB73xMo17) = lowB73xMo17$Gene
+rownames(highMo17xB73) = highMo17xB73$Gene
+rownames(lowMo17xB73) = lowMo17xB73$Gene
+
+p[["Paschold-results_high-parent-heterosis_B73xMo17"]] = highB73xMo17[p$geneID,"Paschold"]
+p[["Paschold-results_low-parent-heterosis_B73xMo17"]] = lowB73xMo17[p$geneID,"Paschold"]
+p[["Paschold-results_high-parent-heterosis_Mo17xB73"]] = highMo17xB73[p$geneID,"Paschold"]
+p[["Paschold-results_low-parent-heterosis_Mo17xB73"]] = lowMo17xB73[p$geneID,"Paschold"]
+
+rownames(p) = NULL
+for(i in 1:5){
+  p[[paste0("beta_g", i, "_mean")]] = e[grepl(paste0("beta_", i), rownames(e)), "mean"]
+  p[[paste0("beta_g", i, "_standard-deviation")]] = e[grepl(paste0("beta_", i), rownames(e)), "sd"]
+}
+p[["gamma_mean"]] = e[grepl("gamma", rownames(e)), "mean"]
+p[["gamma_standard-deviation"]] = e[grepl("gamma", rownames(e)), "sd"]
+write.csv(p, paste0(dir_suppTables, prior, ".csv"), row.names = F)
+
 } # for(prior in priors_analyses())
 
 # credible interval info for comparison study
