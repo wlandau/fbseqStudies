@@ -718,16 +718,28 @@ for(s in unique(l1$simulation)){tryCatch({
 
 # fig-volcano, tab-highprobNondiscoveries, tab-lowprobDiscoveries
 d = read.csv(paste0(dir, "TableS1/TableS1.csv"), header = T)
-data(paschold)
-lc = log(paschold@counts + 1)
 
-#hmean = apply(lc[,grepl("^B73xMo17_", colnames(lc))], 1, mean) 
-hmean = apply(lc[,grepl("^B73xMo17_|^Mo17xB73_", colnames(lc))], 1, mean) 
+cts = d[,grepl("count.data", colnames(d))]
+lc = log(cts + 1)
+dh = lc[,grepl("^B73xMo17_|^Mo17xB73_", colnames(lc))]
+dp1 = lc[,grepl("^B73_", colnames(lc))]
+dp2 = lc[,grepl("^Mo17_", colnames(lc))]
 
-p1mean = apply(lc[,grepl("^B73_", colnames(lc))], 1, mean)
-p2mean = apply(lc[,grepl("^Mo17_", colnames(lc))], 1, mean)
+hmean = apply(dh, 1, mean) 
+p1mean = apply(dp1, 1, mean)
+p2mean = apply(dp2, 1, mean)
 effect_size = hmean - pmax(p1mean, p2mean)
 effect_size[effect_size < 0] = 0
+
+v1 = apply(dh, 1, var)
+v2 = ifelse(p1mean > p2mean, apply(dp1, 1, var), apply(dp2, 1, var))
+n1 = ncol(dh)
+n2 = ifelse(p1mean > p2mean, ncol(dp1), ncol(dp2))
+sds = sqrt(v1/n1 + v2/n2)
+t_statistic = effect_size/sds
+df = (v1/n1 + v2/n2)^2/((v1/n1)^2/(n1-1) + (v2/n2)^2/(n2-1))
+pval = pt(t_statistic, df = df, lower.tail = F)
+pval[!is.finite(pval)] = 1
 
 #probability = d$probability_high.parent.heterosis_B73xMo17
 #discovery = d$Paschold.results_high.parent.heterosis_B73xMo17 == "discovery"  
@@ -748,7 +760,8 @@ x = data.frame(
   probability = probability,
   effect_size = effect_size,
   discovery = discovery,
-  nondiscovery = nondiscovery)
+  nondiscovery = nondiscovery,
+  pval = pval)
 x = x[order(x$prob),]
 x = x[x$effect_size > 0,]
 highprobNondiscoveries = tail(x[x$nondiscovery,], 20)
@@ -775,7 +788,7 @@ for(i in 1:dim(lowprobDiscoveries)[1]){
    mean(lowprobDiscoveries$probability[i] > x$probability)
 }
 
-ns = c("gene", "probability", "effect_size", "probability_quantile", "effect_size_quantile")
+ns = c("gene", "probability", "effect_size", "probability_quantile", "effect_size_quantile", "pval")
 highprobNondiscoveries = highprobNondiscoveries[,ns]
 highprobNondiscoveries = highprobNondiscoveries[order(highprobNondiscoveries$probability, decreasing = T),]
 lowprobDiscoveries = lowprobDiscoveries[,ns]
@@ -791,7 +804,7 @@ pl = ggplot(x) +
     data = lowprobDiscoveries, 
     mapping = aes_string(x = "effect_size", y = "probability"), 
     pch = 17, size = 2) +
-  scale_fill_gradient(guide = F, name = "count", trans = "log", low = "lightGray", high = gray) +
+  scale_fill_gradient(guide = F, name = "count", trans = "log", low = "lightGray", high = "#707070") +
   xlab("effect size") + 
   ylab("heterosis probability") +
   mytheme_pub()
