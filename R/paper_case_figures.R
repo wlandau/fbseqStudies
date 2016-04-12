@@ -717,7 +717,7 @@ for(s in unique(l1$simulation)){tryCatch({
 
 
 # fig-volcano, tab-highprobNondiscoveries, tab-lowprobDiscoveries
-d = read.csv(paste0(dir, "TableS1/TableS1.csv"), head = T)
+d = read.csv(paste0(dir, "TableS1/TableS1.csv"), header = T)
 data(paschold)
 lc = log(paschold@counts + 1)
 
@@ -729,7 +729,7 @@ p2mean = apply(lc[,grepl("^Mo17_", colnames(lc))], 1, mean)
 effect_size = hmean - pmax(p1mean, p2mean)
 effect_size[effect_size < 0] = 0
 
-#prob = d$probability_high.parent.heterosis_B73xMo17
+#probability = d$probability_high.parent.heterosis_B73xMo17
 #discovery = d$Paschold.results_high.parent.heterosis_B73xMo17 == "discovery"  
 #nondiscovery = d$Paschold.results_high.parent.heterosis_B73xMo17 == "nondiscovery"
 
