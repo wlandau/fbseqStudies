@@ -23,6 +23,7 @@ Imports:
     methods,
     parallel,
     pracma,
+    readr,
     reshape2,
     rstan,
     snowfall,

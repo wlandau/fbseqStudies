@@ -6,7 +6,7 @@ NULL
 #' @export
 paper_case_figures = function(){
 
-# library(fbseqStudies); library(xtable); library(reshape2); library(plyr); library(pracma); library(ggthemes); library(actuar); setwd("~/home/work/projects/thesis_data/results"); library(gridExtra)
+# library(fbseqStudies); library(xtable); library(reshape2); library(plyr); library(pracma); library(ggthemes); library(actuar); setwd("~/home/work/projects/thesis_data/results"); library(gridExtra); library(readr)
 
 # control parms
 dir = newdir("case_study_paper_figures")
@@ -715,9 +715,12 @@ for(s in unique(l1$simulation)){tryCatch({
   }
 }, error = function(e) print(paste0("Could not make fig-comparebetashrink for ", s, ".")))}
 
-
-# fig-volcano, tab-highprobNondiscoveries, tab-lowprobDiscoveries
-d = read.csv(paste0(dir, "TableS1/TableS1.csv"), header = T)
+# fig-volcano, fig-cts, fig-effectsize, fig-pvalhist
+d = read_csv(paste0(dir, "TableS1/TableS1.csv"))
+dir_volcano = newdir(paste0(dir, "fig-volcano"))
+dir_cts = newdir(paste0(dir, "fig-cts"))
+dir_effectsize = newdir(paste0(dir, "fig-effectsize"))
+dir_pvalhist = newdir(paste0(dir, "fig-pvalhist"))
 
 cts = d[,grepl("count.data", colnames(d))]
 lc = log(cts + 1)
@@ -741,81 +744,91 @@ df = (v1/n1 + v2/n2)^2/((v1/n1)^2/(n1-1) + (v2/n2)^2/(n2-1))
 pval = pt(t_statistic, df = df, lower.tail = F)
 pval[!is.finite(pval)] = 1
 
-#probability = d$probability_high.parent.heterosis_B73xMo17
-#discovery = d$Paschold.results_high.parent.heterosis_B73xMo17 == "discovery"  
-#nondiscovery = d$Paschold.results_high.parent.heterosis_B73xMo17 == "nondiscovery"
+pmean = d[["probability_high-parent-heterosis_hybrid-mean"]]
+pB73xMo17 = d[["probability_high-parent-heterosis_B73xMo17"]]
+pMo17xB73 = d[["probability_high-parent-heterosis_Mo17xB73"]]
 
-probability = d$probability_high.parent.heterosis_hybrid.mean
+group = rep("neither discovery", dim(d)[1])
+group[d[["Paschold-results_high-parent-heterosis_B73xMo17"]] == "discovery"] = "B73xMo17 discovery"
+group[d[["Paschold-results_high-parent-heterosis_Mo17xB73"]] == "discovery"] = "Mo17xB73 discovery"
+group[d[["Paschold-results_high-parent-heterosis_B73xMo17"]] == "discovery" & 
+      d[["Paschold-results_high-parent-heterosis_Mo17xB73"]] == "discovery"] = 
+  "both discoveries"
 
-discovery = 
-  d$Paschold.results_high.parent.heterosis_B73xMo17 == "discovery" &
-  d$Paschold.results_high.parent.heterosis_Mo17xB73 == "discovery"   
-
-nondiscovery = 
-  d$Paschold.results_high.parent.heterosis_B73xMo17 == "nondiscovery" &
-  d$Paschold.results_high.parent.heterosis_Mo17xB73 == "nondiscovery" 
+probability = pmean
+#probability[group == "B73xMo17 discovery"] = pB73xMo17[group == "B73xMo17 discovery"]
+#probability[group == "Mo17xB73 discovery"] = pMo17xB73[group == "Mo17xB73 discovery"]
 
 x = data.frame(
   gene = d$geneID,
   probability = probability,
   effect_size = effect_size,
-  discovery = discovery,
-  nondiscovery = nondiscovery,
-  pval = pval)
-x = x[order(x$prob),]
-x = x[x$effect_size > 0,]
-highprobNondiscoveries = tail(x[x$nondiscovery,], 20)
-lowprobDiscoveries = head(x[x$discovery,], 20)
-x$disagreement = "no"
-x$disagreement[x$gene %in% highprobNondiscoveries$gene] = "highprobNondiscovery"
-x$disagreement[x$gene %in% lowprobDiscoveries$gene] = "lowprobDiscovery"
+  pval = pval,
+  group = group)
 
-highprobNondiscoveries$effect_size_quantile = 0
-highprobNondiscoveries$probability_quantile = 0
-for(i in 1:dim(highprobNondiscoveries)[1]){
-  highprobNondiscoveries$effect_size_quantile[i] = 
-   mean(highprobNondiscoveries$effect_size[i] > x$effect_size)
-  highprobNondiscoveries$probability_quantile[i] = 
-   mean(highprobNondiscoveries$probability[i] > x$probability)
-}
-
-lowprobDiscoveries$effect_size_quantile = 0
-lowprobDiscoveries$probability_quantile = 0
-for(i in 1:dim(lowprobDiscoveries)[1]){
-  lowprobDiscoveries$effect_size_quantile[i] = 
-   mean(lowprobDiscoveries$effect_size[i] > x$effect_size)
-  lowprobDiscoveries$probability_quantile[i] = 
-   mean(lowprobDiscoveries$probability[i] > x$probability)
-}
-
-ns = c("gene", "probability", "effect_size", "probability_quantile", "effect_size_quantile", "pval")
-highprobNondiscoveries = highprobNondiscoveries[,ns]
-highprobNondiscoveries = highprobNondiscoveries[order(highprobNondiscoveries$probability, decreasing = T),]
-lowprobDiscoveries = lowprobDiscoveries[,ns]
-rownames(highprobNondiscoveries) = rownames(lowprobDiscoveries) = NULL
-
-pl = ggplot(x) + 
+pl = ggplot(x[x$group %in% c("both discoveries", "neither discovery"),]) + 
   stat_binhex(aes_string(x = "effect_size", y = "probability"), bins = 100) +
-  geom_point(
-    data = highprobNondiscoveries, 
-    mapping = aes_string(x = "effect_size", y = "probability"), 
-    pch = 16, size = 2) +
-  geom_point(
-    data = lowprobDiscoveries, 
-    mapping = aes_string(x = "effect_size", y = "probability"), 
-    pch = 17, size = 2) +
-  scale_fill_gradient(guide = F, name = "count", trans = "log", low = "lightGray", high = "#707070") +
+  geom_hline(yintercept = 0.5) +
+  facet_wrap(as.formula("~group")) +
+  scale_fill_gradient(guide = F, name = "count", trans = "log", low = "#707070", high = "black") +
   xlab("effect size") + 
   ylab("heterosis probability") +
   mytheme_pub()
-
-dir_volcano = newdir(paste0(dir, "fig-volcano"))
-dir_high = newdir(paste0(dir, "tab-highprobNondiscoveries"))
-dir_low = newdir(paste0(dir, "tab-lowprobDiscoveries"))
-
-print(xtable(highprobNondiscoveries), file = paste0(dir_high, "highprobNondiscoveries.tex"), include.rownames = F, hline.after = 0)
-print(xtable(lowprobDiscoveries), file = paste0(dir_low, "lowprobDiscoveries.tex"), include.rownames = F, hline.after = 0)
 for(extn in extns)
-ggsave(paste0(dir_volcano, "fig-volcano.", extn), pl, height = 7, width = 7, dpi = 1200)
+ggsave(paste0(dir_volcano, "fig-volcano.", extn), pl, height = 6, width = 9, dpi = 1200)
+
+x$status = "agreement"
+x$status[x$probability > 0.5 & x$group == "neither discovery"] = "disagreement"
+#x$status[x$probability < 0.6 & x$group == "both discoveries"] = "lowyes"
+outlier = "GRMZM2G429000"
+x$status[x$gene == outlier] = "disagreement"
+
+dp1 = lc[,grepl("^B73_", colnames(lc))]
+dp2 = lc[,grepl("^Mo17_", colnames(lc))]
+dh12 = lc[,grepl("^B73xMo17_", colnames(lc))] 
+dh21 = lc[,grepl("^Mo17xB73_", colnames(lc))]
+
+x$B73 = apply(dp1, 1, mean)
+x$Mo17 = apply(dp2, 1, mean)
+x$B73xMo17 = apply(dh12, 1, mean)
+x$Mo17xB73 = apply(dh21, 1, mean)
+x$meancount = apply(lc, 1, mean)
+
+xplot = x[x$gene != outlier,]
+vars = t(combn(c("B73", "Mo17", "B73xMo17", "Mo17xB73"), 2))
+for(i in 1:dim(vars)[1]){
+v1 = vars[i,1]
+v2 = vars[i,2]
+pl = ggplot(xplot) + 
+  stat_binhex(aes_string(x = v1, y = v2), bins = 100) +
+  geom_point(data = x[x$gene == outlier,], mapping = aes_string(x = v1, y = v2), pch = 17, size = 5) +
+  geom_abline(slope = 1, intercept = 0) +
+  facet_wrap(as.formula("~status")) +
+  mytheme_pub() +
+  scale_fill_gradient(guide = F, name = "count", trans = "log", low = "#A0A0A0", high = "#303030")
+  for(extn in extns)
+ggsave(paste0(dir_cts, "fig-cts-", v1, "-", v2,".", extn), pl, width = 9, height = 6, dpi = 1200)
+}
+
+for(v in vars){
+pl = ggplot(xplot) + 
+  stat_binhex(aes_string(x = v, y = "effect_size"), bins = 100) +
+  facet_wrap(as.formula("~status")) +
+  ylab("effect size") +
+  mytheme_pub() +
+  scale_fill_gradient(guide = F, name = "count", trans = "log", low = "#707070", high = "black")
+for(extn in extns)
+ggsave(paste0(dir_effectsize, "fig-effectsize-vs-", v, ".", extn), pl, width = 9, height = 6, dpi = 1200)
+}
+
+# top = x$status == "disagreement" & x$probability > 0.9006
+top = x$status == "disagreement" & x$probability > 0.9006
+
+pl = ggplot(x[top,]) + 
+  geom_histogram(aes_string(x = "pval"), bins = 20) +
+  geom_vline(xintercept = x$pval[x$gene == outlier]) +
+  mytheme_pub()
+for(extn in extns)
+ggsave(paste0(dir_pvalhist, "fig-pvalhist.", extn), pl, width = 9, height = 6, dpi = 1200)
 
 } # paper_case_figures

@@ -3,6 +3,7 @@
 #' @importFrom dplyr %>% group_by_ mutate rename summarize_
 #' @importFrom gridExtra grid.arrange
 #' @importFrom pracma trapz
+#' @importFrom readr read_csv
 #' @importFrom reshape2 melt
 #' @importFrom rstan sampling stan_model
 #' @import coda
