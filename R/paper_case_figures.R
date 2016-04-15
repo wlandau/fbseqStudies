@@ -715,13 +715,8 @@ for(s in unique(l1$simulation)){tryCatch({
   }
 }, error = function(e) print(paste0("Could not make fig-comparebetashrink for ", s, ".")))}
 
-# fig-volcano, fig-cts, fig-effectsize, fig-pvalhist
+# comparison study using Table S1
 d = read_csv(paste0(dir, "TableS1/TableS1.csv"))
-dir_volcano = newdir(paste0(dir, "fig-volcano"))
-dir_cts = newdir(paste0(dir, "fig-cts"))
-dir_effectsize = newdir(paste0(dir, "fig-effectsize"))
-dir_pvalhist = newdir(paste0(dir, "fig-pvalhist"))
-
 cts = d[,grepl("count.data", colnames(d))]
 lc = log(cts + 1)
 dh = lc[,grepl("^B73xMo17_|^Mo17xB73_", colnames(lc))]
@@ -766,6 +761,23 @@ x = data.frame(
   pval = pval,
   group = group)
 
+x$status = "other"
+x$status[x$probability > 0.5 & x$group == "neither discovery"] = "disagreement"
+#x$status[x$probability < 0.6 & x$group == "both discoveries"] = "lowyes"
+outlier = "GRMZM2G429000"
+x$status[x$gene == outlier] = "disagreement"
+x$meancount = apply(lc, 1, mean)
+dp1 = lc[,grepl("^B73_", colnames(lc))]
+dp2 = lc[,grepl("^Mo17_", colnames(lc))]
+dh12 = lc[,grepl("^B73xMo17_", colnames(lc))] 
+dh21 = lc[,grepl("^Mo17xB73_", colnames(lc))]
+x$B73 = apply(dp1, 1, mean)
+x$Mo17 = apply(dp2, 1, mean)
+x$B73xMo17 = apply(dh12, 1, mean)
+x$Mo17xB73 = apply(dh21, 1, mean)
+xplot = x[x$gene != outlier,]
+
+# fig-volcano
 pl = ggplot(x[x$group %in% c("both discoveries", "neither discovery"),]) + 
   stat_binhex(aes_string(x = "effect_size", y = "probability"), bins = 100) +
   geom_hline(yintercept = 0.5) +
@@ -774,71 +786,56 @@ pl = ggplot(x[x$group %in% c("both discoveries", "neither discovery"),]) +
   xlab("effect size") + 
   ylab("heterosis probability") +
   mytheme_pub()
+dr = newdir(paste0(dir, "fig-volcano"))
 for(extn in extns)
-ggsave(paste0(dir_volcano, "fig-volcano.", extn), pl, height = 6, width = 9, dpi = 1200)
+ggsave(paste0(dr, "fig-volcano.", extn), pl, height = 6, width = 9, dpi = 1200)
 
-x$status = "agreement"
-x$status[x$probability > 0.5 & x$group == "neither discovery"] = "disagreement"
-#x$status[x$probability < 0.6 & x$group == "both discoveries"] = "lowyes"
-outlier = "GRMZM2G429000"
-x$status[x$gene == outlier] = "disagreement"
-
-dp1 = lc[,grepl("^B73_", colnames(lc))]
-dp2 = lc[,grepl("^Mo17_", colnames(lc))]
-dh12 = lc[,grepl("^B73xMo17_", colnames(lc))] 
-dh21 = lc[,grepl("^Mo17xB73_", colnames(lc))]
-
-x$B73 = apply(dp1, 1, mean)
-x$Mo17 = apply(dp2, 1, mean)
-x$B73xMo17 = apply(dh12, 1, mean)
-x$Mo17xB73 = apply(dh21, 1, mean)
-x$meancount = apply(lc, 1, mean)
-
-xplot = x[x$gene != outlier,]
-vars = t(combn(c("B73", "Mo17", "B73xMo17", "Mo17xB73"), 2))
-for(i in 1:dim(vars)[1]){
-v1 = vars[i,1]
-v2 = vars[i,2]
-pl = ggplot(xplot) + 
-  stat_binhex(aes_string(x = v1, y = v2), bins = 100) +
-  geom_point(data = x[x$gene == outlier,], mapping = aes_string(x = v1, y = v2), pch = 17, size = 5) +
-  geom_abline(slope = 1, intercept = 0) +
-  facet_wrap(as.formula("~status")) +
-  mytheme_pub() +
-  scale_fill_gradient(guide = F, name = "count", trans = "log", low = "#A0A0A0", high = "#303030")
-  for(extn in extns)
-ggsave(paste0(dir_cts, "fig-cts-", v1, "-", v2,".", extn), pl, width = 9, height = 6, dpi = 1200)
-}
-
-for(v in vars){
-pl = ggplot(xplot) + 
-  stat_binhex(aes_string(x = v, y = "effect_size"), bins = 100) +
-  facet_wrap(as.formula("~status")) +
-  ylab("effect size") +
-  mytheme_pub() +
-  scale_fill_gradient(guide = F, name = "count", trans = "log", low = "#707070", high = "black")
-for(extn in extns)
-ggsave(paste0(dir_effectsize, "fig-effectsize-vs-", v, ".", extn), pl, width = 9, height = 6, dpi = 1200)
-}
-
-pl = ggplot(xplot) + 
-  stat_binhex(aes_string(x = "meancount", y = "effect_size"), bins = 100) +
-  facet_wrap(as.formula("~status")) +
-  ylab("effect size") + xlab("mean of log(count + 1)") +
-  mytheme_pub() +
-  scale_fill_gradient(guide = F, name = "count", trans = "log", low = "#707070", high = "black")
-for(extn in extns)
-ggsave(paste0(dir_effectsize, "fig-effectsize-vs-meancount.pdf"), pl, width = 9, height = 6, dpi = 1200)
-
-xsort = x[x$status == "disagreement",]
-xsort = xsort[order(xsort$probability, decreasing = T),]
-for(n in c(dim(xsort)[1], 100, 50, 20, 10)){
-pl = ggplot(xsort[1:n,]) + 
-  geom_histogram(aes_string(x = "pval"), bins = sqrt(n) + 5) +
-  geom_vline(xintercept = x$pval[x$gene == outlier]) +
+# fig-meanandeffect
+pl1 = ggplot(xplot) + 
+  stat_density(aes_string(x = "meancount")) +
+  geom_vline(xintercept = x[x$gene == outlier,"meancount"]) +
+  facet_wrap(as.formula("~status"), scales = "free_y", ncol = 1) +
+  xlab("mean of log(count + 1)") +
   mytheme_pub()
-for(extn in extns)
-ggsave(paste0(dir_pvalhist, "fig-pvalhist-top", n, ".", extn), pl, width = 9, height = 6, dpi = 1200)
+pl2 = ggplot(xplot) + 
+  stat_density(aes_string(x = "effect_size")) +
+  geom_vline(xintercept = x[x$gene == outlier,"effect_size"]) +
+  facet_wrap(as.formula("~status"), scales = "free_y", ncol = 1) +
+  xlab("effect size") + ylab("") +
+  mytheme_pub()
+dr = newdir(paste0(dir, "fig-meanandeffect"))
+pdf(paste0(dr, "fig-meanandeffect.pdf"), width = 10)
+grid.arrange(pl1, pl2, nrow = 1)
+dev.off()
+for(ex in c("ps", "eps")){
+  postscript(paste0(dr, "fig-meanandeffect.", ex), width = 10)
+  grid.arrange(pl1, pl2, nrow = 1)
+  dev.off()
+}
+
+# fig-varietymeans
+pl1 = ggplot(xplot) + 
+  stat_binhex(aes_string(x = "B73", y = "Mo17"), bins = 100) +
+  geom_point(data = x[x$gene == outlier,], mapping = aes_string(x = "B73", y = "Mo17"), pch = 17, size = 5) +
+  geom_abline(slope = 1, intercept = 0) +
+  facet_wrap(as.formula("~status"), ncol = 1) +
+  mytheme_pub() +
+  scale_fill_gradient(guide = F, name = "count", trans = "log", low = "lightGray", high = "black")
+pl2 = ggplot(xplot) + 
+  stat_binhex(aes_string(x = "B73xMo17", y = "Mo17xB73"), bins = 100) +
+  geom_point(data = x[x$gene == outlier,], mapping = aes_string(x = "B73xMo17", y = "Mo17xB73"), pch = 17, size = 5) +
+  geom_abline(slope = 1, intercept = 0) +
+  facet_wrap(as.formula("~status"), ncol = 1) +
+  mytheme_pub() +
+  scale_fill_gradient(guide = F, name = "count", trans = "log", low = "lightGray", high = "black")
+dr = newdir(paste0(dir, "fig-varietymeans"))
+pdf(paste0(dr, "fig-varietymeans.pdf"), width = 10)
+grid.arrange(pl1, pl2, nrow = 1)
+dev.off()
+for(ex in c("ps", "eps")){
+  postscript(paste0(dr, "fig-varietymeans.", ex), width = 10)
+  grid.arrange(pl1, pl2, nrow = 1)
+  dev.off()
 }
 
 } # paper_case_figures
