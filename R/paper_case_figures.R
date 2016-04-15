@@ -821,14 +821,24 @@ for(extn in extns)
 ggsave(paste0(dir_effectsize, "fig-effectsize-vs-", v, ".", extn), pl, width = 9, height = 6, dpi = 1200)
 }
 
-# top = x$status == "disagreement" & x$probability > 0.9006
-top = x$status == "disagreement" & x$probability > 0.9006
+pl = ggplot(xplot) + 
+  stat_binhex(aes_string(x = "meancount", y = "effect_size"), bins = 100) +
+  facet_wrap(as.formula("~status")) +
+  ylab("effect size") + xlab("mean of log(count + 1)") +
+  mytheme_pub() +
+  scale_fill_gradient(guide = F, name = "count", trans = "log", low = "#707070", high = "black")
+for(extn in extns)
+ggsave(paste0(dir_effectsize, "fig-effectsize-vs-meancount.pdf"), pl, width = 9, height = 6, dpi = 1200)
 
-pl = ggplot(x[top,]) + 
-  geom_histogram(aes_string(x = "pval"), bins = 20) +
+xsort = x[x$status == "disagreement",]
+xsort = xsort[order(xsort$probability, decreasing = T),]
+for(n in c(dim(xsort)[1], 100, 50, 20, 10)){
+pl = ggplot(xsort[1:n,]) + 
+  geom_histogram(aes_string(x = "pval"), bins = sqrt(n) + 5) +
   geom_vline(xintercept = x$pval[x$gene == outlier]) +
   mytheme_pub()
 for(extn in extns)
-ggsave(paste0(dir_pvalhist, "fig-pvalhist.", extn), pl, width = 9, height = 6, dpi = 1200)
+ggsave(paste0(dir_pvalhist, "fig-pvalhist-top", n, ".", extn), pl, width = 9, height = 6, dpi = 1200)
+}
 
 } # paper_case_figures
