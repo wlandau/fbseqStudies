@@ -9,8 +9,8 @@ serial_mcmc = function(path = newdir()){
   paschold = get("paschold")
 
   burnin = 1000
-  thin = Configs()@thin
-  iterations = burnin/thin
+  thin = 1
+  iterations = 1000
   verbose = 10
 
   for(mode in c("fullybayes", "ebayes")){
