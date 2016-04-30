@@ -8,8 +8,8 @@ serial_mcmc = function(path = newdir()){
   data(paschold)
   paschold = get("paschold")
 
-  burnin = 10
-  iterations = 10
+  burnin = 100
+  iterations = 100
   thin = 1
   verbose = max(100, min(burnin, iterations))
 
