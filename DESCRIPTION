@@ -1,6 +1,7 @@
 Package: fbseqStudies
 Title: fbseqStudies
-Description: Reproduces results of papers using the fbseq and fbseqCUDA packages.
+Description: Reproduces results of papers using the fbseq and fbseqCUDA
+    packages.
 Version: 0.0
 Author: Will Landau <will.landau@gmail.com>
 Maintainer: Will Landau <will.landau@gmail.com>
@@ -30,6 +31,7 @@ Imports:
     xtable
 Suggests:
     fbseqCUDA,
+    fbseqSerial,
     knitr
 VignetteBuilder: knitr
 License: GPL (>= 3)
@@ -41,6 +43,7 @@ Collate:
     'study-comparison_init.R'
     'study-comparison_mcmc.R'
     'paper_priors.R'
+    'study-serial_mcmc.R'
     'study-coverage_init.R'
     'study-coverage_mcmc.R'
     'paper_case.R'

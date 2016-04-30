@@ -1,4 +1,4 @@
-#' @include study-comparison_mcmc.R study-coverage_mcmc.R study-real_mcmc.R
+#' @include study-comparison_mcmc.R study-coverage_mcmc.R study-real_mcmc.R study-serial_mcmc.R
 NULL
 
 #' @title Function \code{paper_case}
@@ -18,6 +18,8 @@ paper_case = function(){
   coverage_analyze("coverage_mcmc", "coverage_analyze")
   coverage_analyze("coverage_norm_mcmc", "coverage_norm_analyze")
   comparison_analyze("comparison_mcmc", "comparison_analyze")
+
+  serial_mcmc("serial_mcmc")
 
   paper_case_figures()
 }
