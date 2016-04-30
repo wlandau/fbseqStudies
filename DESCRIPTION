@@ -1,7 +1,7 @@
 Package: fbseqStudies
 Title: fbseqStudies
-Description: Reproduces results of papers using the fbseq and fbseqCUDA
-    packages.
+Description: Reproduces results of papers using the fbseq, fbseqCUDA, and fbseqSerial packages.
+URL: https://github.com/wlandau/fbseqStudies
 Version: 0.0
 Author: Will Landau <will.landau@gmail.com>
 Maintainer: Will Landau <will.landau@gmail.com>
