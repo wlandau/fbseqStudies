@@ -526,20 +526,18 @@ ct = paschold@counts
 colnames(ct) = paste0(colnames(paschold@counts), "_count-data")
 p = cbind(geneID, ct, p)
 
-highB73xMo17 = paschold_status[paschold_status$Heterosis == "high B73xMo17",]
-lowB73xMo17 = paschold_status[paschold_status$Heterosis == "low B73xMo17",]
-highMo17xB73 = paschold_status[paschold_status$Heterosis == "high Mo17xB73",]
-lowMo17xB73 = paschold_status[paschold_status$Heterosis == "low Mo17xB73",]
-
-rownames(highB73xMo17) = highB73xMo17$Gene
-rownames(lowB73xMo17) = lowB73xMo17$Gene
-rownames(highMo17xB73) = highMo17xB73$Gene
-rownames(lowMo17xB73) = lowMo17xB73$Gene
-
-p[["Paschold-results_high-parent-heterosis_B73xMo17"]] = highB73xMo17[p$geneID,"Paschold"]
-p[["Paschold-results_low-parent-heterosis_B73xMo17"]] = lowB73xMo17[p$geneID,"Paschold"]
-p[["Paschold-results_high-parent-heterosis_Mo17xB73"]] = highMo17xB73[p$geneID,"Paschold"]
-p[["Paschold-results_low-parent-heterosis_Mo17xB73"]] = lowMo17xB73[p$geneID,"Paschold"]
+#highB73xMo17 = paschold_status[paschold_status$Heterosis == "high B73xMo17",]
+#lowB73xMo17 = paschold_status[paschold_status$Heterosis == "low B73xMo17",]
+#highMo17xB73 = paschold_status[paschold_status$Heterosis == "high Mo17xB73",]
+#lowMo17xB73 = paschold_status[paschold_status$Heterosis == "low Mo17xB73",]
+#rownames(highB73xMo17) = highB73xMo17$Gene
+#rownames(lowB73xMo17) = lowB73xMo17$Gene
+#rownames(highMo17xB73) = highMo17xB73$Gene
+#rownames(lowMo17xB73) = lowMo17xB73$Gene
+#p[["Paschold-results_high-parent-heterosis_B73xMo17"]] = highB73xMo17[p$geneID,"Paschold"]
+#p[["Paschold-results_low-parent-heterosis_B73xMo17"]] = lowB73xMo17[p$geneID,"Paschold"]
+#p[["Paschold-results_high-parent-heterosis_Mo17xB73"]] = highMo17xB73[p$geneID,"Paschold"]
+#p[["Paschold-results_low-parent-heterosis_Mo17xB73"]] = lowMo17xB73[p$geneID,"Paschold"]
 
 rownames(p) = NULL
 for(i in 1:5){
@@ -548,6 +546,21 @@ for(i in 1:5){
 }
 p[["gamma_mean"]] = e[grepl("gamma", rownames(e)), "mean"]
 p[["gamma_standard-deviation"]] = e[grepl("gamma", rownames(e)), "sd"]
+set.seed(10)
+edger = fit_edgeR(paschold@counts, paschold@design)
+parms_edger = cbind(edger$estimates[,grep("beta_", colnames(edger$estimates))], dispersion = edger$dispersion)
+colnames(parms_edger) = paste0(colnames(parms_edger), "_edgeR_estimate")
+for(i in 1:5) colnames(parms_edger) = gsub(paste0("beta_", i), paste0("beta_g", i), colnames(parms_edger))
+
+effect_edger = edger$estimates[,grep("effect_", colnames(edger$estimates))]
+colnames(effect_edger) = gsub("effect_", "", colnames(effect_edger))
+colnames(effect_edger) = gsub("_parent", "-parent", colnames(effect_edger))
+colnames(effect_edger) = gsub("hybrids", "hybrid-mean", colnames(effect_edger))
+colnames(effect_edger) = gsub("hybrid1", "B73xMo17", colnames(effect_edger))
+colnames(effect_edger) = gsub("hybrid2", "Mo17xB73", colnames(effect_edger))
+colnames(effect_edger) = paste0(colnames(effect_edger), "_edgeR_effect_size")
+
+p = cbind(p, effect_edger, parms_edger)
 write.csv(p, paste0(dir_TableS1, "TableS1.csv"), row.names = F)
 
 
@@ -715,127 +728,109 @@ for(s in unique(l1$simulation)){tryCatch({
   }
 }, error = function(e) print(paste0("Could not make fig-comparebetashrink for ", s, ".")))}
 
-# comparison study using Table S1
-d = read_csv(paste0(dir, "TableS1/TableS1.csv"))
-cts = d[,grepl("count.data", colnames(d))]
-lc = log(cts + 1)
-dh = lc[,grepl("^B73xMo17_|^Mo17xB73_", colnames(lc))]
-dp1 = lc[,grepl("^B73_", colnames(lc))]
-dp2 = lc[,grepl("^Mo17_", colnames(lc))]
+# fig-edgerparms
+d = as.data.frame(read_csv(paste0(dir_TableS1, "TableS1.csv")))
+d$gamma_mean = log(d$gamma_mean)
+d$dispersion_edgeR_estimate = log(d$dispersion_edgeR_estimate)
+dir_edgerparms = newdir(paste0(dir, "fig-edgerparms"))
 
-hmean = apply(dh, 1, mean) 
-p1mean = apply(dp1, 1, mean)
-p2mean = apply(dp2, 1, mean)
-effect_size = hmean - pmax(p1mean, p2mean)
-effect_size[effect_size < 0] = 0
+parms_fb = melt(d[,grepl("mean", colnames(d)) & !grepl("hybrid", colnames(d))])
+parms_edger = melt(d[,grepl("estimate", colnames(d)) & !grepl("hybrid", colnames(d))])
+parms_fb$variable = as.character(parms_fb$variable)
+parms_edger$variable = as.character(parms_edger$variable)
+parms = parms_fb
 
-v1 = apply(dh, 1, var)
-v2 = ifelse(p1mean > p2mean, apply(dp1, 1, var), apply(dp2, 1, var))
-n1 = ncol(dh)
-n2 = ifelse(p1mean > p2mean, ncol(dp1), ncol(dp2))
-sds = sqrt(v1/n1 + v2/n2)
-t_statistic = effect_size/sds
-df = (v1/n1 + v2/n2)^2/((v1/n1)^2/(n1-1) + (v2/n2)^2/(n2-1))
-pval = pt(t_statistic, df = df, lower.tail = F)
-pval[!is.finite(pval)] = 1
+x = parms$variable
+x = gsub("_mean", "", x)
+x = gsub("beta_g", "beta[list(g", x)
+x = gsub("gamma", "gamma[list(g", x)
+x = paste0(x, ")]")
+x = gsub("gamma", "log(gamma", x)
+x = gsub("g)]", "g)])~vs~log(disp)", x)
+parms$variable = x
+colnames(parms) = c("variable", "fullyBayes")
+parms[["edgeR"]] = parms_edger$value
 
-pmean = d[["probability_high-parent-heterosis_hybrid-mean"]]
-pB73xMo17 = d[["probability_high-parent-heterosis_B73xMo17"]]
-pMo17xB73 = d[["probability_high-parent-heterosis_Mo17xB73"]]
-
-group = rep("neither discovery", dim(d)[1])
-group[d[["Paschold-results_high-parent-heterosis_B73xMo17"]] == "discovery"] = "B73xMo17 discovery"
-group[d[["Paschold-results_high-parent-heterosis_Mo17xB73"]] == "discovery"] = "Mo17xB73 discovery"
-group[d[["Paschold-results_high-parent-heterosis_B73xMo17"]] == "discovery" & 
-      d[["Paschold-results_high-parent-heterosis_Mo17xB73"]] == "discovery"] = 
-  "both discoveries"
-
-probability = pmean
-#probability[group == "B73xMo17 discovery"] = pB73xMo17[group == "B73xMo17 discovery"]
-#probability[group == "Mo17xB73 discovery"] = pMo17xB73[group == "Mo17xB73 discovery"]
-
-x = data.frame(
-  gene = d$geneID,
-  probability = probability,
-  effect_size = effect_size,
-  pval = pval,
-  group = group)
-
-x$status = "other"
-x$status[x$probability > 0.5 & x$group == "neither discovery"] = "disagreement"
-#x$status[x$probability < 0.6 & x$group == "both discoveries"] = "lowyes"
-outlier = "GRMZM2G429000"
-x$status[x$gene == outlier] = "disagreement"
-x$meancount = apply(lc, 1, mean)
-dp1 = lc[,grepl("^B73_", colnames(lc))]
-dp2 = lc[,grepl("^Mo17_", colnames(lc))]
-dh12 = lc[,grepl("^B73xMo17_", colnames(lc))] 
-dh21 = lc[,grepl("^Mo17xB73_", colnames(lc))]
-x$B73 = apply(dp1, 1, mean)
-x$Mo17 = apply(dp2, 1, mean)
-x$B73xMo17 = apply(dh12, 1, mean)
-x$Mo17xB73 = apply(dh21, 1, mean)
-xplot = x[x$gene != outlier,]
-
-# fig-volcano
-pl = ggplot(x[x$group %in% c("both discoveries", "neither discovery"),]) + 
-  stat_binhex(aes_string(x = "effect_size", y = "probability"), bins = 100) +
-  geom_hline(yintercept = 0.5) +
-  facet_wrap(as.formula("~group")) +
-  scale_fill_gradient(guide = F, name = "count", trans = "log", low = "#707070", high = "black") +
-  xlab("effect size") + 
-  ylab("heterosis probability") +
+pl = ggplot(parms) +
+  stat_binhex(aes_string(x = "edgeR", y = "fullyBayes"), bins = 35) +
+  geom_abline(slope = 1) + 
+  facet_wrap(as.formula("~variable"), labeller = label_parsed, scales = "free") +
+  scale_fill_gradient(guide = F, name = "count", 
+    trans = "log", low = "#b5b5b5", high = "black") +
+  ylab("fully Bayes") +
   mytheme_pub()
-dr = newdir(paste0(dir, "fig-volcano"))
 for(extn in extns)
-ggsave(paste0(dr, "fig-volcano.", extn), pl, height = 6, width = 9, dpi = 1200)
+  ggsave(paste0(dir_edgerparms, "fig-edgerparms.", extn), 
+    pl, height = 7, width = 9, dpi = 1200)
 
-# fig-meanandeffect
-pl1 = ggplot(xplot) + 
-  stat_density(aes_string(x = "meancount")) +
-  geom_vline(xintercept = x[x$gene == outlier,"meancount"]) +
-  facet_wrap(as.formula("~status"), scales = "free_y", ncol = 1) +
-  xlab("mean of log(count + 1)") +
-  mytheme_pub()
-pl2 = ggplot(xplot) + 
-  stat_density(aes_string(x = "effect_size")) +
-  geom_vline(xintercept = x[x$gene == outlier,"effect_size"]) +
-  facet_wrap(as.formula("~status"), scales = "free_y", ncol = 1) +
-  xlab("effect size") + ylab("") +
-  mytheme_pub()
-dr = newdir(paste0(dir, "fig-meanandeffect"))
-pdf(paste0(dr, "fig-meanandeffect.pdf"), width = 10)
-grid.arrange(pl1, pl2, nrow = 1)
-dev.off()
-for(ex in c("ps", "eps")){
-  postscript(paste0(dr, "fig-meanandeffect.", ex), width = 10)
-  grid.arrange(pl1, pl2, nrow = 1)
-  dev.off()
+# fig-edgerinference
+d = as.data.frame(read_csv(paste0(dir_TableS1, "TableS1.csv")))
+d$gamma_mean = log(d$gamma_mean)
+d$dispersion_edgeR_estimate = log(d$dispersion_edgeR_estimate)
+d$meancount = rowMeans(d[,grep("count-data", colnames(d))])
+scales = exp(d$dispersion_edgeR_estimate)
+#scales = scales/mean(scales)
+d[,grepl("effect", colnames(d))] = 
+sweep(d[,grepl("effect", colnames(d))], 1, scales, "/")
+
+effects_fb = melt(d[,grepl("geneID|meancount|probability", colnames(d))], 
+  id.vars = c("geneID", "meancount"))
+effects_edger = melt(d[,grepl("geneID|meancount|effect", colnames(d))],
+  id.vars = c("geneID", "meancount"))
+effects_fb$variable = as.character(effects_fb$variable)
+effects_edger$variable = as.character(effects_edger$variable)
+effects = effects_fb
+
+x = effects$variable
+x = gsub("probability_|hybrid-", "", x)
+x = gsub("-parent-heterosis_", " ", x)
+x = ordered(x, levels = 
+  c("high B73xMo17", "high Mo17xB73", "high mean",
+    "low B73xMo17", "low Mo17xB73", "low mean"))
+effects$variable = x
+colnames(effects) = c("geneID", "meancount", "variable", "fullyBayes")
+effects[["edgeR"]] = effects_edger$value
+
+for(opt in c("low", "high")){
+  dir_edgerinference = newdir(paste0(dir, "fig-edgerinference", opt))
+  cutoff = 5
+  if(opt == "low"){
+    df = effects[effects$meancount < cutoff,]
+  } else if(opt == "high"){
+    df = effects[effects$meancount >= cutoff,]
+  }
+
+  pl = ggplot(df) +
+    stat_binhex(aes_string(x = "edgeR", y = "fullyBayes"), bins = 35) +
+    scale_fill_gradient(guide = F, name = "count", 
+      trans = "log", low = "#b5b5b5", high = "black") +
+    facet_wrap(as.formula("~variable"), scales = "free") +
+    ylab("fully Bayes") +
+    mytheme_pub()
+
+  for(extn in extns)
+    ggsave(paste0(dir_edgerinference, "fig-edgerinference", opt, ".", extn), 
+      pl, height = 7, width = 9, dpi = 1200)
 }
 
-# fig-varietymeans
-pl1 = ggplot(xplot) + 
-  stat_binhex(aes_string(x = "B73", y = "Mo17"), bins = 100) +
-  geom_point(data = x[x$gene == outlier,], mapping = aes_string(x = "B73", y = "Mo17"), pch = 17, size = 5) +
-  geom_abline(slope = 1, intercept = 0) +
-  facet_wrap(as.formula("~status"), ncol = 1) +
-  mytheme_pub() +
-  scale_fill_gradient(guide = F, name = "count", trans = "log", low = "lightGray", high = "black")
-pl2 = ggplot(xplot) + 
-  stat_binhex(aes_string(x = "B73xMo17", y = "Mo17xB73"), bins = 100) +
-  geom_point(data = x[x$gene == outlier,], mapping = aes_string(x = "B73xMo17", y = "Mo17xB73"), pch = 17, size = 5) +
-  geom_abline(slope = 1, intercept = 0) +
-  facet_wrap(as.formula("~status"), ncol = 1) +
-  mytheme_pub() +
-  scale_fill_gradient(guide = F, name = "count", trans = "log", low = "lightGray", high = "black")
-dr = newdir(paste0(dir, "fig-varietymeans"))
-pdf(paste0(dr, "fig-varietymeans.pdf"), width = 10)
-grid.arrange(pl1, pl2, nrow = 1)
-dev.off()
-for(ex in c("ps", "eps")){
-  postscript(paste0(dr, "fig-varietymeans.", ex), width = 10)
-  grid.arrange(pl1, pl2, nrow = 1)
-  dev.off()
-}
+# table tab-outliers
+dir_outliers = newdir(paste0(dir, "tab-outliers"))
+x = df[df$variable == "high Mo17xB73",]
+outlier1 = x[x$edgeR > 60 & x$fullyBayes < .5,]
+print(outlier1$geneID) # "GRMZM2G046776"
+
+x = df[df$variable == "low Mo17xB73",]
+outlier2 = x[x$edgeR > 100 & x$fullyBayes < .7,]
+print(outlier2$geneID) # "AC205274.3_FG001"
+
+x = df[df$variable == "low mean",]
+outlier3 = x[x$edgeR > 30 & x$fullyBayes < .6,]
+print(outlier3$geneID) # "AC205274.3_FG001"
+
+gs = sort(unique(c(outlier1$geneID, outlier2$geneID, outlier3$geneID)))
+data(paschold)
+paschold = get("paschold")
+tab = paschold@counts[gs,]
+print(xtable(tab), file = paste0(dir_outliers, "tab-outliers.tex"))
 
 } # paper_case_figures
