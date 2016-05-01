@@ -50,7 +50,7 @@ serial_mcmc = function(path = newdir()){
     chain = Chain(paschold, configs, starts)
     saveRDS(chain, paste0(path, mode, "_serial_chain_begin.rds"))
     t = proc.time()
-    chains = fbseq(chain, backend = "serial")
+    chains = fbseq(chain, backend = "serial", processes = 3)
     runtime = proc.time() - t
     saveRDS(runtime, paste0(path, mode, "_serial_runtime.rds"))
     saveRDS(chains, paste0(path, mode, "_serial_chains_end.rds"))
