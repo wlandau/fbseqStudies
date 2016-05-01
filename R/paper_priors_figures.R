@@ -765,7 +765,7 @@ for(extn in extns)
     pl, height = 7, width = 9, dpi = 1200)
 
 # fig-edgerinference
-d = as.data.frame(read_csv(paste0(dir_TableS1, "TableS1.csv")))
+d = as.data.frame(read_csv(paste0(dir_suppTables, prior, ".csv")))
 d$gamma_mean = log(d$gamma_mean)
 d$dispersion_edgeR_estimate = log(d$dispersion_edgeR_estimate)
 d$meancount = rowMeans(d[,grep("count-data", colnames(d))])
