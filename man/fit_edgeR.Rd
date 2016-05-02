@@ -4,7 +4,7 @@
 \alias{fit_edgeR}
 \title{Function \code{fit_edgeR}}
 \usage{
-fit_edgeR(counts, design, group = NULL, ncores = 1)
+fit_edgeR(counts, design, group = NULL, ncores = 1, scenario = NULL)
 }
 \arguments{
 \item{counts}{RNA-seq count datset}
@@ -14,6 +14,8 @@ fit_edgeR(counts, design, group = NULL, ncores = 1)
 \item{group}{group vector}
 
 \item{ncores}{number of cores for parallel execution}
+
+\item{scenario}{\code{fbseq::Scenario} object}
 }
 \value{
 a list of components of a fit object from \code{edgeR}

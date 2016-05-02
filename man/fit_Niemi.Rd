@@ -4,7 +4,7 @@
 \alias{fit_Niemi}
 \title{Function \code{fit_Niemi}}
 \usage{
-fit_Niemi(counts, design, group, ncores = detectCores())
+fit_Niemi(counts, design, group, ncores = detectCores(), scenario = NULL)
 }
 \arguments{
 \item{counts}{RNA-seq count datset}
@@ -14,6 +14,8 @@ fit_Niemi(counts, design, group, ncores = detectCores())
 \item{group}{group vector}
 
 \item{ncores}{number of cores for parallel execution}
+
+\item{scenario}{\code{fbseq::Scenario} object}
 }
 \value{
 \code{rstan} output list

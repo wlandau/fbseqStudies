@@ -95,7 +95,8 @@ single_gene_analysis = function(x, group, hyperparameters, model) {
 #' @param design design matrix
 #' @param group group vector
 #' @param ncores number of cores for parallel execution
-fit_Niemi = function(counts, design, group, ncores = detectCores()){
+#' @param scenario \code{fbseq::Scenario} object
+fit_Niemi = function(counts, design, group, ncores = detectCores(), scenario = NULL){
   t = my.proc.time()
   hyperparameters = get_hyperparameters(counts, design)
 

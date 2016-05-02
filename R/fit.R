@@ -35,7 +35,8 @@ fit = function(path, benchmarks = "edgeR", #c("edgeR", "Niemi"),
           counts = s@counts,
           design = s@design,
           group = s@supplement$group,
-          ncores = ncores)
+          ncores = ncores,
+          scenario = s)
       saveRDS(o, p)
     }
   }
