@@ -845,6 +845,6 @@ data(paschold)
 paschold = get("paschold")
 tab = rbind(NULL, paschold@counts[gs,])
 rownames(tab) = gs
-print(xtable(tab), file = paste0(dir_outliers, "tab-outliers", prior, ".tex"))
+print(xtable(tab), file = paste0(dir_outliers, "tab-outliers.tex"))
 
 } # paper_case_figures
