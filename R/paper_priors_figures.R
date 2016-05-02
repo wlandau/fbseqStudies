@@ -22,7 +22,7 @@ mse$simulation = relevel_simulations(mse$simulation)
 colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:5, ")]")
 mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
 mse$libraries = ordered(mse$libraries, levels = c(16, 32))
-lvl = c("edgeR", "normal", "Laplace", "t")
+lvl = c("normal", "Laplace", "t")
 mse = mse[mse$simulation != "Niemi",]
 mse = mse[mse$analysis %in% lvl,]
 mse$analysis = ordered(mse$analysis, levels = lvl)
@@ -48,7 +48,7 @@ mse$simulation = relevel_simulations(mse$simulation)
 colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:5, ")]")
 mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
 mse$libraries = ordered(mse$libraries, levels = c(16, 32))
-lvl = c("edgeR", "normal", "Laplace", "t")
+lvl = c("normal", "Laplace", "t")
 mse = mse[mse$simulation != "Niemi",]
 mse = mse[mse$analysis %in% lvl,]
 mse$analysis = ordered(mse$analysis, levels = lvl)
@@ -76,7 +76,7 @@ mse$simulation = relevel_simulations(mse$simulation)
 colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:2, ")]")
 mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
 mse = mse[mse$libraries == 8,]
-lvl = c("edgeR", "normal", "Laplace", "t")
+lvl = c("normal", "Laplace", "t")
 mse = mse[mse$simulation != "Niemi",]
 mse = mse[mse$analysis %in% lvl,]
 mse$analysis = ordered(mse$analysis, levels = lvl)
@@ -84,7 +84,7 @@ mse$analysis = ordered(mse$analysis, levels = lvl)
 pl = ggplot(mse) + 
   geom_line(aes_string(x = "analysis", y = "value", group = "rep"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "value"), color = "black") +
-  facet_grid(as.formula("simulation~variable"), scales = "free_y",  labeller = label_parsed) +
+  facet_grid(as.formula("variable~simulation"), scales = "free_y",  labeller = label_parsed) +
   xlab("analysis method") + 
   ylab("mean squared error") +
   mytheme_pub() +
