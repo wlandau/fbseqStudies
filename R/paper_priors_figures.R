@@ -774,7 +774,7 @@ pl = ggplot(parms) +
   ylab("fully Bayes") +
   mytheme_pub()
 for(extn in extns)
-  ggsave(paste0(dir_edgerparms, "PAPER3fig-edgerparms", prior, ".", extn), 
+  ggsave(paste0(dir_edgerparms, "fig-edgerparms", prior, ".", extn), 
     pl, height = 7, width = 9, dpi = 1200)
 
 # fig-edgerinference
@@ -823,7 +823,7 @@ for(opt in c("low", "high")){
     mytheme_pub()
 
   for(extn in extns)
-    ggsave(paste0(dir_edgerinference, "PAPER3fig-edgerinference", opt, prior, ".", extn), 
+    ggsave(paste0(dir_edgerinference, "fig-edgerinference", opt, prior, ".", extn), 
       pl, height = 7, width = 9, dpi = 1200)
 }
 
