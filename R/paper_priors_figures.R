@@ -14,6 +14,86 @@ extns = c("pdf", "ps", "eps")
 mycolors = c("black", "blue", "red")
 gray = "#707070"
 
+# fig:msecomparison
+dir_msecomparison = newdir(paste0(dir, "PAPER3fig-msecomparison"))
+mse = readRDS("comparison_analyze/mse/mse.rds")
+mse$analysis = priors_relevel_analyses(mse$analysis)
+mse$simulation = relevel_simulations(mse$simulation)
+colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:5, ")]")
+mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
+mse$libraries = ordered(mse$libraries, levels = c(16, 32))
+lvl = c("edgeR", "normal", "Laplace", "t")
+mse = mse[mse$simulation != "Niemi",]
+mse = mse[mse$analysis %in% lvl,]
+mse$analysis = ordered(mse$analysis, levels = lvl)
+
+pl = ggplot(mse) + 
+  geom_line(aes_string(x = "analysis", y = "value", group = "libraries", linetype = "libraries"), color = "black") +
+  geom_point(aes_string(x = "analysis", y = "value", pch = "libraries"), color = "black") +
+  facet_grid(as.formula("simulation~variable"), scales = "free_y",  labeller = label_parsed) +
+  xlab("analysis method") + 
+  ylab("mean squared error") +
+  labs(pch = "N", linetype = "N") +
+  mytheme_pub() +
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+
+for(extn in extns)
+  ggsave(paste0(dir_msecomparison, "fig-msecomparison.", extn), pl, height = 7, width = 9, dpi = 1200)
+
+# fig:msecoverage
+dir_msecoverage = newdir(paste0(dir, "PAPER3fig-msecoverage"))
+mse = readRDS("coverage_analyze/mse/mse.rds")
+mse$analysis = priors_relevel_analyses(mse$analysis)
+mse$simulation = relevel_simulations(mse$simulation)
+colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:5, ")]")
+mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
+mse$libraries = ordered(mse$libraries, levels = c(16, 32))
+lvl = c("edgeR", "normal", "Laplace", "t")
+mse = mse[mse$simulation != "Niemi",]
+mse = mse[mse$analysis %in% lvl,]
+mse$analysis = ordered(mse$analysis, levels = lvl)
+
+pl = ggplot(mse) + 
+  geom_line(aes_string(x = "analysis", y = "value", group = "rep"), color = "black") +
+  geom_point(aes_string(x = "analysis", y = "value"), color = "black") +
+  facet_wrap(as.formula("~variable"), scales = "free_y",  labeller = label_parsed) +
+  xlab("analysis method") + 
+  ylab("mean squared error") +
+  mytheme_pub() +
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+
+for(extn in extns)
+  ggsave(paste0(dir_msecoverage, "fig-msecoverage.", extn), pl, height = 7, width = 9, dpi = 1200)
+
+# fig:msecoverage
+dir_msepriors = newdir(paste0(dir, "PAPER3fig-msepriors"))
+mse = readRDS("priors_analyze/mse/mse.rds")
+mse$analysis = gsub("normalnormal", "normal", mse$analysis)
+mse$analysis = gsub("normalLaplace", "Laplace", mse$analysis)
+mse$analysis = gsub("normalt", "t", mse$analysis)
+mse$analysis = priors_relevel_analyses(mse$analysis)
+mse$simulation = relevel_simulations(mse$simulation)
+colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:2, ")]")
+mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
+mse = mse[mse$libraries == 8,]
+lvl = c("edgeR", "normal", "Laplace", "t")
+mse = mse[mse$simulation != "Niemi",]
+mse = mse[mse$analysis %in% lvl,]
+mse$analysis = ordered(mse$analysis, levels = lvl)
+
+pl = ggplot(mse) + 
+  geom_line(aes_string(x = "analysis", y = "value", group = "rep"), color = "black") +
+  geom_point(aes_string(x = "analysis", y = "value"), color = "black") +
+  facet_grid(as.formula("simulation~variable"), scales = "free_y",  labeller = label_parsed) +
+  xlab("analysis method") + 
+  ylab("mean squared error") +
+  mytheme_pub() +
+  theme(axis.text.x = element_text(angle = -80, hjust = 0))
+
+for(extn in extns)
+  ggsave(paste0(dir_msepriors, "fig-msepriors.", extn), pl, height = 7, width = 9, dpi = 1200)
+
+
 # fig-priorshyperhist
 dir_priorshyperhist = newdir(paste0(dir, "PAPER3fig-priorshyperhist"))
 m_hyper = NULL
