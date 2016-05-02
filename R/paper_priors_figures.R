@@ -6,7 +6,7 @@ NULL
 #' @export
 paper_priors_figures = function(){
 
-# library(fbseqStudies); library(xtable); library(reshape2); library(plyr); library(pracma); library(ggthemes); library(actuar); setwd("~/home/work/projects/thesis_data/results")
+# library(fbseqStudies); library(xtable); library(reshape2); library(plyr); library(pracma); library(ggthemes); library(actuar); setwd("~/home/work/projects/thesis_data/results"); library(readr)
 
 # control parms
 dir = newdir("priors_study_paper_figures")
@@ -752,9 +752,22 @@ parms$variable = x
 colnames(parms) = c("variable", "fullyBayes")
 parms[["edgeR"]] = parms_edger$value
 
+l = readRDS("real_mcmc/paschold_39656_16_1.rds")
+a = l$analyses[[paste0("fullybayes+", prior)]]
+m = mcmc_samples(a$chains)
+m2 = apply(m, 2, mean)
+hmeans = data.frame(variable = unique(parms$variable), value = 0)
+for(i in 1:5) hmeans$value[i] = m2[paste0("theta_", i)]
+nu = m2["nu"]
+tau = m2["tau"]
+a = nu/2
+b = tau*a
+hmeans$value[6] = log(b) + digamma(a)
+
 pl = ggplot(parms) +
   stat_binhex(aes_string(x = "edgeR", y = "fullyBayes"), bins = 35) +
   geom_abline(slope = 1) + 
+  geom_hline(data = hmeans, mapping = aes_string(yintercept = "value")) +
   facet_wrap(as.formula("~variable"), labeller = label_parsed, scales = "free") +
   scale_fill_gradient(guide = F, name = "count", 
     trans = "log", low = "#b5b5b5", high = "black") +
@@ -821,17 +834,18 @@ outlier1 = x[x$edgeR > 60 & x$fullyBayes < .5,]
 print(outlier1$geneID) # "GRMZM2G046776"
 
 x = df[df$variable == "low Mo17xB73",]
-outlier2 = x[x$edgeR > 100 & x$fullyBayes < .7,]
+outlier2 = x[x$edgeR > 100 & x$fullyBayes < .75,]
 print(outlier2$geneID) # "AC205274.3_FG001"
 
 x = df[df$variable == "low mean",]
-outlier3 = x[x$edgeR > 30 & x$fullyBayes < .6,]
+outlier3 = x[x$edgeR > 30 & x$fullyBayes < .75,]
 print(outlier3$geneID) # "AC205274.3_FG001"
 
 gs = sort(unique(c(outlier1$geneID, outlier2$geneID, outlier3$geneID)))
 data(paschold)
 paschold = get("paschold")
-tab = paschold@counts[gs,]
+tab = rbind(NULL, paschold@counts[gs,])
+rownames(tab) = gs
 print(xtable(tab), file = paste0(dir_outliers, "tab-outliers", prior, ".tex"))
 
 } # for(prior in priors_analyses())

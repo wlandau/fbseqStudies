@@ -751,9 +751,22 @@ parms$variable = x
 colnames(parms) = c("variable", "fullyBayes")
 parms[["edgeR"]] = parms_edger$value
 
+l = readRDS("real_mcmc/paschold_39656_16_1.rds")
+a = l$analyses[["fullybayes+normal"]]
+m = mcmc_samples(a$chains)
+m2 = apply(m, 2, mean)
+hmeans = data.frame(variable = unique(parms$variable), value = 0)
+for(i in 1:5) hmeans$value[i] = m2[paste0("theta_", i)]
+nu = m2["nu"]
+tau = m2["tau"]
+a = nu/2
+b = tau*a
+hmeans$value[6] = log(b) + digamma(a)
+
 pl = ggplot(parms) +
   stat_binhex(aes_string(x = "edgeR", y = "fullyBayes"), bins = 35) +
   geom_abline(slope = 1) + 
+  geom_hline(data = hmeans, mapping = aes_string(yintercept = "value")) +
   facet_wrap(as.formula("~variable"), labeller = label_parsed, scales = "free") +
   scale_fill_gradient(guide = F, name = "count", 
     trans = "log", low = "#b5b5b5", high = "black") +
@@ -830,7 +843,8 @@ print(outlier3$geneID) # "AC205274.3_FG001"
 gs = sort(unique(c(outlier1$geneID, outlier2$geneID, outlier3$geneID)))
 data(paschold)
 paschold = get("paschold")
-tab = paschold@counts[gs,]
-print(xtable(tab), file = paste0(dir_outliers, "tab-outliers.tex"))
+tab = rbind(NULL, paschold@counts[gs,])
+rownames(tab) = gs
+print(xtable(tab), file = paste0(dir_outliers, "tab-outliers", prior, ".tex"))
 
 } # paper_case_figures
