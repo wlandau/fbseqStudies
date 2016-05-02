@@ -9,6 +9,7 @@ comparison_analyze = function(from, to){
   gelman(from, paste0(to, "gelman"))
   ess(from, paste0(to, "ess"))
   runtime(from, paste0(to, "runtime"))
+  mse(from, paste0(to, "mse"))
   ci(from, paste0(to, "ci"))
   rocs(from, paste0(to, "roc"))
   roc_long(paste0(to, "roc"), paste0(to, "roc_long"))

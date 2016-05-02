@@ -1,6 +1,7 @@
 Package: fbseqStudies
 Title: fbseqStudies
-Description: Reproduces results of papers using the fbseq, fbseqCUDA, and fbseqSerial packages.
+Description: Reproduces results of papers using the fbseq, fbseqCUDA, and
+    fbseqSerial packages.
 URL: https://github.com/wlandau/fbseqStudies
 Version: 0.0
 Author: Will Landau <will.landau@gmail.com>
@@ -65,6 +66,7 @@ Collate:
     'analyze-explore_real.R'
     'analyze-gelman.R'
     'analyze-ggplot2_df.R'
+    'analyze-mse.R'
     'analyze-plot_runtime.R'
     'analyze-roc.R'
     'analyze-roc_long.R'
