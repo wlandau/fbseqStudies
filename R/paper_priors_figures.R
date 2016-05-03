@@ -704,7 +704,7 @@ for(extn in extns)
 # fig:pascholdcred
 dir_pascholdcred = newdir(paste0(dir, "PAPER3fig-pascholdcred"))
 d = ddply(e, "parameter", function(x){
-  x = x[sample(dim(x)[1], 1e3),]
+  x = x[sample(dim(x)[1], min(1e3, dim(x)[1])),]
   x = x[order(x$mean),]
   x$index = 1:dim(x)[1]
   x
