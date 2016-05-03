@@ -11,7 +11,6 @@
 #' @param configs \code{Configs} object for \code{fbseq}
 #' @param zeronormfactors TRUE/FALSE. If TRUE, starts@@h is set to 0.
 fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, configs = Configs(), zeronormfactors = F){
-  logs = mysink()
   t = my.proc.time()
 
   s = sim$scenario
@@ -61,7 +60,6 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
   est = cbind(beta, prob, eff)
   rownames(est) = rownames(s@counts)
 
-  unsink(logs)
   list(analysis = paste0(method, "+", paste0(prior, collapse = "")), estimates = est, chains = chains, 
     runtime = my.proc.time() - t, configs = configs, starts = starts, psrf = psrf(chains),
     ess = effectiveSize(mcmc_samples(chains)))
