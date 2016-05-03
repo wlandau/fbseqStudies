@@ -490,7 +490,7 @@ for(extn in extns)
 # fig:pascholdcred
 dir_pascholdcred = newdir(paste0(dir, "fig-pascholdcred"))
 d = ddply(e, "parameter", function(x){
-  x = x[sample(dim(x)[1], max(dim(x)[1], 1e3)),]
+  x = x[sample(dim(x)[1], min(dim(x)[1], 1e3)),]
   x = x[order(x$mean),]
   x$index = 1:dim(x)[1]
   x
