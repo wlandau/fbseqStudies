@@ -198,20 +198,17 @@ hmean[l1$type == "beta[list(g4)]"] = -0.005
 hmean[l1$type == "beta[list(g5)]"] = 0.008
 l1$hmean = hmean
 pl = ggplot(l1) + 
-  geom_line(aes_string(x = "truth", y = "cover", group = "rep"), alpha = 0.5) + 
+  geom_line(aes_string(x = "truth", y = "cover", group = "rep")) + 
   geom_abline(slope = 0, intercept = level, linetype = "dotted") +
   geom_vline(aes_string(xintercept = "hmean")) +
   facet_wrap(as.formula("~type"), scales = "free_x", labeller = label_parsed) +
   xlab("true parameter value") +
   ylab("local coverage rate") +
   mytheme_pub() + theme(axis.text.x = element_text(angle = -80, hjust = 0))
-for(extn in extns[!grepl("ps", extns)])
+for(extn in extns)
   ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, height = 6, width = 7, dpi = 1200)
-for(extn in extns[grepl("ps", extns)])
-  ggsave(paste0(dir_betacoveragetrend, "fig-betacoveragetrend.", extn), pl, device=cairo_ps,
- height = 6, width = 7, dpi = 1200)
 pl2 = ggplot(l1) + 
-  geom_line(aes_string(x = "truth", y = "cover", group = "rep"), alpha = 0.5) + 
+  geom_line(aes_string(x = "truth", y = "cover", group = "rep")) + 
   geom_abline(slope = 0, intercept = level, linetype = "dotted") +
   geom_vline(aes_string(xintercept = "hmean")) +
   facet_grid(as.formula("~type"), scales = "free_x", labeller = label_parsed) +
@@ -493,7 +490,7 @@ for(extn in extns)
 # fig:pascholdcred
 dir_pascholdcred = newdir(paste0(dir, "fig-pascholdcred"))
 d = ddply(e, "parameter", function(x){
-  x = x[sample(dim(x)[1], 1e3),]
+  x = x[sample(dim(x)[1], max(dim(x)[1], 1e3)),]
   x = x[order(x$mean),]
   x$index = 1:dim(x)[1]
   x
