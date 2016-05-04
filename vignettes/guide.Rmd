@@ -1,5 +1,5 @@
 ---
-title: "`fbseqStudies` package installation and usage guide"
+title: "[`fbseqStudies`](https://github.com/wlandau/fbseqStudies) package installation and usage guide"
 author: Will Landau
 date: 2015
 bibliography: bibliography.bib
@@ -9,26 +9,20 @@ output:
     toc: true
 vignette: >
   \VignetteEngine{knitr::rmarkdown}
-  \VignetteIndexEntry{`fbseqStudies` package installation and usage guide}
+  \VignetteIndexEntry{[`fbseqStudies`](https://github.com/wlandau/fbseqStudies) package installation and usage guide}
   \usepackage[utf8]{inputenc}
 ---
 
 # Purpose
 
-`fbseqStudies` reproduces the results of academic studies of the methodology behind the [`fbseq`](https://github.com/wlandau/fbseq) and [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) packages.
+[`fbseqStudies`](https://github.com/wlandau/fbseqStudies) reproduces the results of academic studies of the methodology behind the [`fbseq`](https://github.com/wlandau/fbseq) and [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) packages.
 
 # System requirements
 
 - Mac OS X or Linux. 
-- R 3.2.0 or higher
-- R packages `methods`, `parallel`, `snowfall`, `doMC`, `ggplot2`, `pracma`, `plyr`, `reshape2`, and `knitr`, available though the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/).
-- The R package `edgeR`, available through [Bioconductor](http://bioconductor.org/). 
-- R package `rstan`, the installation of which is explained on a [GitHub wiki](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started).
+- The required R version and R packages listed in the  "Depends", "Imports", and "Suggests" fields of the "package's [DESCRIPTION](https://github.com/wlandau/fbseqStudies/blob/master/DESCRIPTION) file.
 - A CUDA-enabled NVIDIA graphics processing unit (GPU) with compute capability 2.0 or greater.
-- CUDA version 6.0 or greater.
-- The [`fbseq`](https://github.com/wlandau/fbseq), [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA), and [`fbseqSerial`](https://github.com/wlandau/fbseqSerial) packages, available on GitHub.
-
-More information about CUDA is available through [NVIDIA](http://www.nvidia.com/object/cuda_home_new.html). If your computer does not have these features, you can rent GPU time from [cloud computing enterprises](http://www.nvidia.com/object/gpu-cloud-computing-services.html) such as [Amazon Web Services](http://aws.amazon.com/ec2/instance-types/). See the installation vignettes for the [`fbseq`](https://github.com/wlandau/fbseq) and [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) packages for installation details about those packages.
+- CUDA version 6.0 or greater. More information about CUDA is available through [NVIDIA](http://www.nvidia.com/object/cuda_home_new.html).
 
 # Installation
 

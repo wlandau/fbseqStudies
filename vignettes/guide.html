@@ -52,7 +52,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 
 
 <div id="header">
-<h1 class="title"><code>fbseqStudies</code> package installation and usage guide</h1>
+<h1 class="title"><a href="https://github.com/wlandau/fbseqStudies"><code>fbseqStudies</code></a> package installation and usage guide</h1>
 <h4 class="author"><em>Will Landau</em></h4>
 <h4 class="date"><em>2015</em></h4>
 </div>
@@ -72,21 +72,16 @@ code > span.er { color: #ff0000; font-weight: bold; }
 
 <div id="purpose" class="section level1">
 <h1><span class="header-section-number">1</span> Purpose</h1>
-<p><code>fbseqStudies</code> reproduces the results of academic studies of the methodology behind the <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> and <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a> packages.</p>
+<p><a href="https://github.com/wlandau/fbseqStudies"><code>fbseqStudies</code></a> reproduces the results of academic studies of the methodology behind the <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> and <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a> packages.</p>
 </div>
 <div id="system-requirements" class="section level1">
 <h1><span class="header-section-number">2</span> System requirements</h1>
 <ul>
 <li>Mac OS X or Linux.</li>
-<li>R 3.2.0 or higher</li>
-<li>R packages <code>methods</code>, <code>parallel</code>, <code>snowfall</code>, <code>doMC</code>, <code>ggplot2</code>, <code>pracma</code>, <code>plyr</code>, <code>reshape2</code>, and <code>knitr</code>, available though the <a href="https://cran.r-project.org/">Comprehensive R Archive Network (CRAN</a>.</li>
-<li>The R package <code>edgeR</code>, available through <a href="http://bioconductor.org/">Bioconductor</a>.</li>
-<li>R package <code>rstan</code>, the installation of which is explained on a <a href="https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started">GitHub wiki</a>.</li>
+<li>The required R version and R packages listed in the “Depends”, “Imports”, and “Suggests” fields of the “package’s <a href="https://github.com/wlandau/fbseqStudies/blob/master/DESCRIPTION">DESCRIPTION</a> file.</li>
 <li>A CUDA-enabled NVIDIA graphics processing unit (GPU) with compute capability 2.0 or greater.</li>
-<li>CUDA version 6.0 or greater.</li>
-<li>The <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a>, <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a>, and <a href="https://github.com/wlandau/fbseqSerial"><code>fbseqSerial</code></a> packages, available on GitHub.</li>
+<li>CUDA version 6.0 or greater. More information about CUDA is available through <a href="http://www.nvidia.com/object/cuda_home_new.html">NVIDIA</a>.</li>
 </ul>
-<p>More information about CUDA is available through <a href="http://www.nvidia.com/object/cuda_home_new.html">NVIDIA</a>. If your computer does not have these features, you can rent GPU time from <a href="http://www.nvidia.com/object/gpu-cloud-computing-services.html">cloud computing enterprises</a> such as <a href="http://aws.amazon.com/ec2/instance-types/">Amazon Web Services</a>. See the installation vignettes for the <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a> and <a href="https://github.com/wlandau/fbseqCUDA"><code>fbseqCUDA</code></a> packages for installation details about those packages.</p>
 </div>
 <div id="installation" class="section level1">
 <h1><span class="header-section-number">3</span> Installation</h1>
