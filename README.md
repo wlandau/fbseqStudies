@@ -1,6 +1,19 @@
-# fbseqStudies
+# Purpose
 
-This package reproduces the results of some journal articles that use the `fbseq` and `fbseqCUDA` packages. 
+`fbseqStudies` reproduces the results of academic studies of the methodology behind the [`fbseq`](https://github.com/wlandau/fbseq) and [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) packages.
+
+# System requirements
+
+- Mac OS X or Linux. 
+- R 3.2.0 or higher
+- R packages `methods`, `parallel`, `snowfall`, `doMC`, `ggplot2`, `pracma`, `plyr`, `reshape2`, and `knitr`, available though the [Comprehensive R Archive Network (CRAN](https://cran.r-project.org/).
+- The R package `edgeR`, available through [Bioconductor](http://bioconductor.org/). 
+- R package `rstan`, the installation of which is explained on a [GitHub wiki](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started).
+- A CUDA-enabled NVIDIA graphics processing unit (GPU) with compute capability 2.0 or greater.
+- CUDA version 6.0 or greater.
+- The [`fbseq`](https://github.com/wlandau/fbseq), [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA), and [`fbseqSerial`](https://github.com/wlandau/fbseqSerial) packages, available on GitHub.
+
+More information about CUDA is available through [NVIDIA](http://www.nvidia.com/object/cuda_home_new.html). If your computer does not have these features, you can rent GPU time from [cloud computing enterprises](http://www.nvidia.com/object/gpu-cloud-computing-services.html) such as [Amazon Web Services](http://aws.amazon.com/ec2/instance-types/). See the installation vignettes for the [`fbseq`](https://github.com/wlandau/fbseq) and [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) packages for installation details about those packages.
 
 # Installation
 
@@ -28,3 +41,30 @@ R CMD INSTALL ...
 ```
 
 where `...` is replaced by the name of the tarball produced by `R CMD build`. 
+
+# Run the studies
+
+Each function below reproduces the results of a paper.
+
+|------------------------------------|--------------------------------------------------| 
+| `paper_computation()`   | publication pending | 
+| `paper_case()`  | publication pending |
+| `paper_priors()`  | publication pending |
+
+To run all 3 above functions in sequence, call the function `Landau_dissertation()`, which reproduces all the computation, figures, tables, etc. of the Statistics PhD dissertation of Will Landau (http://will-landau.com, will.landau@gmail.com).
+
+For further control, choose among the following. For even finer-grained control, see the manual and help files.
+
+|------------------------------------|--------------------------------------------------| 
+|`progress()`| In the above 3 `paper_` functions, the rate limiting step is to produce directories called `real_mcmc`, `coverage_mcmc`, etc., each with `.rds` files inside. Each `.rds` file contains a single (simulated or real) RNA-seq dataset and all the analyses of that dataset. To check the progress of the analyses, run `progress("coverage_mcmc")`, for example. Running `progress("coverage_mcmc")` lists all the methods used to analyze each dataset in the `coverage_mcmc` directory produced by `coverage_mcmc()` in `paper_case()`.
+| `real_mcmc()`  | Run different versions of the model on the Paschold et al. (2012) dataset. | 
+| `computation_mcmc()`  | Duplicate sections of the Paschold et al. (2012) dataset to create datasets of varying size. Fit the default model to see how runtime scales with the number of genes and the number of libraries. | 
+| `coverage_mcmc()`  | Simulate different datasets from the model to assess the ability to recapture parameters of interest in credible intervals calculated from the estimated full joint posterior distribution. | 
+| `comparison_mcmc()`  | Simulate datasets from multiple scenarios and fit multiple versions of the model to assess gene detection power and the calibration of posterior probabilites. | 
+| `serial_mcmc()`  | Run a fully Bayesian analysis of the Paschold et al. (2012) dataset in a version of the software that makes no use of GPU computing at all. | 
+| `real_analyze()`  | Extract figures, tables, and other results from the output of `real_mcmc()` | 
+| `computation_analyze()` | Similar, but for `computation_mcmc()` | 
+| `coverage_analyze()` | Similar, but for `coverage_mcmc()` | 
+| `comparison_analyze()`  | Similar, but for `comparison_mcmc()`  | 
+|`paper_case_figures()` | Once the `_mcmc()` and `_analyze()` functions are run in the current working directory, run this function to reproduce all the figures and tables of the computation paper (inside `paper_computation()`). |
+|`paper_case_figures()` | Once the `_mcmc()` and `_analyze()` functions are run in the current working directory, run this function to reproduce all the figures and tables of the priors paper (inside `paper_priors()`). |
