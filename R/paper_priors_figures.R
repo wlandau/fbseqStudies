@@ -566,7 +566,12 @@ for(extn in extns)
   ggsave(paste0(dir_comparecalerror, "fig-comparecalerror.", extn), pl, height = 8, width = 10, dpi = 1200)
 
 # paschold data analysis
-l = readRDS("real_mcmc/paschold_39656_16_1.rds")
+data(paschold)
+paschold = get("paschold")
+scaledown()
+fname = paste0("real_mcmc/paschold_", nrow(paschold@counts),
+  "_", ncol(paschold@counts), "_1.rds")
+l = readRDS(fname)
 l$analyses = l$analyses[names(l$analyses) != "edgeR"]
 as = list(normal = l$analyses[["fullybayes+normal"]],
   Laplace = l$analyses[["fullybayes+Laplace"]],
@@ -614,7 +619,12 @@ for(v in unique(d$variable)){ # c("nu|tau", "theta", "sigma")
 }
 
 # loop over type of hierarchical distribution
-l = readRDS("real_mcmc/paschold_39656_16_1.rds")
+data(paschold)
+paschold = get("paschold")
+scaledown()
+fname = paste0("real_mcmc/paschold_", nrow(paschold@counts),
+  "_", ncol(paschold@counts), "_1.rds")
+l = readRDS(fname)
 l$analyses = l$analyses[names(l$analyses) != "edgeR"]
 set.seed(10)
 edger = fit_edgeR(paschold@counts, paschold@design)
@@ -852,7 +862,12 @@ parms$variable = x
 colnames(parms) = c("variable", "fullyBayes")
 parms[["edgeR"]] = parms_edger$value
 
-l = readRDS("real_mcmc/paschold_39656_16_1.rds")
+data(paschold)
+paschold = get("paschold")
+scaledown()
+fname = paste0("real_mcmc/paschold_", nrow(paschold@counts),
+  "_", ncol(paschold@counts), "_1.rds")
+l = readRDS(fname)
 l$analyses = l$analyses[names(l$analyses) != "edgeR"]
 a = l$analyses[[paste0("fullybayes+", prior)]]
 m = mcmc_samples(a$chains)

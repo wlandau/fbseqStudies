@@ -66,7 +66,8 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <li><a href="#option-2-use-install_github-to-install-the-development-version."><span class="toc-section-number">3.2</span> Option 2: use <code>install_github</code> to install the development version.</a></li>
 <li><a href="#option-3-build-the-development-version-from-the-source."><span class="toc-section-number">3.3</span> Option 3: build the development version from the source.</a></li>
 </ul></li>
-<li><a href="#run-the-studies"><span class="toc-section-number">4</span> Run the studies</a></li>
+<li><a href="#run-a-scaled-down-version-first"><span class="toc-section-number">4</span> Run a scaled-down version first</a></li>
+<li><a href="#replicate-the-studies"><span class="toc-section-number">5</span> Replicate the studies</a></li>
 </ul>
 </div>
 
@@ -104,8 +105,16 @@ R CMD INSTALL ...</code></pre>
 <p>where <code>...</code> is replaced by the name of the tarball produced by <code>R CMD build</code>.</p>
 </div>
 </div>
-<div id="run-the-studies" class="section level1">
-<h1><span class="header-section-number">4</span> Run the studies</h1>
+<div id="run-a-scaled-down-version-first" class="section level1">
+<h1><span class="header-section-number">4</span> Run a scaled-down version first</h1>
+<p>Before seriously running a long job with one of the functions in the next section, do a trial run first. For a trial run, set the <code>&quot;fbseqStudies.scaledown&quot;</code> option to <code>TRUE</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(fbseqStudies)
+<span class="kw">options</span>(<span class="st">&quot;fbseqStudies.scaledown&quot;</span> =<span class="st"> </span>T) <span class="co"># Scale down the computation.</span>
+<span class="kw">paper_case</span>() <span class="co"># Replicate the results of the case study paper.</span></code></pre>
+<p>Calling <code>options(&quot;fbseqStudies.scaledown&quot; = T)</code> selects the serial backend for <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a>, ensures that datasets are small in the numbers of genes, and configures the MCMCs to run for only a few iterations. That way, <code>paper_case()</code> will complete in a few minutes on your home computer, as opposed to several days on a machine with a CUDA-capable general-purpose graphics processing unit (GPU).</p>
+</div>
+<div id="replicate-the-studies" class="section level1">
+<h1><span class="header-section-number">5</span> Replicate the studies</h1>
 <p>Each function below reproduces the results of a paper.</p>
 <table>
 <tbody>
@@ -129,7 +138,7 @@ R CMD INSTALL ...</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left"><code>progress()</code></td>
-<td align="left">In the above 3 <code>paper_</code> functions, the rate limiting step is to produce directories called <code>real_mcmc</code>, <code>coverage_mcmc</code>, etc., each with <code>.rds</code> files inside. Each <code>.rds</code> file contains a single (simulated or real) RNA-seq dataset and all the analyses of that dataset. To check the progress of the analyses, run <code>progress(&quot;coverage_mcmc&quot;)</code>, for example. Running <code>progress(&quot;coverage_mcmc&quot;)</code> lists all the methods used to analyze each dataset in the <code>coverage_mcmc</code> directory produced by <code>coverage_mcmc()</code> in <code>paper_case()</code>.</td>
+<td align="left">In the above 3 <code>paper_*</code> functions, the rate limiting step is to produce directories called <code>real_mcmc</code>, <code>coverage_mcmc</code>, etc., each with <code>.rds</code> files inside. Each <code>.rds</code> file contains a single (simulated or real) RNA-seq dataset and all the analyses of that dataset. To check the progress of the analyses, run <code>progress(&quot;coverage_mcmc&quot;)</code>, for example. Running <code>progress(&quot;coverage_mcmc&quot;)</code> lists all the methods used to analyze each dataset in the <code>coverage_mcmc</code> directory produced by <code>coverage_mcmc()</code> in <code>paper_case()</code>.</td>
 </tr>
 <tr class="even">
 <td align="left"><code>real_mcmc()</code></td>

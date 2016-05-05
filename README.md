@@ -9,7 +9,7 @@
 - A CUDA-enabled NVIDIA graphics processing unit (GPU) with compute capability 2.0 or greater.
 - CUDA version 6.0 or greater. More information about CUDA is available through [NVIDIA](http://www.nvidia.com/object/cuda_home_new.html).
 
-# Installation
+# Install
 
 ## Option 1: install a stable release (recommended).
 
@@ -19,7 +19,7 @@ Navigate to a [list of stable releases](https://github.com/wlandau/fbseqStudies/
 
 For this option, you need the `devtools` package, available from CRAN or GitHub. Open R and run 
 
-```{r, eval=F}
+```
 library(devtools)
 install_github("wlandau/fbseqStudies")
 ```
@@ -36,7 +36,20 @@ R CMD INSTALL ...
 
 where `...` is replaced by the name of the tarball produced by `R CMD build`. 
 
-# Run the studies
+# Run a scaled-down version first
+
+Before seriously running a long job with one of the functions in the next section, do a trial run first. For a trial run, set the ``"fbseqStudies.scaledown"`` option to ``TRUE``. 
+
+
+```
+library(fbseqStudies)
+options("fbseqStudies.scaledown" = T) # Scale down the computation.
+paper_case() # Replicate the results of the case study paper.
+```
+
+Calling ``options("fbseqStudies.scaledown" = T)`` selects the serial backend for [`fbseq`](https://github.com/wlandau/fbseq), ensures that datasets are small in the numbers of genes, and configures the MCMCs to run for only a few iterations. That way, ``paper_case()`` will complete in a few minutes on your home computer, as opposed to several days on a  machine with a CUDA-capable general-purpose graphics processing unit (GPU).
+
+# Replicate the studies
 
 Each function below reproduces the results of a paper.
 
@@ -50,7 +63,7 @@ To run all 3 above functions in sequence, call the function `Landau_dissertation
 For further control, choose among the following. For even finer-grained control, see the manual and help files.
 
 |------------------------------------|--------------------------------------------------| 
-|`progress()`| In the above 3 `paper_` functions, the rate limiting step is to produce directories called `real_mcmc`, `coverage_mcmc`, etc., each with `.rds` files inside. Each `.rds` file contains a single (simulated or real) RNA-seq dataset and all the analyses of that dataset. To check the progress of the analyses, run `progress("coverage_mcmc")`, for example. Running `progress("coverage_mcmc")` lists all the methods used to analyze each dataset in the `coverage_mcmc` directory produced by `coverage_mcmc()` in `paper_case()`.
+|`progress()`| In the above 3 `paper_*` functions, the rate limiting step is to produce directories called `real_mcmc`, `coverage_mcmc`, etc., each with `.rds` files inside. Each `.rds` file contains a single (simulated or real) RNA-seq dataset and all the analyses of that dataset. To check the progress of the analyses, run `progress("coverage_mcmc")`, for example. Running `progress("coverage_mcmc")` lists all the methods used to analyze each dataset in the `coverage_mcmc` directory produced by `coverage_mcmc()` in `paper_case()`.
 | `real_mcmc()`  | Run different versions of the model on the Paschold et al. (2012) dataset. | 
 | `computation_mcmc()`  | Duplicate sections of the Paschold et al. (2012) dataset to create datasets of varying size. Fit the default model to see how runtime scales with the number of genes and the number of libraries. | 
 | `coverage_mcmc()`  | Simulate different datasets from the model to assess the ability to recapture parameters of interest in credible intervals calculated from the estimated full joint posterior distribution. | 

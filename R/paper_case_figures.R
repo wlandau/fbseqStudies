@@ -308,7 +308,12 @@ for(extn in extns)
   ggsave(paste0(dir_comparecalerror, "fig-comparecalerror.", extn), pl, height = 8, width = 10, dpi = 1200)
 
 # paschold data analysis
-l = readRDS("real_mcmc/paschold_39656_16_1.rds")
+data(paschold)
+paschold = get("paschold")
+scaledown()
+fname = paste0("real_mcmc/paschold_", nrow(paschold@counts),
+  "_", ncol(paschold@counts), "_1.rds")
+l = readRDS(fname)
 a = l$analyses[["fullybayes+normal"]]
 m = mcmc_samples(a$chains)
 e = estimates(a$chains, level = 0.95)
@@ -806,7 +811,12 @@ parms$variable = x
 colnames(parms) = c("variable", "fullyBayes")
 parms[["edgeR"]] = parms_edger$value
 
-l = readRDS("real_mcmc/paschold_39656_16_1.rds")
+data(paschold)
+paschold = get("paschold")
+scaledown()
+fname = paste0("real_mcmc/paschold_", nrow(paschold@counts),
+  "_", ncol(paschold@counts), "_1.rds")
+l = readRDS(fname)
 a = l$analyses[["fullybayes+normal"]]
 m = mcmc_samples(a$chains)
 m2 = apply(m, 2, mean)
