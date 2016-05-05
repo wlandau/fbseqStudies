@@ -5,6 +5,7 @@
 #' @return releveled factor
 relevel_analyses = function(x){
   out = as.character(x)
+  out[out == "ibayes+normal"] = "independence"
   out[out == "ebayesFromTruth+normal"] = "eBayes (Oracle)"
   out[out == "ebayesFromStarts+normal"] = "eBayes (Naive)"
   out[out == "ebayesFromFullybayes+normal"] = "eBayes (Means)"
@@ -18,6 +19,7 @@ relevel_analyses = function(x){
     "fully Bayes (t)",
     "fully Bayes (horseshoe)",
     "edgeR",
+    "independence",
     "Niemi",
     "eBayes (Naive)",
     "eBayes (Means)",

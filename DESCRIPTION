@@ -44,7 +44,7 @@ Collate:
     'study-comparison_init.R'
     'study-comparison_mcmc.R'
     'paper_priors.R'
-    'study-serial_mcmc.R'
+    'study-serial_runs.R'
     'study-coverage_init.R'
     'study-coverage_mcmc.R'
     'paper_case.R'

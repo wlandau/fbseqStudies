@@ -1,9 +1,9 @@
-#' @title Function \code{serial_mcmc}
+#' @title Function \code{serial_runs}
 #' @description Execute serial MCMC on Paschold data.
 #' @export
 #' @return path to results
 #' @param path to directory to save simulations and results
-serial_mcmc = function(path = newdir()){
+serial_runs = function(path = newdir()){
   path = newdir(path)
   data(paschold)
   paschold = get("paschold")
@@ -14,7 +14,7 @@ serial_mcmc = function(path = newdir()){
   verbose = 10
   scaledown()
 
-  for(mode in c("fullybayes", "ebayes")){
+  for(mode in c("fullybayes", "ebayes", "ibayes")){
     if(mode == "ebayes"){
       configs = Configs(
         burnin = burnin, 
@@ -37,6 +37,18 @@ serial_mcmc = function(path = newdir()){
           -0.0072736245, 
           -0.0045192501, 
           0.0079677045))
+    } else if(mode == "ibayes"){
+      configs = Configs(
+        burnin = burnin, 
+        iterations = iterations, 
+        thin = thin, 
+        verbose = verbose, 
+        parameter_sets_return = c("beta", "epsilon", "gamma"),
+        parameter_sets_update = c("beta", "epsilon", "gamma"))
+      starts = Starts(
+        nu = 0.001, tau = 0.01, 
+        sigmaSquared = c(1000, 100, 100, 100, 100),
+        theta = rep(0, 5))
     } else if(mode == "fullybayes"){
       configs = Configs(
         burnin = burnin, 

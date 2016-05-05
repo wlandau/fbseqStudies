@@ -23,7 +23,7 @@ mse$simulation = relevel_simulations(mse$simulation)
 colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:5, ")]")
 mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
 mse$libraries = ordered(mse$libraries, levels = c(16, 32))
-lvl = c("edgeR", "fully Bayes", "eBayes (Means)", "eBayes (Oracle)")
+lvl = c("edgeR", "independence", "fully Bayes", "eBayes (Means)", "eBayes (Oracle)")
 mse = mse[mse$simulation != "Niemi",]
 mse = mse[mse$analysis %in% lvl,]
 mse$analysis = ordered(mse$analysis, levels = lvl)
@@ -627,7 +627,7 @@ write.csv(p, paste0(dir_TableS1, "TableS1.csv"), row.names = F)
 # credible interval info for comparison study
 l = as.data.frame(readRDS("comparison_analyze/ci/ci.rds"))
 l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
-lc = l[l$analysis %in% c("fullybayes+normal", "ebayesFromFullybayes+normal", "ebayesFromTruth+normal"),]
+lc = l[l$analysis %in% c("fullybayes+normal", "ibayes+normal", "ebayesFromFullybayes+normal", "ebayesFromTruth+normal"),]
 l = l[l$analysis == "fullybayes+normal",]
 
 # fig:comparebetarates

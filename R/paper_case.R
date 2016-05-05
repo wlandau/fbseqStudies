@@ -1,4 +1,4 @@
-#' @include study-comparison_mcmc.R study-coverage_mcmc.R study-real_mcmc.R study-serial_mcmc.R
+#' @include study-comparison_mcmc.R study-coverage_mcmc.R study-real_mcmc.R study-serial_runs.R
 NULL
 
 #' @title Function \code{paper_case}
@@ -13,7 +13,7 @@ paper_case = function(){
   fit("coverage_norm_mcmc", benchmarks = "edgeR", zeronormfactors = F, fbseq_methods = "fullybayes", priors = "normal")
   comparison_init("comparison_mcmc")
   fit("comparison_mcmc", benchmarks = "edgeR", priors = "normal")
-  serial_mcmc("serial_mcmc")
+  serial_runs("serial_runs")
 
   real_analyze("real_mcmc", "real_analyze")
   coverage_analyze("coverage_mcmc", "coverage_analyze")
