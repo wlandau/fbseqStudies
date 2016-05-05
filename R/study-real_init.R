@@ -8,7 +8,9 @@ real_init = function(path = newdir()){
   data(paschold)
   paschold = get("paschold")
   scaledown()
-  if(!file.exists(f <- paste0(path, "paschold_39656_16_1.rds"))) 
+  fname = paste0("paschold_", nrow(paschold@counts), "_", 
+    ncol(paschold@counts), "_1.rds")
+  if(!file.exists(f <- paste0(path, fname))) 
     saveRDS(simulation_paschold(), f)
   path
 }
