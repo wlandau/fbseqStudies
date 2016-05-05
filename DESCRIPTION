@@ -99,5 +99,6 @@ Collate:
     'util-myproctime.R'
     'util-over.R'
     'util-progress.R'
+    'util-scaledown.R'
     'zzz.R'
 RoxygenNote: 5.0.1
