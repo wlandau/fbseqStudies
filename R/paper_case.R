@@ -6,7 +6,7 @@ NULL
 #' @export
 paper_case = function(){
   real_init("real_mcmc")
-  fit("real_mcmc", priors = "normal", fbseq_methods = "fullybayes")
+  fit("real_mcmc", priors = "normal", fbseq_methods = c("fullybayes", "ibayes", "ebayesFromFullybayes"))
   coverage_init("coverage_mcmc")
   fit("coverage_mcmc", benchmarks = "edgeR", zeronormfactors = T, fbseq_methods = "fullybayes", priors = "normal")
   coverage_init("coverage_norm_mcmc")
