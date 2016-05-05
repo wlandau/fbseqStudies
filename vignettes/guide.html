@@ -109,13 +109,13 @@ R CMD INSTALL ...</code></pre>
 <h1><span class="header-section-number">4</span> Run a scaled-down version first</h1>
 <p>Before seriously running a long job with one of the functions in the next section, do a trial run first. For a trial run, set the <code>&quot;fbseqStudies.scaledown&quot;</code> option to <code>TRUE</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(fbseqStudies)
-<span class="kw">options</span>(<span class="st">&quot;fbseqStudies.scaledown&quot;</span> =<span class="st"> </span>T) <span class="co"># Scale down the computation.</span>
+<span class="kw">options</span>(<span class="st">&quot;fbseqStudies.scaledown&quot;</span> =<span class="st"> </span><span class="ot">TRUE</span>) <span class="co"># Scale down the computation.</span>
 <span class="kw">paper_case</span>() <span class="co"># Replicate the results of the case study paper.</span></code></pre>
-<p>Calling <code>options(&quot;fbseqStudies.scaledown&quot; = T)</code> selects the serial backend for <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a>, ensures that datasets are small in the numbers of genes, and configures the MCMCs to run for only a few iterations. That way, <code>paper_case()</code> will complete in a few minutes on your home computer, as opposed to several days on a machine with a CUDA-capable general-purpose graphics processing unit (GPU).</p>
+<p>Calling <code>options(&quot;fbseqStudies.scaledown&quot; = TRUE)</code> selects the serial backend for <a href="https://github.com/wlandau/fbseq"><code>fbseq</code></a>, ensures that datasets are small in the numbers of genes, and configures the MCMCs to run for only a few iterations. That way, <code>paper_case()</code> will complete in a few minutes on your home computer, as opposed to several days on a machine with a CUDA-capable general-purpose graphics processing unit (GPU).</p>
 </div>
 <div id="replicate-the-studies" class="section level1">
 <h1><span class="header-section-number">5</span> Replicate the studies</h1>
-<p>Each function below reproduces the results of a paper.</p>
+<p>Each function below reproduces the results of a paper. Each takes several days to run if <code>getOption(&quot;fbseqStudies.scaledown&quot;)</code> is <code>FALSE</code> (for serious analyses), but if your job is interrupted, simply calling the function again will resume the workflow roughly where it last left off. The same is true for the <code>*_mcmc()</code> functions described later.</p>
 <table>
 <tbody>
 <tr class="odd">

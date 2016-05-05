@@ -43,15 +43,15 @@ Before seriously running a long job with one of the functions in the next sectio
 
 ```
 library(fbseqStudies)
-options("fbseqStudies.scaledown" = T) # Scale down the computation.
+options("fbseqStudies.scaledown" = TRUE) # Scale down the computation.
 paper_case() # Replicate the results of the case study paper.
 ```
 
-Calling ``options("fbseqStudies.scaledown" = T)`` selects the serial backend for [`fbseq`](https://github.com/wlandau/fbseq), ensures that datasets are small in the numbers of genes, and configures the MCMCs to run for only a few iterations. That way, ``paper_case()`` will complete in a few minutes on your home computer, as opposed to several days on a  machine with a CUDA-capable general-purpose graphics processing unit (GPU).
+Calling ``options("fbseqStudies.scaledown" = TRUE)`` selects the serial backend for [`fbseq`](https://github.com/wlandau/fbseq), ensures that datasets are small in the numbers of genes, and configures the MCMCs to run for only a few iterations. That way, ``paper_case()`` will complete in a few minutes on your home computer, as opposed to several days on a  machine with a CUDA-capable general-purpose graphics processing unit (GPU).
 
 # Replicate the studies
 
-Each function below reproduces the results of a paper.
+Each function below reproduces the results of a paper. Each takes several days to run if `getOption("fbseqStudies.scaledown")` is `FALSE` (for serious analyses), but if your job is interrupted, simply calling the function again will resume the workflow roughly where it last left off. The same is true for the `*_mcmc()` functions described later.
 
 |------------------------------------|--------------------------------------------------| 
 | `paper_computation()`   | publication pending | 
