@@ -68,7 +68,7 @@ For further control, choose among the following. For even finer-grained control,
 | `computation_mcmc()`  | Duplicate sections of the Paschold et al. (2012) dataset to create datasets of varying size. Fit the default model to see how runtime scales with the number of genes and the number of libraries. | 
 | `coverage_mcmc()`  | Simulate different datasets from the model to assess the ability to recapture parameters of interest in credible intervals calculated from the estimated full joint posterior distribution. | 
 | `comparison_mcmc()`  | Simulate datasets from multiple scenarios and fit multiple versions of the model to assess gene detection power and the calibration of posterior probabilites. | 
-| `serial_mcmc()`  | Run a fully Bayesian analysis of the Paschold et al. (2012) dataset in a version of the software that makes no use of GPU computing at all. | 
+| `serial_runs()`  | Run various analyses, including a fully Bayesian one, of the Paschold et al. (2012) dataset in a version of the software that makes no use of GPU computing at all. | 
 | `real_analyze()`  | Extract figures, tables, and other results from the output of `real_mcmc()` | 
 | `computation_analyze()` | Similar, but for `computation_mcmc()` | 
 | `coverage_analyze()` | Similar, but for `coverage_mcmc()` | 

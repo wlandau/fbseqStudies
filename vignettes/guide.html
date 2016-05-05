@@ -93,8 +93,8 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="option-2-use-install_github-to-install-the-development-version." class="section level2">
 <h2><span class="header-section-number">3.2</span> Option 2: use <code>install_github</code> to install the development version.</h2>
 <p>For this option, you need the <code>devtools</code> package, available from CRAN or GitHub. Open R and run</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(devtools)
-<span class="kw">install_github</span>(<span class="st">&quot;wlandau/fbseqStudies&quot;</span>)</code></pre>
+<pre><code>library(devtools)
+install_github(&quot;wlandau/fbseqStudies&quot;)</code></pre>
 </div>
 <div id="option-3-build-the-development-version-from-the-source." class="section level2">
 <h2><span class="header-section-number">3.3</span> Option 3: build the development version from the source.</h2>
@@ -157,8 +157,8 @@ R CMD INSTALL ...</code></pre>
 <td align="left">Simulate datasets from multiple scenarios and fit multiple versions of the model to assess gene detection power and the calibration of posterior probabilites.</td>
 </tr>
 <tr class="even">
-<td align="left"><code>serial_mcmc()</code></td>
-<td align="left">Run a fully Bayesian analysis of the <span class="citation">Paschold et al. (2012)</span> dataset in a version of the software that makes no use of GPU computing at all.</td>
+<td align="left"><code>serial_runs()</code></td>
+<td align="left">Run various analyses, including a fully Bayesian one, of the <span class="citation">Paschold et al. (2012)</span> dataset in a version of the software that makes no use of GPU computing at all.</td>
 </tr>
 <tr class="odd">
 <td align="left"><code>real_analyze()</code></td>
