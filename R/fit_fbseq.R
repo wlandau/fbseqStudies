@@ -10,7 +10,7 @@
 #' @param debug debug mode, TRUE/FALSE
 #' @param configs \code{Configs} object for \code{fbseq}
 #' @param zeronormfactors TRUE/FALSE. If TRUE, starts@@h is set to 0.
-fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, configs = Configs(), zeronormfactors = F){
+fit_fbseq = function(sim, method = "fullybayes", prior = "normal", configs = Configs(), zeronormfactors = F){
   t = my.proc.time()
 
   s = sim$scenario
@@ -19,10 +19,12 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
     configs@parameter_sets_return = c(configs@parameter_sets_return, "xi")
     configs@parameter_sets_update = c(configs@parameter_sets_update, "xi")
   }
-  if(debug){
-    configs@iterations = 10
-    configs@burnin = 0
-    configs@thin = 1
+
+  if(getOption("fbseqStudies.scaledown")){
+    scaledown()
+    configs@iterations = get("iterations")
+    configs@burnin = get("burnin")
+    configs@thin = get("thin")
   }
 
   starts = Starts()
@@ -48,7 +50,7 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", debug = F, co
   chain = Chain(s, configs, starts)
   configs = Configs(chain)
   starts = Starts(chain)
-  chains = fbseq(chain)
+  chains = fbseq(chain, backend = getOption("fbseqStudies.backend"))
 
   est = estimates(chains)
   beta = matrix(est[grep("beta_", rownames(est)), "mean"], nrow = chains[[1]]@G)

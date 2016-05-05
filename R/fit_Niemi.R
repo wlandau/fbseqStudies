@@ -55,6 +55,7 @@ single_gene_analysis = function(x, group, hyperparameters, model) {
 
   data(paschold)
   paschold = get("paschold")
+  scaledown()
 
   chain = Chain(paschold)
   chain@G = as.integer(1)

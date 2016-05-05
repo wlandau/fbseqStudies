@@ -8,6 +8,7 @@ coverage_init = function(path = newdir()){
   genes = 3e4
   libraries = 16
   reps = 10
+  scaledown()
   for(g in genes) for(n in libraries) for(r in 1:reps)
     if(!file.exists(f <- paste0(path, "model_", g, "_", n, "_", r, ".rds"))) 
       saveRDS(simulation_model(genes = g, libraries = n), f)

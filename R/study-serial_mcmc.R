@@ -12,6 +12,7 @@ serial_mcmc = function(path = newdir()){
   thin = 1
   iterations = 1000
   verbose = 10
+  scaledown()
 
   for(mode in c("fullybayes", "ebayes")){
     if(mode == "ebayes"){

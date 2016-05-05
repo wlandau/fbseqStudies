@@ -5,6 +5,7 @@
 simulation_paschold = function(){
   data(paschold)
   paschold = get("paschold")
+  scaledown()
   ns = 1:ncol(paschold@counts)
   paschold@supplement$group = (ns + (ns %% 2)) / 2
   paschold@supplement$simulation = "paschold"  

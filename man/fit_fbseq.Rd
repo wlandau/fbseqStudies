@@ -4,7 +4,7 @@
 \alias{fit_fbseq}
 \title{Function \code{fit_fbseq}}
 \usage{
-fit_fbseq(sim, method = "fullybayes", prior = "normal", debug = F,
+fit_fbseq(sim, method = "fullybayes", prior = "normal",
   configs = Configs(), zeronormfactors = F)
 }
 \arguments{
@@ -16,11 +16,11 @@ fit_fbseq(sim, method = "fullybayes", prior = "normal", debug = F,
 \item{prior}{hierarchical distributions on betas: an atomic or vector element that goes in the 
 Configs()@priors slot}
 
-\item{debug}{debug mode, TRUE/FALSE}
-
 \item{configs}{\code{Configs} object for \code{fbseq}}
 
 \item{zeronormfactors}{TRUE/FALSE. If TRUE, starts@h is set to 0.}
+
+\item{debug}{debug mode, TRUE/FALSE}
 }
 \value{
 information for a fitted model

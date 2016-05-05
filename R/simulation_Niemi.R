@@ -12,6 +12,7 @@ NULL
 simulation_Niemi = function(genes = 3e4, libraries = 16, fit = NULL, ncores = detectCores()){
   data(paschold)
   paschold = get("paschold")
+  scaledown()
   l = simulation_paschold()
   if(is.null(fit)) fit = fit_Niemi(paschold@counts, paschold@design, group = l$scenario@supplement$group, 
     ncores = ncores)

@@ -11,6 +11,7 @@ comparison_init = function(path = newdir(), ncores = detectCores()){
   reps = 1
   data(paschold)
   paschold = get("paschold")
+  scaledown()
   fit = fit_edgeR(paschold@counts, paschold@design)
   l = simulation_paschold()
 #  fit2 = fit_Niemi(counts = paschold@counts, design = paschold@design, group = l$scenario@supplement$group, 

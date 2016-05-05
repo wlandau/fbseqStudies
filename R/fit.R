@@ -13,12 +13,11 @@ NULL
 #' is in the slot Configs()@priors, or a list of vectors, where each vector is in the slot Configs@priors.
 #'
 #' @param ncores number of cores for CPU-parallel methods
-#' @param debug debug mode, TRUE/FALSE
 #' @param configs \code{Configs} object for \code{fbseq}
 #' @param zeronormfactors TRUE/FALSE. If TRUE, starts@@h is set to 0.
 fit = function(path, benchmarks = "edgeR", #c("edgeR", "Niemi"), 
   fbseq_methods = c("fullybayes", "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth"), 
-  priors = c("normal", special_beta_priors()), ncores = detectCores(), debug = F, configs = Configs(),
+  priors = c("normal", special_beta_priors()), ncores = detectCores(), configs = Configs(),
   zeronormfactors = F){
 
   path = newdir(path)
@@ -48,7 +47,7 @@ fit = function(path, benchmarks = "edgeR", #c("edgeR", "Niemi"),
     method = paste0(fbseq_method, "+", paste0(prior, collapse = ""))
 
     if(is.null(o$analyses[[method]])){
-      o$analyses[[method]] = fit_fbseq(o, fbseq_method, prior, debug, configs = configs, zeronormfactors = zeronormfactors)
+      o$analyses[[method]] = fit_fbseq(o, fbseq_method, prior, configs = configs, zeronormfactors = zeronormfactors)
       saveRDS(o, p)
     }
   }

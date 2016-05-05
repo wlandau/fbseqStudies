@@ -577,7 +577,9 @@ e = lapply(as, function(a) estimates(a$chains, level = 0.95))
 #fig:logcounts
 dir_logcounts = newdir(paste0(dir, "PAPER3fig-logcounts"))
 data(paschold)
-d = melt(log(get("paschold")@counts + 1))
+paschold = get("paschold")
+scaledown()
+d = melt(log(paschold@counts + 1))
 pl = ggplot(d) + stat_density(aes_string(x = "value", y = "..density.."), color = gray, fill = gray) + 
   mytheme_pub() + 
   xlab("log(count + 1)")
@@ -738,9 +740,11 @@ for(extn in extns)
 # compare with paschold results
 data(paschold)
 paschold = get("paschold")
+scaledown()
 ct = paschold@counts
 data(tableS3table1)
 groups = get("tableS3table1")
+scaledown()
 cn = c("high-parent_B73xMo17", "high-parent_Mo17xB73", "low-parent_B73xMo17", "low-parent_Mo17xB73")
 p = as.data.frame(probs(a$chains)[,cn])
 colnames(p) = c("hph_bm", "hph_mb", "lph_bm", "lph_mb")
@@ -785,6 +789,7 @@ colnames(p) = gsub("parent", "parent-heterosis", colnames(p))
 colnames(p) = gsub("B73xMo17_Mo17xB73", "hybrid-mean", colnames(p))
 data(paschold)
 paschold = get("paschold")
+scaledown()
 ct = paschold@counts
 colnames(ct) = paste0(colnames(paschold@counts), "_count-data")
 p = cbind(geneID, ct, p)
@@ -940,6 +945,7 @@ print(outlier3$geneID) # "AC205274.3_FG001"
 gs = sort(unique(c(outlier1$geneID, outlier2$geneID, outlier3$geneID)))
 data(paschold)
 paschold = get("paschold")
+scaledown()
 tab = rbind(NULL, paschold@counts[gs,])
 rownames(tab) = gs
 print(xtable(tab), file = paste0(dir_outliers, "tab-outliers", prior, ".tex"))

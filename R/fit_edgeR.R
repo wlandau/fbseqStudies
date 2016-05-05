@@ -10,6 +10,7 @@
 fit_edgeR = function(counts, design, group = NULL, ncores = 1, scenario = NULL){
   data(paschold)
   if(is.null(scenario)) scenario = get("paschold")
+  scaledown()
   t = my.proc.time()
   dge = DGEList(counts = counts)
   dge = calcNormFactors(dge)

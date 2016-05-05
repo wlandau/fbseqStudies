@@ -13,13 +13,12 @@ paper_case = function(){
   fit("coverage_norm_mcmc", benchmarks = "edgeR", zeronormfactors = F, fbseq_methods = "fullybayes", priors = "normal")
   comparison_init("comparison_mcmc")
   fit("comparison_mcmc", benchmarks = "edgeR", priors = "normal")
+  serial_mcmc("serial_mcmc")
 
   real_analyze("real_mcmc", "real_analyze")
   coverage_analyze("coverage_mcmc", "coverage_analyze")
   coverage_analyze("coverage_norm_mcmc", "coverage_norm_analyze")
   comparison_analyze("comparison_mcmc", "comparison_analyze")
-
-  serial_mcmc("serial_mcmc")
 
   paper_case_figures()
 }

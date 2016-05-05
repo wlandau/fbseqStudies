@@ -7,6 +7,7 @@
 simulation_duplicated = function(genes = 3.5e4, libraries = 16){
   data(paschold)
   paschold = get("paschold")
+  scaledown()
 
   gs = sample.int(nrow(paschold@counts), genes, replace = T)
   ns = 0:(libraries -1) %% ncol(paschold@counts) + 1

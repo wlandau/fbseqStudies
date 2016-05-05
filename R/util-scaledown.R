@@ -8,14 +8,16 @@ scaledown = function(){
   options("fbseqStudies.backend" = "serial")
   genes = 30
   assign("genes", 30, envir = parent.frame())
-  assign("iterations", 100, envir = parent.frame())
-  assign("burnin", 100, envir = parent.frame())
-  assign("thin", 100, envir = parent.frame())
+  assign("iterations", 50, envir = parent.frame())
+  assign("burnin", 50, envir = parent.frame())
+  assign("thin", 1, envir = parent.frame())
 
+  data(paschold)
   d = get("paschold")
   d@counts = head(d@counts, genes)
   assign("paschold", d, envir = parent.frame())
 
+  data(tableS3table1)
   d = get("tableS3table1")
   d = head(d, genes)
   assign("tableS3table1", d, envir = parent.frame())

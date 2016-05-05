@@ -11,6 +11,7 @@ NULL
 simulation_edgeR = function(genes = 3e4, libraries = 16, fit = NULL){
   data(paschold)
   paschold = get("paschold")
+  scaledown()
   if(is.null(fit)) fit = fit_edgeR(paschold@counts, paschold@design)
 
   beta = fit$estimates[,grep("beta_", colnames(fit$estimates))]

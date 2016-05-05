@@ -8,6 +8,7 @@ computation_init = function(path = newdir()){
   genes = c(8192, 16384, 32768, 65536)
   libraries = c(16, 32, 48, 64)
   reps = 1
+  scaledown()
   for(g in genes) for(n in libraries) for(r in 1:reps)
     if(!file.exists(f <- paste0(path, "duplicated_", g, "_", n, "_", r, ".rds"))) 
       saveRDS(simulation_duplicated(genes = g, libraries = n), f)

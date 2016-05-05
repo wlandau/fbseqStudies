@@ -7,7 +7,7 @@
 fit(path, benchmarks = "edgeR", fbseq_methods = c("fullybayes",
   "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth"),
   priors = c("normal", special_beta_priors()), ncores = detectCores(),
-  debug = F, configs = Configs(), zeronormfactors = F)
+  configs = Configs(), zeronormfactors = F)
 }
 \arguments{
 \item{path}{to directory to save simulations and results}
@@ -21,8 +21,6 @@ or a combination/vector of these. "fullybayes" must come before "ebayesFromFully
 is in the slot Configs()@priors, or a list of vectors, where each vector is in the slot Configs@priors.}
 
 \item{ncores}{number of cores for CPU-parallel methods}
-
-\item{debug}{debug mode, TRUE/FALSE}
 
 \item{configs}{\code{Configs} object for \code{fbseq}}
 

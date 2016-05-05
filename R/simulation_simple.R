@@ -7,6 +7,7 @@
 simulation_simple = function(genes = 3e4, libraries = 16){
   data(paschold)
   paschold = get("paschold")
+  scaledown()
 
   ns = 0:(libraries -1) %% ncol(paschold@counts) + 1
   group = (ns + (ns %% 2)) / 2
