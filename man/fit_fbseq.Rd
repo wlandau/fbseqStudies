@@ -19,8 +19,6 @@ Configs()@priors slot}
 \item{configs}{\code{Configs} object for \code{fbseq}}
 
 \item{zeronormfactors}{TRUE/FALSE. If TRUE, starts@h is set to 0.}
-
-\item{debug}{debug mode, TRUE/FALSE}
 }
 \value{
 information for a fitted model

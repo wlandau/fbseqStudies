@@ -7,7 +7,6 @@
 #' "ebayesFromFullybayes" requires a "fullybayes" analysis already present
 #' @param prior hierarchical distributions on betas: an atomic or vector element that goes in the 
 #' Configs()@priors slot
-#' @param debug debug mode, TRUE/FALSE
 #' @param configs \code{Configs} object for \code{fbseq}
 #' @param zeronormfactors TRUE/FALSE. If TRUE, starts@@h is set to 0.
 fit_fbseq = function(sim, method = "fullybayes", prior = "normal", configs = Configs(), zeronormfactors = F){
