@@ -214,8 +214,8 @@ l1 = ddply(l0, c("analysis", "simulation", "type"), function(x){
 l1$simulation = gsub("priors", "", as.character(l1$simulation))
 l1$analysis = gsub("fullybayes\\+", "", as.character(l1$analysis))
 for(n in c("simulation", "analysis")) l1[[n]] = ordered(l1[[n]], levels = priors_analyses())
-l1$simulation = ordered(l1$simulation, labels = paste(levels(l1$simulation), "sim"))
-l1$analysis = ordered(l1$analysis,  labels = paste(levels(l1$analysis), "analysis"))
+l1$simulation = ordered(l1$simulation, labels = paste(levels(l1$simulation)[1:length(unique(l1$simulation))], "sim"))
+l1$analysis = ordered(l1$analysis,  labels = paste(levels(l1$analysis)[1:length(unique(l1$analysis))], "analysis"))
 pl = ggplot(l1) +
   geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = gray) +
   geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
@@ -242,8 +242,8 @@ l1 = ddply(l0, c("simulation", "analysis", "rep", "type"), function(z){
 l1$simulation = gsub("priors", "", as.character(l1$simulation))
 l1$analysis = gsub("fullybayes\\+", "", as.character(l1$analysis))
 for(n in c("simulation", "analysis")) l1[[n]] = ordered(l1[[n]], levels = priors_analyses())
-l1$simulation = ordered(l1$simulation, labels = paste(levels(l1$simulation), "sim"))
-l1$analysis = ordered(l1$analysis,  labels = paste(levels(l1$analysis), "analysis"))
+l1$simulation = ordered(l1$simulation, labels = paste(levels(l1$simulation)[1:length(unique(l1$simulation))], "sim"))
+l1$analysis = ordered(l1$analysis,  labels = paste(levels(l1$analysis)[1:length(unique(l1$analysis))], "analysis"))
 pl = ggplot(l1) + 
   geom_line(aes_string(x = "truth", y = "cover", group = "rep"), alpha = 0.5) + 
   geom_abline(slope = 0, intercept = level, linetype = "dotted") +

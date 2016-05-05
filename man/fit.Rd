@@ -4,7 +4,7 @@
 \alias{fit}
 \title{Function \code{fit}}
 \usage{
-fit(path, benchmarks = "edgeR", fbseq_methods = c("fullybayes",
+fit(path, benchmarks = "edgeR", fbseq_methods = c("fullybayes", "ibayes",
   "ebayesFromFullybayes", "ebayesFromStarts", "ebayesFromTruth"),
   priors = c("normal", special_beta_priors()), ncores = detectCores(),
   configs = Configs(), zeronormfactors = F)

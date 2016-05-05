@@ -6,10 +6,10 @@
 scaledown = function(){
   if(!getOption("fbseqStudies.scaledown")) return()
   options("fbseqStudies.backend" = "serial")
-  genes = 30
-  assign("genes", 30, envir = parent.frame())
-  assign("iterations", 50, envir = parent.frame())
-  assign("burnin", 50, envir = parent.frame())
+  genes = 100
+  assign("genes", genes, envir = parent.frame())
+  assign("iterations", 100, envir = parent.frame())
+  assign("burnin", 10, envir = parent.frame())
   assign("thin", 1, envir = parent.frame())
 
   data(paschold)

@@ -28,18 +28,22 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", configs = Con
 
   starts = Starts()
   hyper = c("nu", "sigmaSquared", "tau", "theta")
-  if(grepl("ebayes", method))
+  if(grepl("ebayes|ibayes", method))
     for(p in hyper){
       configs@parameter_sets_return = setdiff(configs@parameter_sets_return, p)
       configs@parameter_sets_update = setdiff(configs@parameter_sets_update, p)
     }
 
-  if(method == "ebayesFromFullybayes"){
+  if(method == "ibayes"){
+    starts@tau = 0.01
+    starts@nu = 0.001
+    starts@theta = rep(0, ncol(s@design))
+    starts@sigmaSquared = rep(100, ncol(s@design))
+    starts@sigmaSquared[1] = 1000
+  } else if(method == "ebayesFromFullybayes"){
     est = estimates(sim$analyses[[paste0("fullybayes+", paste0(prior, collapse = ""))]]$chains)
     for(p in hyper) slot(starts, p) = est[grep(p, rownames(est)), "mean"]
-  }
-
-  if(method == "ebayesFromTruth"){
+  } else if(method == "ebayesFromTruth"){
     truth = s@supplement$truth
     if(!is(truth, "Starts")) return(NULL)
     for(p in hyper) slot(starts, p) = slot(truth, p)
