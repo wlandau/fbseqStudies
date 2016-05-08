@@ -9,7 +9,7 @@ analyses = function(){
     "fully Bayes (t)",
     "fully Bayes (horseshoe)",
     "edgeR",
-    "independence",
+ #   "independence",
     "Niemi",
     "eBayes (Naive)",
     "eBayes (Means)",
@@ -22,7 +22,8 @@ analyses = function(){
 #' @export
 #' @return analysis analyses
 case_analyses = function(){
-  out = c("fully Bayes", "independence", "eBayes (Means)", "eBayes (Oracle)")
+  out = c("fully Bayes", # "independence", 
+    "eBayes (Means)", "eBayes (Oracle)")
   ordered(out, levels = out)
 }
 

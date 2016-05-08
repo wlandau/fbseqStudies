@@ -14,7 +14,6 @@ extns = c("pdf", "ps", "eps")
 mycolors = c("black", "blue", "red", "green", "purple")
 gray = "#707070"
 
-
 # fig:msecomparison
 dir_msecomparison = newdir(paste0(dir, "fig-msecomparison"))
 mse = readRDS("comparison_analyze/mse/mse.rds")
@@ -23,7 +22,8 @@ mse$simulation = relevel_simulations(mse$simulation)
 colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:5, ")]")
 mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
 mse$libraries = ordered(mse$libraries, levels = c(16, 32))
-lvl = c("fully Bayes", "edgeR", "independence", "eBayes (Means)", "eBayes (Oracle)")
+lvl = c("edgeR", "fully Bayes", #"independence", 
+  "eBayes (Means)", "eBayes (Oracle)")
 mse = mse[mse$simulation != "Niemi",]
 mse = mse[mse$analysis %in% lvl,]
 mse$analysis = ordered(mse$analysis, levels = lvl)
@@ -49,7 +49,7 @@ mse$simulation = relevel_simulations(mse$simulation)
 colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:5, ")]")
 mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
 mse$libraries = ordered(mse$libraries, levels = c(16, 32))
-lvl = c("fully Bayes", "edgeR")
+lvl = c("edgeR", "fully Bayes")
 mse = mse[mse$simulation != "Niemi",]
 mse = mse[mse$analysis %in% lvl,]
 mse$analysis = ordered(mse$analysis, levels = lvl)

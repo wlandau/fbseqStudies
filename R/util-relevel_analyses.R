@@ -46,6 +46,7 @@ priors_relevel_analyses = function(x){
     "t",
     "horseshoe",
     "edgeR",
+    "independence",
     "Niemi",
     "eBayes (Naive)",
     "eBayes (Means)",

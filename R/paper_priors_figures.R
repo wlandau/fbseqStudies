@@ -13,6 +13,7 @@ dir = newdir("priors_study_paper_figures")
 extns = c("pdf", "ps", "eps")
 mycolors = c("black", "blue", "red")
 gray = "#707070"
+analyses_avoid = "edgeR|ibayes|independence"
 
 # fig:msecomparison
 dir_msecomparison = newdir(paste0(dir, "PAPER3fig-msecomparison"))
@@ -100,7 +101,7 @@ m_hyper = NULL
 for(f in list.files("priors_mcmc")) if(as.integer(meta(f)["libraries"]) == 8 & as.integer(meta(f)["rep"]) == 1){
   print(f)
   l = readRDS(paste0("priors_mcmc/", f))
-  l$analyses = l$analyses[names(l$analyses) != "edgeR"]
+  l$analyses = l$analyses[!grepl(analyses_avoid, names(l$analyses))]
   for(a in l$analyses){
     m = mcmc_samples(a$chains)
     m = m[,grep("nu|tau|theta|sigma", colnames(m))]
@@ -140,7 +141,7 @@ for(v in unique(m_hyper$variable)){
 # fig-priorshypercoverage
 dir_priorshypercoverage = newdir(paste0(dir, "PAPER3fig-priorshypercoverage"))
 l = as.data.frame(readRDS("priors_analyze/ci/ci.rds"))
-l = l[l$analysis != "edgeR",]
+l = l[!grepl(analyses_avoid, l$analysis),]
 l$analysis = gsub("normalnormal", "normal", l$analysis)
 l$analysis = gsub("normalLaplace", "Laplace", l$analysis)
 l$analysis = gsub("normalt", "t", l$analysis)
@@ -169,7 +170,7 @@ x = ddply(l, "parameter", function(d){
 
 # credible interval info
 l = as.data.frame(readRDS("priors_analyze/ci/ci.rds"))
-l = l[l$analysis != "edgeR",]
+l = l[!grepl(analyses_avoid, l$analysis),]
 l$analysis = gsub("normalnormal", "normal", l$analysis)
 l$analysis = gsub("normalLaplace", "Laplace", l$analysis)
 l$analysis = gsub("normalt", "t", l$analysis)
@@ -261,7 +262,7 @@ for(extn in extns[grepl("ps", extns)])
 # fig:priorsmodelcalibration
 dir_priorsmodelcalibration = newdir(paste0(dir, "PAPER3fig-priorsmodelcalibration"))
 df = readRDS("priors_analyze/calibration_long/calibration_long.rds")
-df = df[df$analysis != "edgeR",]
+df = df[!grepl(analyses_avoid, df$analysis),]
 df = df[df$heterosis == "high" & df$libraries == 8,]
 df$simulation = gsub("priors", "", as.character(df$simulation))
 df$analysis = gsub("fullybayes\\+", "", as.character(df$analysis))
@@ -282,7 +283,7 @@ for(extn in extns)
 # fig:priorscomparecalerror
 dir_priorscomparecalerror = newdir(paste0(dir, "PAPER3fig-priorscomparecalerror"))
 df = readRDS("priors_analyze/calibration_long/calibration_long.rds")
-df = df[df$analysis != "edgeR",]
+df = df[!grepl(analyses_avoid, df$analysis),]
 df$error = abs(df$proportion - df$probability)
 d = ddply(df, c("file", "heterosis"), function(x){
   x$meanerror = trapz(x = x$probability, y = x$error)
@@ -308,7 +309,7 @@ for(extn in extns)
 # fig:priorsroc
 dir_priorsroc = newdir(paste0(dir, "PAPER3fig-priorsroc"))
 d = readRDS("priors_analyze/roc_long/roc_long.rds")
-d = d[d$analysis != "edgeR",]
+d = d[!grepl(analyses_avoid, d$analysis),]
 d = d[d$heterosis == "high" & d$libraries == 8,]
 d$simulation = gsub("priors", "", as.character(d$simulation))
 d$analysis = gsub("fullybayes\\+", "", as.character(d$analysis))
@@ -330,7 +331,7 @@ for(extn in extns)
 # fig:priorsauc
 dir_priorsauc = newdir(paste0(dir, "PAPER3fig-priorsauc"))
 d = readRDS("priors_analyze/auc_long/auc_long.rds")
-d = d[d$analysis != "edgeR",]
+d = d[!grepl(analyses_avoid, d$analysis),]
 d = d[d$heterosis == "high" & d$libraries == 8,]
 d$simulation = gsub("priors", "", as.character(d$simulation))
 d$analysis = gsub("fullybayes\\+", "", as.character(d$analysis))
@@ -448,7 +449,7 @@ for(extn in extns[grepl("ps", extns)])
 # fig:modelcalibration
 dir_modelcalibration = newdir(paste0(dir, "PAPER3fig-modelcalibration"))
 df = readRDS("coverage_analyze/calibration_long/calibration_long.rds")
-df = df[df$analysis != "edgeR",]
+df = df[!grepl(analyses_avoid, df$analysis),]
 df$heterosis = relevel_heterosis(df$heterosis)
 df$analysis = ordered(gsub("fullybayes\\+", "", as.character(df$analysis)), levels = priors_analyses())
 pl = ggplot(df) +
@@ -465,7 +466,7 @@ for(extn in extns)
 # fig:modelcomparecalerror 
 dir_modelcomparecalerror = newdir(paste0(dir, "PAPER3fig-modelcomparecalerror"))
 df = readRDS("coverage_analyze/calibration_long/calibration_long.rds")
-df = df[df$analysis != "edgeR",]
+df = df[!grepl(analyses_avoid, df$analysis),]
 df$heterosis = relevel_heterosis(df$heterosis)
 df$analysis = ordered(gsub("fullybayes\\+", "", as.character(df$analysis)), levels = priors_analyses())
 df$error = abs(df$proportion - df$probability)
@@ -489,7 +490,7 @@ for(extn in extns)
 for(N in c(16, 32)){
   dir_roc = newdir(paste0(dir, "PAPER3fig-roc", N))
   d = readRDS("comparison_analyze/roc_long/roc_long.rds")
-  d = d[d$analysis != "edgeR",]
+  d = d[!grepl(analyses_avoid, d$analysis),]
   d = d[d$libraries == N,]
   d = priors_clean_df(d)
   pl = ggplot(d) + 
@@ -508,7 +509,7 @@ for(N in c(16, 32)){
 # fig:auc
 dir_auc = newdir(paste0(dir, "PAPER3fig-auc"))
 d = readRDS("comparison_analyze/auc_long/auc_long.rds")
-d = d[d$analysis != "edgeR",]
+d = d[!grepl(analyses_avoid, d$analysis),]
 d = priors_clean_df(d)
 pl = ggplot(d) + 
   geom_line(aes_string(x = "analysis", y = "auc_1", group = "libraries", linetype = "libraries"), color = "black") +
@@ -526,7 +527,7 @@ for(extn in extns)
 for(N in c(16, 32)){
   dir_comparecal = newdir(paste0(dir, "PAPER3fig-comparecal", N))
   d = readRDS("comparison_analyze/calibration_long/calibration_long.rds")
-  d = d[d$analysis != "edgeR",]
+  d = d[!grepl(analyses_avoid, d$analysis),]
   d = d[d$libraries == N,]
   d = priors_clean_df(d)
   pl = ggplot(d) + 
@@ -546,7 +547,7 @@ for(N in c(16, 32)){
 # fig:comparecalerror
 dir_comparecalerror = newdir(paste0(dir, "PAPER3fig-comparecalerror"))
 df = readRDS("comparison_analyze/calibration_long/calibration_long.rds")
-df = df[df$analysis != "edgeR",]
+df = df[!grepl(analyses_avoid, df$analysis),]
 df$error = abs(df$proportion - df$probability)
 d = ddply(df, c("file", "heterosis"), function(x){
   x$meanerror = trapz(x = x$probability, y = x$error)
@@ -572,7 +573,7 @@ scaledown()
 fname = paste0("real_mcmc/paschold_", nrow(paschold@counts),
   "_", ncol(paschold@counts), "_1.rds")
 l = readRDS(fname)
-l$analyses = l$analyses[names(l$analyses) != "edgeR"]
+l$analyses = l$analyses[!grepl(analyses_avoid, names(l$analyses))]
 as = list(normal = l$analyses[["fullybayes+normal"]],
   Laplace = l$analyses[["fullybayes+Laplace"]],
   t = l$analyses[["fullybayes+t"]])
@@ -625,7 +626,7 @@ scaledown()
 fname = paste0("real_mcmc/paschold_", nrow(paschold@counts),
   "_", ncol(paschold@counts), "_1.rds")
 l = readRDS(fname)
-l$analyses = l$analyses[names(l$analyses) != "edgeR"]
+l$analyses = l$analyses[!grepl(analyses_avoid, names(l$analyses))]
 set.seed(10)
 edger = fit_edgeR(paschold@counts, paschold@design)
 for(prior in priors_analyses()){
@@ -868,7 +869,7 @@ scaledown()
 fname = paste0("real_mcmc/paschold_", nrow(paschold@counts),
   "_", ncol(paschold@counts), "_1.rds")
 l = readRDS(fname)
-l$analyses = l$analyses[names(l$analyses) != "edgeR"]
+l$analyses = l$analyses[!grepl(analyses_avoid, names(l$analyses))]
 a = l$analyses[[paste0("fullybayes+", prior)]]
 m = mcmc_samples(a$chains)
 m2 = apply(m, 2, mean)
@@ -969,7 +970,7 @@ print(xtable(tab), file = paste0(dir_outliers, "tab-outliers", prior, ".tex"))
 
 # credible interval info for comparison study
 l = as.data.frame(readRDS("comparison_analyze/ci/ci.rds"))
-l = l[l$analysis != "edgeR",]
+l = l[!grepl(analyses_avoid, l$analysis),]
 l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
 l = l[grepl("fullybayes", l$analysis),]
 l = l[!grepl("horseshoe", l$analysis),]
