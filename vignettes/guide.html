@@ -116,79 +116,29 @@ R CMD INSTALL ...</code></pre>
 <div id="replicate-the-studies" class="section level1">
 <h1><span class="header-section-number">5</span> Replicate the studies</h1>
 <p>Each function below reproduces the results of a paper. Each takes several days to run if <code>getOption(&quot;fbseqStudies.scaledown&quot;)</code> is <code>FALSE</code> (for serious analyses), but if your job is interrupted, simply calling the function again will resume the workflow roughly where it last left off. The same is true for the <code>*_mcmc()</code> functions described later.</p>
-<table>
-<tbody>
-<tr class="odd">
-<td align="left"><code>paper_computation()</code></td>
-<td align="left">publication pending</td>
-</tr>
-<tr class="even">
-<td align="left"><code>paper_case()</code></td>
-<td align="left">publication pending</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>paper_priors()</code></td>
-<td align="left">publication pending</td>
-</tr>
-</tbody>
-</table>
+<ul>
+<li><em><code>paper_computation()</code></em> (publication pending)</li>
+<li><em><code>paper_case()</code></em> (publication pending)</li>
+<li><em><code>paper_priors()</code></em> (publication pending)</li>
+</ul>
 <p>To run all 3 above functions in sequence, call the function <code>Landau_dissertation()</code>, which reproduces all the computation, figures, tables, etc. of the Statistics PhD dissertation of Will Landau (<a href="http://will-landau.com" class="uri">http://will-landau.com</a>, <a href="mailto:will.landau@gmail.com">will.landau@gmail.com</a>).</p>
 <p>For further control, choose among the following. For even finer-grained control, see the manual and help files.</p>
-<table>
-<tbody>
-<tr class="odd">
-<td align="left"><code>progress()</code></td>
-<td align="left">In the above 3 <code>paper_*</code> functions, the rate limiting step is to produce directories called <code>real_mcmc</code>, <code>coverage_mcmc</code>, etc., each with <code>.rds</code> files inside. Each <code>.rds</code> file contains a single (simulated or real) RNA-seq dataset and all the analyses of that dataset. To check the progress of the analyses, run <code>progress(&quot;coverage_mcmc&quot;)</code>, for example. Running <code>progress(&quot;coverage_mcmc&quot;)</code> lists all the methods used to analyze each dataset in the <code>coverage_mcmc</code> directory produced by <code>coverage_mcmc()</code> in <code>paper_case()</code>.</td>
-</tr>
-<tr class="even">
-<td align="left"><code>real_mcmc()</code></td>
-<td align="left">Run different versions of the model on the <span class="citation">Paschold et al. (2012)</span> dataset.</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>computation_mcmc()</code></td>
-<td align="left">Duplicate sections of the <span class="citation">Paschold et al. (2012)</span> dataset to create datasets of varying size. Fit the default model to see how runtime scales with the number of genes and the number of libraries.</td>
-</tr>
-<tr class="even">
-<td align="left"><code>coverage_mcmc()</code></td>
-<td align="left">Simulate different datasets from the model to assess the ability to recapture parameters of interest in credible intervals calculated from the estimated full joint posterior distribution.</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>comparison_mcmc()</code></td>
-<td align="left">Simulate datasets from multiple scenarios and fit multiple versions of the model to assess gene detection power and the calibration of posterior probabilites.</td>
-</tr>
-<tr class="even">
-<td align="left"><code>serial_runs()</code></td>
-<td align="left">Run various analyses, including a fully Bayesian one, of the <span class="citation">Paschold et al. (2012)</span> dataset in a version of the software that makes no use of GPU computing at all.</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>real_analyze()</code></td>
-<td align="left">Extract figures, tables, and other results from the output of <code>real_mcmc()</code></td>
-</tr>
-<tr class="even">
-<td align="left"><code>computation_analyze()</code></td>
-<td align="left">Similar, but for <code>computation_mcmc()</code></td>
-</tr>
-<tr class="odd">
-<td align="left"><code>coverage_analyze()</code></td>
-<td align="left">Similar, but for <code>coverage_mcmc()</code></td>
-</tr>
-<tr class="even">
-<td align="left"><code>comparison_analyze()</code></td>
-<td align="left">Similar, but for <code>comparison_mcmc()</code></td>
-</tr>
-<tr class="odd">
-<td align="left"><code>paper_case_figures()</code></td>
-<td align="left">Once the <code>_mcmc()</code> and <code>_analyze()</code> functions are run in the current working directory, run this function to reproduce all the figures and tables of the computation paper (inside <code>paper_computation()</code>).</td>
-</tr>
-<tr class="even">
-<td align="left"><code>paper_case_figures()</code></td>
-<td align="left">Once the <code>_mcmc()</code> and <code>_analyze()</code> functions are run in the current working directory, run this function to reproduce all the figures and tables of the priors paper (inside <code>paper_priors()</code>).</td>
-</tr>
-</tbody>
-</table>
+<ul>
+<li><em><code>progress()</code></em> In the above 3 <code>paper_*</code> functions, the rate limiting step is to produce directories called <code>real_mcmc</code>, <code>coverage_mcmc</code>, etc., each with <code>.rds</code> files inside. Each <code>.rds</code> file contains a single (simulated or real) RNA-seq dataset and all the analyses of that dataset. To check the progress of the analyses, run <code>progress(&quot;coverage_mcmc&quot;)</code>, for example. Running <code>progress(&quot;coverage_mcmc&quot;)</code> lists all the methods used to analyze each dataset in the <code>coverage_mcmc</code> directory produced by <code>coverage_mcmc()</code> in <code>paper_case()</code>.</li>
+<li><em><code>real_mcmc()</code></em> Run different versions of the model on the Paschold et al. (2012) dataset.</li>
+<li><em><code>computation_mcmc()</code></em> Duplicate sections of the Paschold et al. (2012) dataset to create datasets of varying size. Fit the default model to see how runtime scales with the number of genes and the number of libraries.</li>
+<li><em><code>coverage_mcmc()</code></em> Simulate different datasets from the model to assess the ability to recapture parameters of interest in credible intervals calculated from the estimated full joint posterior distribution.</li>
+<li><em><code>comparison_mcmc()</code></em> Simulate datasets from multiple scenarios and fit multiple versions of the model to assess gene detection power and the calibration of posterior probabilities.</li>
+<li><em><code>serial_runs()</code></em> Run various analyses, including a fully Bayesian one, of the Paschold et al. (2012) dataset in a version of the software that makes no use of GPU computing at all.</li>
+<li><em><code>real_analyze()</code></em> Extract useful data from the output of <code>real_mcmc()</code> to speed up figure generation.</li>
+<li><em><code>computation_analyze()</code></em> Similar to <code>real_analyze()</code>, but for <code>computation_mcmc()</code></li>
+<li><em><code>coverage_analyze()</code></em> Similar to <code>real_analyze()</code>, but for <code>coverage_mcmc()</code></li>
+<li><em><code>comparison_analyze()</code></em> Similar to <code>real_analyze()</code>, but for <code>comparison_mcmc()</code></li>
+<li><em><code>paper_case_figures()</code></em> Once the <code>_mcmc()</code> and <code>_analyze()</code> functions are run in the current working directory, run this function to reproduce all the figures and tables of the case study paper.</li>
+<li><em><code>paper_case_figures()</code></em> Once the <code>_mcmc()</code> and <code>_analyze()</code> functions are run in the current working directory, run this function to reproduce all the figures and tables of the paper comparing hierarchical distributions.</li>
+</ul>
 <div class="references">
 <h1 id="references" class="unnumbered">References</h1>
-<p>Paschold, Anja, Yi Jia, Caroline Marcon, Steve Lund, Nick B Larson, Cheng-Ting Yeh, Stephan Ossowski, et al. 2012. “Complementation Contributes to Transcriptome Complexity in Maize (<em>Zea Mays L.</em>) Hybrids Relative to Their Inbred Parents.” <em>Genome Research</em> 22 (12). Cold Spring Harbor Lab: 2445–54.</p>
 </div>
 </div>
 
