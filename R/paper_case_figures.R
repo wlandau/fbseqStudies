@@ -58,6 +58,7 @@ pl = ggplot(mse) +
   geom_line(aes_string(x = "analysis", y = "value", group = "rep"), color = "black") +
   geom_point(aes_string(x = "analysis", y = "value"), color = "black") +
   facet_wrap(as.formula("~variable"), scales = "free_y",  labeller = label_parsed) +
+  expand_limits(y=0) +
   xlab("analysis method") + 
   ylab("mean squared error") +
   mytheme_pub() +
