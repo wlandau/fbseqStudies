@@ -88,6 +88,7 @@ Collate:
     'simulation.R'
     'simulation_Niemi.R'
     'simulation_priors.R'
+    'study-OpenMP_runs.R'
     'study-comparison_analyze.R'
     'study-computation_analyze.R'
     'study-coverage_analyze.R'

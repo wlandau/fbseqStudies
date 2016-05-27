@@ -14,6 +14,7 @@ paper_case = function(){
   comparison_init("comparison_mcmc")
   fit("comparison_mcmc", benchmarks = "edgeR", priors = "normal")
   serial_runs("serial_runs")
+  OpenMP_runs("OpenMP_runs")
 
   real_analyze("real_mcmc", "real_analyze")
   coverage_analyze("coverage_mcmc", "coverage_analyze")
