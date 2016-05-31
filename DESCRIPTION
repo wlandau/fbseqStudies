@@ -33,7 +33,6 @@ Imports:
 Suggests:
     fbseqCUDA,
     fbseqOpenMP,
-    fbseqSerial,
     knitr
 VignetteBuilder: knitr
 License: GPL (>= 3)
