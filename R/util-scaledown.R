@@ -5,7 +5,7 @@
 #' @export
 scaledown = function(){
   if(!getOption("fbseqStudies.scaledown")) return()
-  options("fbseqStudies.backend" = "serial")
+  options("fbseqStudies.backend" = "OpenMP")
   genes = 100
   assign("genes", genes, envir = parent.frame())
   assign("iterations", 100, envir = parent.frame())
