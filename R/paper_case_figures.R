@@ -22,8 +22,8 @@ mse$simulation = relevel_simulations(mse$simulation)
 colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:5, ")]")
 mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
 mse$libraries = ordered(mse$libraries, levels = c(16, 32))
-lvl = c("edgeR", #"independence", 
-  "eBayes (Means)", "eBayes (Oracle)", "fully Bayes")
+lvl = c("edgeR", "fully Bayes", #"independence", 
+  "eBayes (Means)", "eBayes (Oracle)")
 mse = mse[mse$simulation != "Niemi",]
 mse = mse[mse$analysis %in% lvl,]
 mse$analysis = ordered(mse$analysis, levels = lvl)
