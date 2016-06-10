@@ -39,7 +39,7 @@ simulation_priors = function(genes = 1e4, libraries = 16, prior = "normal"){
     epsilon = matrix(rnorm(libraries*genes, 0, sqrt(gammat)), ncol = libraries)
     truth@epsilon = as.numeric(epsilon)
     mu = t(design %*% t(beta))
-    suppressWarnings(counts <- matrix(rpois(genes*libraries, exp(epsilon + mu)), nrow = genes))
+    counts = matrix(rpois(genes*libraries, exp(epsilon + mu)), nrow = genes)
   }
 
   colnames(counts) = rownames(design) = paste0("group_", group, "_", 1:length(group))
