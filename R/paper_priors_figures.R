@@ -836,8 +836,17 @@ colnames(effect_edger) = gsub("hybrids", "hybrid-mean", colnames(effect_edger))
 colnames(effect_edger) = gsub("hybrid1", "B73xMo17", colnames(effect_edger))
 colnames(effect_edger) = gsub("hybrid2", "Mo17xB73", colnames(effect_edger))
 colnames(effect_edger) = paste0(colnames(effect_edger), "_edgeR_effect_size")
+scales = exp(parms_edger[,"dispersion_edgeR_estimate"])
+effect_edger = sweep(effect_edger, 1, scales, "/")
 
-p = cbind(p, effect_edger, parms_edger)
+effect_fullybayes = a$estimates[,grep("effect", colnames(a$estimates))]
+colnames(effect_fullybayes) = colnames(effect_edger)
+colnames(effect_fullybayes) = gsub("edgeR_", "", colnames(effect_fullybayes))
+scales = sqrt(p[["gamma_mean"]])
+effect_fullybayes = sweep(effect_fullybayes, 1, scales, "/")
+
+p = cbind(p, effect_fullybayes, #effect_edger, 
+  parms_edger)
 write.csv(p, paste0(dir_suppTables, prior, ".csv"), row.names = F)
 
 # fig-edgerparms
@@ -894,77 +903,31 @@ for(extn in extns)
   ggsave(paste0(dir_edgerparms, "fig-edgerparms", prior, ".", extn), 
     pl, height = 7, width = 9, dpi = 1200)
 
-# fig-edgerinference
+# fig-volcano
 d = as.data.frame(read_csv(paste0(dir_suppTables, prior, ".csv")))
-d$gamma_mean = log(d$gamma_mean)
-d$dispersion_edgeR_estimate = log(d$dispersion_edgeR_estimate)
-d$meancount = rowMeans(d[,grep("count-data", colnames(d))])
-scales = exp(d$dispersion_edgeR_estimate)
-#scales = scales/mean(scales)
-d[,grepl("effect", colnames(d))] = 
-sweep(d[,grepl("effect", colnames(d))], 1, scales, "/")
-
-effects_fb = melt(d[,grepl("geneID|meancount|probability", colnames(d))], 
-  id.vars = c("geneID", "meancount"))
-effects_edger = melt(d[,grepl("geneID|meancount|effect", colnames(d))],
-  id.vars = c("geneID", "meancount"))
-effects_fb$variable = as.character(effects_fb$variable)
-effects_edger$variable = as.character(effects_edger$variable)
-effects = effects_fb
-
+dir_volcano = newdir(paste0(dir, "PAPER3fig-volcano"))
+effects = melt(d[,grepl("geneID|effect", colnames(d))], id.vars = "geneID")
+probs = melt(d[,grepl("geneID|probability", colnames(d))], id.vars = "geneID")
 x = effects$variable
-x = gsub("probability_|hybrid-", "", x)
-x = gsub("-parent-heterosis_", " ", x)
+x = gsub("probability_|hybrid-|_effect_size|-heterosis", "", x)
+x = gsub("-parent_", " ", x)
 x = ordered(x, levels = 
   c("high B73xMo17", "high Mo17xB73", "high mean",
     "low B73xMo17", "low Mo17xB73", "low mean"))
-effects$variable = x
-colnames(effects) = c("geneID", "meancount", "variable", "fullyBayes")
-effects[["edgeR"]] = effects_edger$value
+df = data.frame(gene = effects$geneID, effect = effects$value, 
+  probability = probs$value, heterosis = x)
 
-for(opt in c("low", "high")){
-  dir_edgerinference = newdir(paste0(dir, "PAPER3fig-edgerinference", opt))
-  cutoff = 5
-  if(opt == "low"){
-    df = effects[effects$meancount < cutoff,]
-  } else if(opt == "high"){
-    df = effects[effects$meancount >= cutoff,]
-  }
+pl = ggplot(df) +
+  stat_binhex(aes_string(x = "effect", y = "probability"), bins = 35) +
+  scale_fill_gradient(guide = F, name = "count", 
+    trans = "log", low = "#b5b5b5", high = "black") +
+  facet_wrap(as.formula("~heterosis"), scales = "free") +
+  xlab("effect size") + ylab("posterior probability of heterosis") +
+  mytheme_pub()
 
-  pl = ggplot(df) +
-    stat_binhex(aes_string(x = "edgeR", y = "fullyBayes"), bins = 35) +
-    scale_fill_gradient(guide = F, name = "count", 
-      trans = "log", low = "#b5b5b5", high = "black") +
-    facet_wrap(as.formula("~variable"), scales = "free") +
-    ylab("fully Bayes") +
-    mytheme_pub()
-
-  for(extn in extns)
-    ggsave(paste0(dir_edgerinference, "fig-edgerinference", opt, prior, ".", extn), 
-      pl, height = 7, width = 9, dpi = 1200)
-}
-
-# table tab-outliers
-dir_outliers = newdir(paste0(dir, "PAPER3tab-outliers"))
-x = df[df$variable == "high Mo17xB73",]
-outlier1 = x[x$edgeR > 60 & x$fullyBayes < .5,]
-print(outlier1$geneID) # "GRMZM2G046776"
-
-x = df[df$variable == "low Mo17xB73",]
-outlier2 = x[x$edgeR > 100 & x$fullyBayes < .75,]
-print(outlier2$geneID) # "AC205274.3_FG001"
-
-x = df[df$variable == "low mean",]
-outlier3 = x[x$edgeR > 30 & x$fullyBayes < .75,]
-print(outlier3$geneID) # "AC205274.3_FG001"
-
-gs = sort(unique(c(outlier1$geneID, outlier2$geneID, outlier3$geneID)))
-data(paschold)
-paschold = get("paschold")
-scaledown()
-tab = rbind(NULL, paschold@counts[gs,])
-rownames(tab) = gs
-print(xtable(tab), file = paste0(dir_outliers, "tab-outliers", prior, ".tex"))
+for(extn in extns)
+  ggsave(paste0(dir_volcano, "fig-volcano", prior, ".", extn), 
+    pl, height = 7, width = 9, dpi = 1200)
 
 } # for(prior in priors_analyses())
 
