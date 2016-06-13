@@ -11,7 +11,7 @@ paper_priors_figures = function(){
 # control parms
 dir = newdir("priors_study_paper_figures")
 extns = c("pdf", "ps", "eps")
-mycolors = c("black", "blue", "red")
+mycolors = c("black", "blue", "red", "darkGreen")
 gray = "#707070"
 analyses_avoid = "edgeR|ibayes|independence"
 
@@ -23,7 +23,7 @@ mse$simulation = relevel_simulations(mse$simulation)
 colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:5, ")]")
 mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
 mse$libraries = ordered(mse$libraries, levels = c(16, 32))
-lvl = c("normal", "Laplace", "t")
+lvl = c("normal", "Laplace", "t", "horseshoe")
 mse = mse[mse$simulation != "Niemi",]
 mse = mse[mse$analysis %in% lvl,]
 mse$analysis = ordered(mse$analysis, levels = lvl)
@@ -49,7 +49,7 @@ mse$simulation = relevel_simulations(mse$simulation)
 colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:5, ")]")
 mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
 mse$libraries = ordered(mse$libraries, levels = c(16, 32))
-lvl = c("normal", "Laplace", "t")
+lvl = c("normal", "Laplace", "t", "horseshoe")
 mse = mse[mse$simulation != "Niemi",]
 mse = mse[mse$analysis %in% lvl,]
 mse$analysis = ordered(mse$analysis, levels = lvl)
@@ -72,12 +72,13 @@ mse = readRDS("priors_analyze/mse/mse.rds")
 mse$analysis = gsub("normalnormal", "normal", mse$analysis)
 mse$analysis = gsub("normalLaplace", "Laplace", mse$analysis)
 mse$analysis = gsub("normalt", "t", mse$analysis)
+mse$analysis = gsub("normalhorseshoe", "horseshoe", mse$analysis)
 mse$analysis = priors_relevel_analyses(mse$analysis)
 mse$simulation = relevel_simulations(mse$simulation)
 colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:2, ")]")
 mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
 mse = mse[mse$libraries == 8,]
-lvl = c("normal", "Laplace", "t")
+lvl = c("normal", "Laplace", "t", "horseshoe")
 mse = mse[mse$simulation != "Niemi",]
 mse = mse[mse$analysis %in% lvl,]
 mse$analysis = ordered(mse$analysis, levels = lvl)
@@ -110,9 +111,11 @@ for(f in list.files("priors_mcmc")) if(as.integer(meta(f)["libraries"]) == 8 & a
     a$analysis = gsub("normalnormal", "normal", a$analysis)
     a$analysis = gsub("normalLaplace", "Laplace", a$analysis)
     a$analysis = gsub("normalt", "t", a$analysis)
+    a$analysis = gsub("normalhorseshoe", "horseshoe", a$analysis)
     m_long$analysis = gsub("fullybayes\\+", "", a$analysis)
     tr = l$scenario@supplement$truth
-    for(n in c("simulation", "analysis")) m_long[[n]] = ordered(m_long[[n]], levels = priors_analyses())
+    m_long[["simulation"]] = ordered(m_long[["simulation"]], levels = priors_simulations())
+    m_long[["analysis"]] = ordered(m_long[["analysis"]], levels = priors_analyses())
     m_long = ddply(m_long, "variable", function(x){
       s = unlist(strsplit(as.character(x$variable[1]), "_"))
       if(length(s) > 1){
@@ -135,7 +138,7 @@ for(v in unique(m_hyper$variable)){
     facet_grid(as.formula("simulation~analysis"), scales = "free") +
     mytheme_pub() + theme(axis.text.x = element_text(angle = -80, hjust = 0))
   for(extn in extns)
-    ggsave(paste0(dir_priorshyperhist, "fig-priorshyperhist-", d$variable[1], ".", extn), pl, height = 8, width = 8, dpi = 1200)
+    ggsave(paste0(dir_priorshyperhist, "fig-priorshyperhist-", d$variable[1], ".", extn), pl, height = 8, width = 10, dpi = 1200)
 }
 
 # fig-priorshypercoverage
@@ -145,13 +148,15 @@ l = l[!grepl(analyses_avoid, l$analysis),]
 l$analysis = gsub("normalnormal", "normal", l$analysis)
 l$analysis = gsub("normalLaplace", "Laplace", l$analysis)
 l$analysis = gsub("normalt", "t", l$analysis)
+l$analysis = gsub("normalhorseshoe", "horseshoe", l$analysis)
 l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
 l = l[grepl("fullybayes", l$analysis) & grepl("nu|tau|theta|sigma", l$type) & l$libraries == 8,]
 l$parameter = as.factor(as.character(l$parameter))
 l$type = as.factor(as.character(l$type))
 l$simulation = gsub("priors", "", as.character(l$simulation))
 l$analysis = gsub("fullybayes\\+", "", as.character(l$analysis))
-for(n in c("simulation", "analysis")) l[[n]] = ordered(l[[n]], levels = priors_analyses())
+l[["simulation"]] = ordered(l[["simulation"]], levels = priors_simulations())
+l[["analysis"]] = ordered(l[["analysis"]], levels = priors_analyses())
 l$simulation = ordered(l$simulation, labels = paste(levels(l$simulation), "sim"))
 l$analysis = ordered(l$analysis,  labels = paste(levels(l$analysis), "analysis"))
 x = ddply(l, "parameter", function(d){
@@ -165,7 +170,7 @@ x = ddply(l, "parameter", function(d){
     mytheme_pub() + theme(legend.position = "none") +
     scale_linetype_manual(values = c("TRUE" = 1, "FALSE" = 2))
   for(extn in extns)
-    ggsave(paste0(dir_priorshypercoverage, "fig-priorshypercoverage-", d$parameter[1], ".", extn), pl, height = 8, width = 8, dpi = 1200)
+    ggsave(paste0(dir_priorshypercoverage, "fig-priorshypercoverage-", d$parameter[1], ".", extn), pl, height = 8, width = 10, dpi = 1200)
 })
 
 # credible interval info
@@ -174,6 +179,7 @@ l = l[!grepl(analyses_avoid, l$analysis),]
 l$analysis = gsub("normalnormal", "normal", l$analysis)
 l$analysis = gsub("normalLaplace", "Laplace", l$analysis)
 l$analysis = gsub("normalt", "t", l$analysis)
+l$analysis = gsub("normalhorseshoe", "horseshoe", l$analysis)
 l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
 l = l[grep("fullybayes", l$analysis) & l$type == "beta[2]" & l$libraries == 8,]
 
@@ -189,7 +195,8 @@ l1 = ddply(l0, c("type", "rep", "analysis", "simulation"), function(x){
 saveRDS(l1, paste0(dir_priorsbetarates, "priorsbetarates.rds"))
 l1$simulation = gsub("priors", "", as.character(l1$simulation))
 l1$analysis = gsub("fullybayes\\+", "", as.character(l1$analysis))
-for(n in c("simulation", "analysis")) l1[[n]] = ordered(l1[[n]], levels = priors_analyses())
+l1[["simulation"]] = ordered(l1[["simulation"]], levels = priors_simulations())
+l1[["analysis"]] = ordered(l1[["analysis"]], levels = priors_analyses())
 l1$simulation = ordered(l1$simulation, labels = paste(levels(l1$simulation), "sim"))
 l1$analysis = ordered(l1$analysis,  labels = paste(levels(l1$analysis), "analysis"))
 pl = ggplot(l1) +
@@ -199,7 +206,7 @@ pl = ggplot(l1) +
   xlab("simulated dataset") + ylab("coverage rate") +
   mytheme_pub()
 for(extn in extns)
-  ggsave(paste0(dir_priorsbetarates, "fig-priorsbetarates.", extn), pl, height = 8, width = 8, dpi = 1200)
+  ggsave(paste0(dir_priorsbetarates, "fig-priorsbetarates.", extn), pl, height = 8, width = 10, dpi = 1200)
 
 # fig:priorsbetacred
 dir_priorsbetacred = newdir(paste0(dir, "PAPER3fig-priorsbetacred"))
@@ -214,7 +221,8 @@ l1 = ddply(l0, c("analysis", "simulation", "type"), function(x){
 })
 l1$simulation = gsub("priors", "", as.character(l1$simulation))
 l1$analysis = gsub("fullybayes\\+", "", as.character(l1$analysis))
-for(n in c("simulation", "analysis")) l1[[n]] = ordered(l1[[n]], levels = priors_analyses())
+l1[["simulation"]] = ordered(l1[["simulation"]], levels = priors_simulations())
+l1[["analysis"]] = ordered(l1[["analysis"]], levels = priors_analyses())
 l1$simulation = ordered(l1$simulation, labels = paste(levels(l1$simulation)[1:length(unique(l1$simulation))], "sim"))
 l1$analysis = ordered(l1$analysis,  labels = paste(levels(l1$analysis)[1:length(unique(l1$analysis))], "analysis"))
 pl = ggplot(l1) +
@@ -225,7 +233,7 @@ pl = ggplot(l1) +
   xlab("credible interval") + ylab("parameter value") + 
   mytheme_pub()
 for(extn in extns)
-  ggsave(paste0(dir_priorsbetacred, "fig-priorsbetacred.", extn), pl, height = 8, width = 8, dpi = 1200)
+  ggsave(paste0(dir_priorsbetacred, "fig-priorsbetacred.", extn), pl, height = 8, width = 10, dpi = 1200)
 
 # fig:priorsbetacoveragetrend
 dir_priorsbetacoveragetrend = newdir(paste0(dir, "PAPER3fig-priorsbetacoveragetrend"))
@@ -242,7 +250,8 @@ l1 = ddply(l0, c("simulation", "analysis", "rep", "type"), function(z){
 }, .progress = "text")
 l1$simulation = gsub("priors", "", as.character(l1$simulation))
 l1$analysis = gsub("fullybayes\\+", "", as.character(l1$analysis))
-for(n in c("simulation", "analysis")) l1[[n]] = ordered(l1[[n]], levels = priors_analyses())
+l1[["simulation"]] = ordered(l1[["simulation"]], levels = priors_simulations())
+l1[["analysis"]] = ordered(l1[["analysis"]], levels = priors_analyses())
 l1$simulation = ordered(l1$simulation, labels = paste(levels(l1$simulation)[1:length(unique(l1$simulation))], "sim"))
 l1$analysis = ordered(l1$analysis,  labels = paste(levels(l1$analysis)[1:length(unique(l1$analysis))], "analysis"))
 pl = ggplot(l1) + 
@@ -254,10 +263,10 @@ pl = ggplot(l1) +
   ylab("local coverage rate") +
   mytheme_pub()
 for(extn in extns[!grepl("ps", extns)])
-  ggsave(paste0(dir_priorsbetacoveragetrend, "fig-priorsbetacoveragetrend.", extn), pl, height = 8, width = 8, dpi = 1200)
+  ggsave(paste0(dir_priorsbetacoveragetrend, "fig-priorsbetacoveragetrend.", extn), pl, height = 8, width = 10, dpi = 1200)
 for(extn in extns[grepl("ps", extns)])
   ggsave(paste0(dir_priorsbetacoveragetrend, "fig-priorsbetacoveragetrend.", extn), pl, device=cairo_ps,
- height = 8, width = 8, dpi = 1200)
+ height = 8, width = 10, dpi = 1200)
 
 # fig:priorsmodelcalibration
 dir_priorsmodelcalibration = newdir(paste0(dir, "PAPER3fig-priorsmodelcalibration"))
@@ -266,7 +275,8 @@ df = df[!grepl(analyses_avoid, df$analysis),]
 df = df[df$heterosis == "high" & df$libraries == 8,]
 df$simulation = gsub("priors", "", as.character(df$simulation))
 df$analysis = gsub("fullybayes\\+", "", as.character(df$analysis))
-for(n in c("simulation", "analysis")) df[[n]] = ordered(df[[n]], levels = priors_analyses())
+df[["simulation"]] = ordered(df[["simulation"]], levels = priors_simulations())
+df[["analysis"]] = ordered(df[["analysis"]], levels = priors_analyses())
 df$simulation = ordered(df$simulation, labels = paste(levels(df$simulation), "sim"))
 df$analysis = ordered(df$analysis,  labels = paste(levels(df$analysis), "analysis"))
 pl = ggplot(df) +
@@ -278,7 +288,7 @@ pl = ggplot(df) +
   mytheme_pub() + theme(legend.position = "none") + 
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
-  ggsave(paste0(dir_priorsmodelcalibration, "fig-priorsmodelcalibration.", extn), pl, height = 8, width = 8, dpi = 1200)
+  ggsave(paste0(dir_priorsmodelcalibration, "fig-priorsmodelcalibration.", extn), pl, height = 8, width = 10, dpi = 1200)
 
 # fig:priorscomparecalerror
 dir_priorscomparecalerror = newdir(paste0(dir, "PAPER3fig-priorscomparecalerror"))
@@ -292,7 +302,8 @@ d = ddply(df, c("file", "heterosis"), function(x){
 d = d[d$heterosis == "high" & d$libraries == 8,]
 d$simulation = gsub("priors", "", as.character(d$simulation))
 d$analysis = gsub("fullybayes\\+", "", as.character(d$analysis))
-for(n in c("simulation", "analysis")) d[[n]] = ordered(d[[n]], levels = priors_analyses())
+d[["simulation"]] = ordered(d[["simulation"]], levels = priors_simulations())
+d[["analysis"]] = ordered(d[["analysis"]], levels = priors_analyses())
 d$simulation = ordered(d$simulation, labels = paste(levels(d$simulation), "sim"))
 pl = ggplot(d) + 
   geom_line(aes_string(x = "analysis", y = "meanerror", group = "rep"), color = "black") +
@@ -313,7 +324,8 @@ d = d[!grepl(analyses_avoid, d$analysis),]
 d = d[d$heterosis == "high" & d$libraries == 8,]
 d$simulation = gsub("priors", "", as.character(d$simulation))
 d$analysis = gsub("fullybayes\\+", "", as.character(d$analysis))
-for(n in c("simulation", "analysis")) d[[n]] = ordered(d[[n]], levels = priors_analyses())
+d[["simulation"]] = ordered(d[["simulation"]], levels = priors_simulations())
+d[["analysis"]] = ordered(d[["analysis"]], levels = priors_analyses())
 d$simulation = ordered(d$simulation, labels = paste(levels(d$simulation), "sim"))
 d$analysis = ordered(d$analysis,  labels = paste(levels(d$analysis), "analysis"))
 pl = ggplot(d) + 
@@ -326,7 +338,7 @@ pl = ggplot(d) +
   mytheme_pub() +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
-  ggsave(paste0(dir_priorsroc, "fig-priorsroc.", extn), pl, height = 8, width = 8, dpi = 1200)
+  ggsave(paste0(dir_priorsroc, "fig-priorsroc.", extn), pl, height = 8, width = 10, dpi = 1200)
 
 # fig:priorsauc
 dir_priorsauc = newdir(paste0(dir, "PAPER3fig-priorsauc"))
@@ -335,7 +347,8 @@ d = d[!grepl(analyses_avoid, d$analysis),]
 d = d[d$heterosis == "high" & d$libraries == 8,]
 d$simulation = gsub("priors", "", as.character(d$simulation))
 d$analysis = gsub("fullybayes\\+", "", as.character(d$analysis))
-for(n in c("simulation", "analysis")) d[[n]] = ordered(d[[n]], levels = priors_analyses())
+d[["simulation"]] = ordered(d[["simulation"]], levels = priors_simulations())
+d[["analysis"]] = ordered(d[["analysis"]], levels = priors_analyses())
 d$simulation = ordered(d$simulation, labels = paste(levels(d$simulation), "sim"))
 pl = ggplot(d) + 
   geom_line(aes_string(x = "analysis", y = "auc_1", group = "rep"), color = "black") +
@@ -348,12 +361,6 @@ pl = ggplot(d) +
   theme(axis.text.x = element_text(angle = -80, hjust = 0))
 for(extn in extns)
   ggsave(paste0(dir_priorsauc, "fig-priorsauc.", extn), pl, height = 7, width = 7, dpi = 1200)
-
-
-
-
-
-
 
 ## compare with case study
 
@@ -576,7 +583,8 @@ l = readRDS(fname)
 l$analyses = l$analyses[!grepl(analyses_avoid, names(l$analyses))]
 as = list(normal = l$analyses[["fullybayes+normal"]],
   Laplace = l$analyses[["fullybayes+Laplace"]],
-  t = l$analyses[["fullybayes+t"]])
+  t = l$analyses[["fullybayes+t"]], 
+  horseshoe = l$analyses[["fullybayes+horseshoe"]])
 m = lapply(as, function(a) mcmc_samples(a$chains))
 e = lapply(as, function(a) estimates(a$chains, level = 0.95))
 
@@ -936,8 +944,7 @@ l = as.data.frame(readRDS("comparison_analyze/ci/ci.rds"))
 l = l[!grepl(analyses_avoid, l$analysis),]
 l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
 l = l[grepl("fullybayes", l$analysis),]
-l = l[!grepl("horseshoe", l$analysis),]
-l = l[!grepl("horseshoe|Niemi", l$simulation),]
+l = l[!grepl("Niemi", l$simulation),]
 
 # fig:comparebetarates
 dir_comparebetarates = newdir(paste0(dir, "PAPER3fig-comparebetarates"))
@@ -963,4 +970,3 @@ for(extn in extns)
   ggsave(paste0(dir_comparebetarates, "fig-comparebetarates.", extn), pl, height = 7, width = 7, dpi = 1200)
 
 } # paper_priors_figures
-

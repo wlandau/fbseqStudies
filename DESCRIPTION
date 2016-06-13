@@ -18,7 +18,6 @@ Imports:
     plyr,
     dplyr,
     edgeR,
-    fbseq,
     foreach,
     ggthemes,
     gridExtra,

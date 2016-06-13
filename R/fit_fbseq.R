@@ -18,6 +18,10 @@ fit_fbseq = function(sim, method = "fullybayes", prior = "normal", configs = Con
     configs@parameter_sets_return = c(configs@parameter_sets_return, "xi")
     configs@parameter_sets_update = c(configs@parameter_sets_update, "xi")
   }
+  if(any(prior == "horseshoe")){
+    prior = "horseshoe"
+    configs@priors = c("normal", rep("horseshoe", ncol(s@design) - 1))
+  }
 
   if(getOption("fbseqStudies.scaledown")){
     scaledown()

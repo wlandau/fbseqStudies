@@ -11,6 +11,6 @@ coverage_mcmc = function(path = newdir(), zeronormfactors = T){
   path = newdir(path)
   coverage_init(path)
   fit(path, benchmarks = "edgeR", fbseq_methods = "fullybayes", zeronormfactors = zeronormfactors, 
-    priors = c("normal", special_beta_priors()[special_beta_priors() != "horseshoe"]))
+    priors = c("normal", special_beta_priors()))
   path
 }

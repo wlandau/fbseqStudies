@@ -10,10 +10,12 @@ relevel_simulations = function(x){
   out[out == "priorsnormal"] = "normal"
   out[out == "priorsLaplace"] = "Laplace"
   out[out == "priorst"] = "t"
+#  out[out == "priorshorseshoe"] = "horseshoe"
   ordered(out, levels = c(
     "normal", 
     "Laplace", 
     "t",
+#    "horseshoe",
     "Simple", 
     "Model",
     "edgeR",

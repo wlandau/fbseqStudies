@@ -14,7 +14,8 @@ priors_mcmc = function(path = newdir(), zeronormfactors = T){
     priors = list(
       c("normal", "normal"),
       c("normal", "Laplace"),
-      c("normal", "t")
+      c("normal", "t"),
+      c("normal", "horseshoe")
     ))
   path
 }

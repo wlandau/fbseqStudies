@@ -32,6 +32,6 @@ case_analyses = function(){
 #' @export
 #' @return analysis analyses
 priors_analyses = function(){
-  out = c("normal", "Laplace", "t")
+  out = c("normal", "Laplace", "t", "horseshoe")
   ordered(out, levels = out)
 }

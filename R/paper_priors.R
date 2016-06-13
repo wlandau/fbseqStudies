@@ -6,11 +6,11 @@ NULL
 #' @export
 paper_priors = function(){
   real_init("real_mcmc")
-  fit("real_mcmc", priors = c("normal", special_beta_priors()[special_beta_priors() != "horseshoe"]), fbseq_methods = "fullybayes")
+  fit("real_mcmc", priors = c("normal", special_beta_priors()), fbseq_methods = "fullybayes")
   coverage_mcmc("coverage_mcmc", zeronormfactors = T)  
   coverage_mcmc("coverage_norm_mcmc", zeronormfactors = F)
   comparison_init("comparison_mcmc")
-  fit("comparison_mcmc", benchmarks = "edgeR", fbseq_methods = "fullybayes", priors = c("normal", special_beta_priors()[special_beta_priors() != "horseshoe"]))  
+  fit("comparison_mcmc", benchmarks = "edgeR", fbseq_methods = "fullybayes", priors = c("normal", special_beta_priors()))  
   priors_mcmc("priors_mcmc")
 
   real_analyze("real_mcmc", "real_analyze")
