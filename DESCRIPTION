@@ -36,7 +36,9 @@ Suggests:
     fbseqOpenMP,
     knitr
 Remotes:
-    wlandau/fbseq
+    wlandau/fbseq,
+    wlandau/fbseqOpenMP,
+    wlandau/fbseqCUDA
 VignetteBuilder: knitr
 License: GPL (>= 3)
 Collate:
