@@ -901,7 +901,7 @@ hmeans$value[6] = log(b) + digamma(a)
 pl = ggplot(parms) +
   stat_binhex(aes_string(x = "edgeR", y = "fullyBayes"), bins = 35) +
   geom_abline(slope = 1) + 
-  geom_hline(data = hmeans, mapping = aes_string(yintercept = "value")) +
+  geom_hline(data = hmeans, mapping = aes_string(yintercept = "value"), linetype = "dashed") +
   facet_wrap(as.formula("~variable"), labeller = label_parsed, scales = "free") +
   scale_fill_gradient(guide = F, name = "count", 
     trans = "log", low = "#b5b5b5", high = "black") +
