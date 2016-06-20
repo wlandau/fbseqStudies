@@ -397,7 +397,7 @@ l0$type = gsub("\\[", "[list(g", l0$type)
 l0$type = gsub("]", ")]", l0$type)
 l0 = l0[order(l0$truth),]
 l0 = ddply(l0, c("analysis", "type"), function(x){
-  x$interval = 1:dim(x)[1]
+  x$interval = 1:dim(x)[1]/dim(x)[1]
   x
 })
 l0$analysis = ordered(gsub("fullybayes\\+", "", as.character(l0$analysis)), levels = priors_analyses())
@@ -409,12 +409,14 @@ hmean[l0$type == "beta[list(g4)]"] = -0.005
 hmean[l0$type == "beta[list(g5)]"] = 0.008
 l0$hmean = hmean
 pl = ggplot(l0) +
-  geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), color = gray) +
+  geom_segment(aes_string(x = "interval", xend = "interval", y = "lower", yend = "upper"), 
+    color = gray) +
   geom_point(aes_string(x = "interval", y = "truth"), color = "black", size = I(0.5)) + 
   geom_hline(aes_string(yintercept = "hmean")) +
   facet_grid(as.formula("type~analysis"), scales = "free", labeller = label_parsed) +
   xlab("credible interval") + ylab("parameter value") + 
-  mytheme_pub()
+  mytheme_pub() + 
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
 for(extn in extns)
   ggsave(paste0(dir_betacred, "fig-betacred.", extn), pl, height = 8, width = 8, dpi = 1200)
 
