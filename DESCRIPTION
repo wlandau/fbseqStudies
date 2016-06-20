@@ -19,6 +19,7 @@ Imports:
     dplyr,
     edgeR,
     foreach,
+    grDevices,
     ggthemes,
     gridExtra,
     hexbin,
@@ -29,6 +30,8 @@ Imports:
     reshape2,
     rstan,
     snowfall,
+    stats,
+    utils,
     xtable
 Suggests:
     fbseqCUDA,
