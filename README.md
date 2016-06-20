@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/22809/wlandau/fbseqStudies.svg)](https://zenodo.org/badge/latestdoi/22809/wlandau/fbseqStudies)
+
 # Purpose
 
 [`fbseqStudies`](https://github.com/wlandau/fbseqStudies) reproduces the results of academic studies of the methodology behind the [`fbseq`](https://github.com/wlandau/fbseq) and [`fbseqCUDA`](https://github.com/wlandau/fbseqCUDA) packages.
