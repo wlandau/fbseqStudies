@@ -6,7 +6,7 @@ NULL
 #' @export
 paper_priors_figures = function(){
 
-# library(fbseqStudies); library(xtable); library(reshape2); library(plyr); library(pracma); library(ggthemes); library(actuar); setwd("~/home/work/projects/thesis_data/results"); library(readr)
+# library(fbseqStudies); library(xtable); library(reshape2); library(plyr); library(pracma); library(ggthemes); library(actuar); setwd("/Users/landau/Dropbox/Apps/hpc-class/ptmp"); library(readr)
 
 # control parms
 dir = newdir("priors_study_paper_figures")
@@ -23,7 +23,7 @@ mse$simulation = relevel_simulations(mse$simulation)
 colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:5, ")]")
 mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
 mse$libraries = ordered(mse$libraries, levels = c(16, 32))
-lvl = c("normal", "Laplace", "t", "horseshoe")
+lvl = c("normal", "t", "Laplace", "horseshoe")
 mse = mse[mse$simulation != "Niemi",]
 mse = mse[mse$analysis %in% lvl,]
 mse$analysis = ordered(mse$analysis, levels = lvl)
@@ -49,7 +49,7 @@ mse$simulation = relevel_simulations(mse$simulation)
 colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:5, ")]")
 mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
 mse$libraries = ordered(mse$libraries, levels = c(16, 32))
-lvl = c("normal", "Laplace", "t", "horseshoe")
+lvl = c("normal", "t", "Laplace", "horseshoe")
 mse = mse[mse$simulation != "Niemi",]
 mse = mse[mse$analysis %in% lvl,]
 mse$analysis = ordered(mse$analysis, levels = lvl)
@@ -70,15 +70,15 @@ for(extn in extns)
 dir_msepriors = newdir(paste0(dir, "PAPER3fig-msepriors"))
 mse = readRDS("priors_analyze/mse/mse.rds")
 mse$analysis = gsub("normalnormal", "normal", mse$analysis)
-mse$analysis = gsub("normalLaplace", "Laplace", mse$analysis)
 mse$analysis = gsub("normalt", "t", mse$analysis)
+mse$analysis = gsub("normalLaplace", "Laplace", mse$analysis)
 mse$analysis = gsub("normalhorseshoe", "horseshoe", mse$analysis)
 mse$analysis = priors_relevel_analyses(mse$analysis)
 mse$simulation = relevel_simulations(mse$simulation)
 colnames(mse)[grep("beta", colnames(mse))] = paste0("beta[list(g", 1:2, ")]")
 mse = melt(mse, id.vars = colnames(mse)[!grepl("beta", colnames(mse))])
 mse = mse[mse$libraries == 8,]
-lvl = c("normal", "Laplace", "t", "horseshoe")
+lvl = c("normal", "t", "Laplace", "horseshoe")
 mse = mse[mse$simulation != "Niemi",]
 mse = mse[mse$analysis %in% lvl,]
 mse$analysis = ordered(mse$analysis, levels = lvl)
@@ -109,8 +109,8 @@ for(f in list.files("priors_mcmc")) if(as.integer(meta(f)["libraries"]) == 8 & a
     m_long = melt(m, id.vars = NULL)
     m_long$simulation = gsub("priors", "", l$simulation)
     a$analysis = gsub("normalnormal", "normal", a$analysis)
-    a$analysis = gsub("normalLaplace", "Laplace", a$analysis)
     a$analysis = gsub("normalt", "t", a$analysis)
+    a$analysis = gsub("normalLaplace", "Laplace", a$analysis)
     a$analysis = gsub("normalhorseshoe", "horseshoe", a$analysis)
     m_long$analysis = gsub("fullybayes\\+", "", a$analysis)
     tr = l$scenario@supplement$truth
@@ -146,8 +146,8 @@ dir_priorshypercoverage = newdir(paste0(dir, "PAPER3fig-priorshypercoverage"))
 l = as.data.frame(readRDS("priors_analyze/ci/ci.rds"))
 l = l[!grepl(analyses_avoid, l$analysis),]
 l$analysis = gsub("normalnormal", "normal", l$analysis)
-l$analysis = gsub("normalLaplace", "Laplace", l$analysis)
 l$analysis = gsub("normalt", "t", l$analysis)
+l$analysis = gsub("normalLaplace", "Laplace", l$analysis)
 l$analysis = gsub("normalhorseshoe", "horseshoe", l$analysis)
 l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
 l = l[grepl("fullybayes", l$analysis) & grepl("nu|tau|theta|sigma", l$type) & l$libraries == 8,]
@@ -177,8 +177,8 @@ x = ddply(l, "parameter", function(d){
 l = as.data.frame(readRDS("priors_analyze/ci/ci.rds"))
 l = l[!grepl(analyses_avoid, l$analysis),]
 l$analysis = gsub("normalnormal", "normal", l$analysis)
-l$analysis = gsub("normalLaplace", "Laplace", l$analysis)
 l$analysis = gsub("normalt", "t", l$analysis)
+l$analysis = gsub("normalLaplace", "Laplace", l$analysis)
 l$analysis = gsub("normalhorseshoe", "horseshoe", l$analysis)
 l$rep = ordered(l$rep, levels = 1:max(as.integer(l$rep)))
 l = l[grep("fullybayes", l$analysis) & l$type == "beta[2]" & l$libraries == 8,]
@@ -584,8 +584,8 @@ fname = paste0("real_mcmc/paschold_", nrow(paschold@counts),
 l = readRDS(fname)
 l$analyses = l$analyses[!grepl(analyses_avoid, names(l$analyses))]
 as = list(normal = l$analyses[["fullybayes+normal"]],
+  t = l$analyses[["fullybayes+t"]],
   Laplace = l$analyses[["fullybayes+Laplace"]],
-  t = l$analyses[["fullybayes+t"]], 
   horseshoe = l$analyses[["fullybayes+horseshoe"]])
 m = lapply(as, function(a) mcmc_samples(a$chains))
 e = lapply(as, function(a) estimates(a$chains, level = 0.95))

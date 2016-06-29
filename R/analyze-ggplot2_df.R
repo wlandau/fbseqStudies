@@ -17,8 +17,8 @@ ggplot2_df = function(path){
     for(n in names(x)) out = rbind(out, x[[n]])
   }
   out$analysis = gsub("normalnormal", "normal", out$analysis)
-  out$analysis = gsub("normalLaplace", "Laplace", out$analysis)
   out$analysis = gsub("normalt", "t", out$analysis)
+  out$analysis = gsub("normalLaplace", "Laplace", out$analysis)
   out$analysis = gsub("normalhorseshoe", "horseshoe", out$analysis)
   out
 }

@@ -15,8 +15,8 @@ relevel_analyses = function(x){
   out[out == "fullybayes+horseshoe"] = "fully Bayes (horseshoe)"
   ordered(out, levels = c(
     "fully Bayes",
-    "fully Bayes (Laplace)",
     "fully Bayes (t)",
+    "fully Bayes (Laplace)",
     "fully Bayes (horseshoe)",
     "edgeR",
     "independence",
@@ -37,13 +37,13 @@ priors_relevel_analyses = function(x){
   out[out == "ebayesFromStarts+normal"] = "eBayes (Naive)"
   out[out == "ebayesFromFullybayes+normal"] = "eBayes (Means)"
   out[out == "fullybayes+normal"] = "normal"
-  out[out == "fullybayes+Laplace"] = "Laplace"
   out[out == "fullybayes+t"] = "t"
+  out[out == "fullybayes+Laplace"] = "Laplace"
   out[out == "fullybayes+horseshoe"] = "horseshoe"
   ordered(out, levels = c(
     "normal",
-    "Laplace",
     "t",
+    "Laplace",
     "horseshoe",
     "edgeR",
     "independence",
